@@ -22,6 +22,7 @@ class StoreUsuarioRequest extends FormRequest
             'correo'         => ['required', 'email', 'max:120', 'unique:usuarios,correo'],
             'password'       => ['required', 'string', 'min:8', 'max:60'],
             'rol_id'         => ['required', 'integer', 'exists:roles,id'],
+            'hotel_id'       => ['nullable', 'integer', 'exists:hoteles,id'],
         ];
     }
 
@@ -47,6 +48,7 @@ class StoreUsuarioRequest extends FormRequest
         $this->merge([
             'nombre_usuario' => $this->nombreUsuario,
             'rol_id'         => $this->rolId,
+            'hotel_id'       => $this->hotelId,
         ]);
     }
 }

@@ -7,7 +7,7 @@ const botonCerrarCrear = document.getElementById('botonCerrarCrear');
 
 botonAbrirCrear.addEventListener('click', function () {
     fondoPopupCrear.classList.add('popup-visible');
-    document.getElementById('nombreUsuario').focus();
+    document.getElementById('nombre').focus();
 });
 
 
@@ -16,7 +16,6 @@ botonCerrarCrear.addEventListener('click', function () {
 });
 
 
-//  Cerrar al hacer clic fuera de la tarjeta
 fondoPopupCrear.addEventListener('click', function (evento) {
     if (evento.target === fondoPopupCrear) {
         fondoPopupCrear.classList.remove('popup-visible');
@@ -24,7 +23,7 @@ fondoPopupCrear.addEventListener('click', function (evento) {
 });
 
 
-// ============ ELIMINAR ============
+// ============ ELIMINAR HOTEL ============
 
 const botonesEliminar = document.querySelectorAll('.boton-eliminar');
 
@@ -33,14 +32,14 @@ botonesEliminar.forEach(function (boton) {
         const id = boton.dataset.id;
         const nombre = boton.dataset.nombre;
 
-        if (! confirm('¿Eliminar el usuario ' + nombre + '? Esta acción no se puede deshacer.')) {
+        if (! confirm('¿Eliminar el hotel ' + nombre + '?')) {
             return;
         }
 
         boton.disabled = true;
 
         try {
-            const res = await fetch(rutaUsuarios + '/' + id, {
+            const res = await fetch(rutaHoteles + '/' + id, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
@@ -57,8 +56,7 @@ botonesEliminar.forEach(function (boton) {
                 return;
             }
 
-            //  Quitar la fila sin recargar
-            const fila = document.querySelector('tr[data-usuario="' + id + '"]');
+            const fila = document.querySelector('tr[data-hotel="' + id + '"]');
 
             if (fila) {
                 fila.remove();
@@ -71,34 +69,7 @@ botonesEliminar.forEach(function (boton) {
 });
 
 
-// ============ EL HOTEL SOLO APLICA AL ROL HOTEL ============
-
-const selectorRol = document.getElementById('rolId');
-const grupoHotel = document.getElementById('grupoHotel');
-const selectorHotel = document.getElementById('hotelId');
-
-
-function alternarHotel() {
-    const esHotel = selectorRol.value !== '' && Number(selectorRol.value) === rolHotelId;
-
-    grupoHotel.style.display = esHotel ? 'flex' : 'none';
-    selectorHotel.required = esHotel;
-
-    if (! esHotel) {
-        selectorHotel.value = '';
-    }
-}
-
-
-selectorRol.addEventListener('change', alternarHotel);
-alternarHotel();
-
-
-//  Si el formulario de creación traía errores, abrir el pop up de una vez
-if (document.querySelector('.mensaje-error')) {
-    const hayViejo = document.getElementById('nombreUsuario').value !== '';
-
-    if (hayViejo) {
-        fondoPopupCrear.classList.add('popup-visible');
-    }
+//  Si el formulario traía errores, reabrir el pop up
+if (document.querySelector('.mensaje-error') && document.getElementById('nombre').value !== '') {
+    fondoPopupCrear.classList.add('popup-visible');
 }

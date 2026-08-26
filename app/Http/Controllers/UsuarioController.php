@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUsuarioRequest;
 use App\Http\Requests\UpdateUsuarioRequest;
+use App\Models\Hotel;
 use App\Models\Rol;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
@@ -13,10 +14,11 @@ class UsuarioController extends Controller
 {
     public function index(Request $request)
     {
-        $usuarios = Usuario::with('rol')->orderBy('nombre_usuario')->get();
+        $usuarios = Usuario::with('rol', 'hotel')->orderBy('nombre_usuario')->get();
         $roles    = $this->rolesQuePuedeAsignar();
+        $hoteles  = Hotel::where('activo', true)->orderBy('nombre')->get();
 
-        return view('usuarios', compact('usuarios', 'roles'));
+        return view('usuarios', compact('usuarios', 'roles', 'hoteles'));
     }
 
 
@@ -30,6 +32,17 @@ class UsuarioController extends Controller
 
         if ($rol->nombre === Rol::MASTER) {
             return redirect()->back()->with('error', 'El rol master no se asigna desde aqui');
+        }
+
+        //  Solo el rol hotel lleva un hotel asignado
+        if ($rol->nombre === Rol::HOTEL) {
+            if (empty($datos['hotel_id'])) {
+                return redirect()->back()
+                    ->withInput()
+                    ->with('error', 'Un usuario con rol hotel necesita un hotel asignado');
+            }
+        } else {
+            $datos['hotel_id'] = null;
         }
 
         Usuario::create($datos);

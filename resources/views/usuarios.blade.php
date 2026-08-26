@@ -24,6 +24,7 @@
                     <th>Usuario</th>
                     <th>Correo</th>
                     <th>Rol</th>
+                    <th>Hotel</th>
                     <th>Estado</th>
                     <th class="columna-acciones">Acciones</th>
                 </tr>
@@ -34,6 +35,7 @@
                         <td data-titulo="Usuario">{{ $usuario->nombre_usuario }}</td>
                         <td data-titulo="Correo">{{ $usuario->correo }}</td>
                         <td data-titulo="Rol"><span class="etiqueta-rol etiqueta-{{ $usuario->rol->nombre }}">{{ $usuario->rol->nombre }}</span></td>
+                        <td data-titulo="Hotel">{{ $usuario->hotel?->nombre ?: '—' }}</td>
                         <td data-titulo="Estado">{{ $usuario->activo ? 'Activo' : 'Inactivo' }}</td>
                         <td data-titulo="Acciones" class="columna-acciones">
                             @if ($usuario->rol->nombre === \App\Models\Rol::MASTER)
@@ -92,6 +94,17 @@
                     </select>
                 </div>
 
+                <div class="elemento-formulario" id="grupoHotel">
+                    <label class="titulo-elemento" for="hotelId">Hotel que podrá consultar</label>
+                    <select class="campo-formulario" id="hotelId" name="hotelId">
+                        <option value="">Elige un hotel</option>
+                        @foreach ($hoteles as $hotel)
+                            <option value="{{ $hotel->id }}" @selected(old('hotelId') == $hotel->id)>{{ $hotel->nombre }}</option>
+                        @endforeach
+                    </select>
+                    <p class="nota-formulario">Solo aplica al rol hotel.</p>
+                </div>
+
                 <div class="linea-botones-popup">
                     <button class="boton-secundario" type="button" id="botonCerrarCrear">Cancelar</button>
                     <button class="boton-primario" type="submit">Guardar</button>
@@ -105,6 +118,7 @@
 
 <script>
     const rutaUsuarios = '/usuarios';
+    const rolHotelId = {{ $roles->firstWhere('nombre', \App\Models\Rol::HOTEL)?->id ?? 0 }};
 </script>
 
 <script src="{{ asset('js/usuarios.js') }}"></script>

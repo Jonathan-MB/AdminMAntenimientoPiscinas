@@ -1,0 +1,23 @@
+/* ----------Tabla de hoteles-------------- */
+
+.enlace-hotel {
+    font-weight: 600;
+    color: #00519e;
+    text-decoration: none;
+    transition: 0.4s;
+}
+
+.enlace-hotel:hover {
+    text-decoration: underline;
+}
+
+/* ----------Horas del formulario-------------- */
+
+.linea-horas {
+    display: flex;
+    gap: 14px;
+}
+
+.linea-horas .elemento-formulario {
+    flex: 1;
+}

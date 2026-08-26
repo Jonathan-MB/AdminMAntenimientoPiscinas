@@ -17,7 +17,7 @@ los hoteles ven esta pantalla.
 | Roles y permisos | Funcionando |
 | Administración de usuarios | Funcionando |
 | Modelo de datos de la operación | Funcionando |
-| Hoteles y piscinas (pantallas) | Pendiente |
+| Hoteles y piscinas (pantallas) | Funcionando |
 | Registro de mantenimientos (pantallas) | Pendiente |
 | Reportes al hotel | Pendiente |
 
@@ -102,15 +102,31 @@ pudiera asignarlo, se saltaría toda la jerarquía.
 comprobaciones usan el **nombre** del rol. Los ids dependen del orden de inserción y no son
 estables entre entornos.
 
+
+### Nada se elimina si tiene historial
+
+Las llaves foráneas son `restrictOnDelete`, así que los controladores comprueban antes y
+devuelven un **409** con un mensaje claro en vez de dejar que reviente la base:
+
+- Un **hotel** con piscinas, jornadas o usuarios no se elimina. Se desactiva.
+- Una **piscina** con mediciones no se elimina. Se desactiva.
+
+### El rol hotel va atado a su hotel
+
+Un usuario con rol `hotel` **exige** un hotel asignado. A cualquier otro rol se le ignora ese
+campo aunque venga en la petición.
+
 ---
 
 ## Estructura
 
 ```
 app/
-  Http/Controllers/    AccesoController, PanelController, UsuarioController
+  Http/Controllers/    AccesoController, PanelController, UsuarioController,
+                       HotelController, PiscinaController
   Http/Middleware/     VerificarRol      (alias 'rol', se usa 'rol:master,administrador')
-  Http/Requests/       IniciarSesion, StoreUsuario, UpdateUsuario
+  Http/Requests/       IniciarSesion, StoreUsuario, UpdateUsuario,
+                       StoreHotel, UpdateHotel, StorePiscina, UpdatePiscina
   Models/              Rol, Usuario, Hotel, Piscina, Producto,
                        Jornada, Ronda, Medicion, Dosis, Tarea, TareaRealizada
 database/
@@ -125,7 +141,7 @@ public/
   img/                 logo, isotipo y derivados
 resources/views/
   partials/            head, header, header-limpio, mensaje, footer
-  login, panel, usuarios
+  login, panel, usuarios, hoteles, hotel
 Libro de marca/        Manual de marca, logos y paleta (copia para uso externo)
 docs/                  Convenciones de código
 ```
@@ -186,7 +202,7 @@ Dos cortes, y solo dos, definidos en `general.css`:
 - `768px` — tablet
 - `480px` — móvil
 
-En móvil la tabla de usuarios se apila en tarjetas usando el atributo `data-titulo` de cada
+En móvil las tablas se apilan en tarjetas usando el atributo `data-titulo` de cada
 celda, en vez de desplazarse horizontalmente.
 
 ---

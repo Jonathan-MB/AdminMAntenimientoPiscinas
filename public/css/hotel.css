@@ -1,0 +1,103 @@
+/* ----------Volver-------------- */
+
+.enlace-volver {
+    display: inline-block;
+    font-size: 13px;
+    color: #5f6062;
+    text-decoration: none;
+    margin-bottom: 14px;
+    transition: 0.4s;
+}
+
+.enlace-volver:hover {
+    color: #00519e;
+}
+
+
+/* ----------Tarjeta de datos-------------- */
+
+.tarjeta-hotel {
+    background-color: #ffffff;
+    border: 1px solid #e3e7ed;
+    border-radius: 4px;
+    padding: 22px 24px 24px;
+    margin-bottom: 32px;
+}
+
+.titulo-seccion {
+    font-size: 17px;
+    font-weight: 600;
+    color: #00519e;
+    margin-bottom: 18px;
+}
+
+.rejilla-datos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 0 18px;
+}
+
+
+/* ----------Linea de estado-------------- */
+
+.linea-estado {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-top: 16px;
+    margin-top: 6px;
+    border-top: 1px solid #eef2f6;
+}
+
+.interruptor {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #1a1a1a;
+    cursor: pointer;
+}
+
+
+/* ----------Piscinas-------------- */
+
+.linea-titulo-piscinas {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.linea-titulo-piscinas .titulo-seccion {
+    margin-bottom: 0;
+}
+
+/* ----------Movil-------------- */
+
+@media (max-width: 480px) {
+
+    .tarjeta-hotel {
+        padding: 18px 16px 20px;
+    }
+
+    .linea-estado {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .linea-estado .boton-primario {
+        width: 100%;
+    }
+
+    .linea-titulo-piscinas {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .linea-titulo-piscinas .boton-primario {
+        width: 100%;
+    }
+
+}

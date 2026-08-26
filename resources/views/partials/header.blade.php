@@ -15,6 +15,7 @@
             <a class="enlace-menu" href="{{ route('panel') }}">Panel</a>
 
             @if (auth()->user()->tieneRol(\App\Models\Rol::MASTER, \App\Models\Rol::ADMINISTRADOR))
+                <a class="enlace-menu" href="{{ route('hoteles.index') }}">Hoteles</a>
                 <a class="enlace-menu" href="{{ route('usuarios.index') }}">Usuarios</a>
             @endif
         </nav>
