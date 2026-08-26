@@ -123,16 +123,19 @@ campo aunque venga en la petición.
 ```
 app/
   Http/Controllers/    AccesoController, PanelController, UsuarioController,
-                       HotelController, PiscinaController
+                       HotelController, PiscinaController,
+                       RondaProgramadaController
   Http/Middleware/     VerificarRol      (alias 'rol', se usa 'rol:master,administrador')
   Http/Requests/       IniciarSesion, StoreUsuario, UpdateUsuario,
-                       StoreHotel, UpdateHotel, StorePiscina, UpdatePiscina
-  Models/              Rol, Usuario, Hotel, Piscina, Producto,
+                       StoreHotel, UpdateHotel, StorePiscina, UpdatePiscina,
+                       StoreRondaProgramada, UpdateRondaProgramada
+  Models/              Rol, Usuario, Hotel, Piscina, RondaProgramada, Producto,
                        Jornada, Ronda, Medicion, Dosis, Tarea, TareaRealizada
 database/
   migrations/          sessions, cache, jobs, roles, usuarios,
-                       hoteles, piscinas, productos, tareas, jornadas,
-                       rondas, mediciones, dosis, tareas_realizadas
+                       hoteles, piscinas, rondas_programadas, productos,
+                       tareas, jornadas, rondas, mediciones, dosis,
+                       tareas_realizadas
   seeders/             RolSeeder, UsuarioMasterSeeder, ProductoSeeder,
                        TareaSeeder, HotelSeeder
 public/
@@ -244,11 +247,12 @@ Sale directo de los dos formatos en papel que llenan los empleados.
 
 | Tabla | Qué guarda |
 |---|---|
-| `hoteles` | El cliente, con sus dos horas de ronda configurables |
+| `hoteles` | El cliente |
+| `rondas_programadas` | La lista de rondas de cada hotel: nombre, hora y orden |
 | `piscinas` | Las piscinas de cada hotel (POOL VIP, BIG POOL, SPA HOT…), editables |
 | `productos` | Los 9 químicos con su unidad: gallon, und, cup, pack, lb |
 | `jornadas` | La hoja del día: fecha, lectura del metro de agua, quién firma |
-| `rondas` | Mañana y tarde, con la hora real y la observación |
+| `rondas` | La ronda que se hizo ese día, con la hora real y la observación |
 | `mediciones` | Las 7 lecturas por piscina y ronda, más el retrolavado |
 | `dosis` | Cuánto se aplicó de cada producto |
 | `tareas` | El listado de trabajo diario, estándar para toda la operación |
@@ -260,10 +264,16 @@ Las **7 lecturas** son las del formato: `cl_libre`, `cl_total`, `cl_combinado`, 
 `back Wash` del papel **no es un producto**: es una acción, y va como el booleano `retrolavado`
 en `mediciones`.
 
-### Las piscinas son datos, no columnas
+### Las piscinas y las rondas son datos, no columnas
 
 En el formato en papel, SPA HOT y SPA COLD están **escritas a mano** sobre las piscinas
 impresas. Por eso las piscinas se administran por hotel y nunca se escriben en el código.
+
+Lo mismo con las rondas: no son dos fijas de mañana y tarde. Cada hotel arma su propia lista
+en `rondas_programadas` y puede agregar las que necesite. Eso resuelve además la discrepancia
+entre los dos formatos en papel, donde uno dice 5:00 y el otro 6:00.
+
+Una ronda que ya se usó en alguna jornada no se elimina: se desactiva.
 
 ---
 

@@ -11,13 +11,15 @@
     text-decoration: underline;
 }
 
-/* ----------Horas del formulario-------------- */
+/* ----------Pastillas de ronda-------------- */
 
-.linea-horas {
-    display: flex;
-    gap: 14px;
-}
-
-.linea-horas .elemento-formulario {
-    flex: 1;
+.pastilla-ronda {
+    display: inline-block;
+    background-color: #eaf0f6;
+    color: #5f6062;
+    border-radius: 2px;
+    padding: 2px 9px;
+    margin: 2px 4px 2px 0;
+    font-size: 12px;
+    white-space: nowrap;
 }

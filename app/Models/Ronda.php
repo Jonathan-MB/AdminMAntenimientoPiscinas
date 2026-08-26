@@ -11,21 +11,23 @@ class Ronda extends Model
 {
     use HasFactory;
 
-    //  Los turnos se comparan por nombre, nunca por id
-    public const MANANA = 'manana';
-    public const TARDE  = 'tarde';
-
     protected $fillable = [
-        'turno',
         'hora',
         'observacion',
         'jornada_id',
+        'ronda_programada_id',
     ];
 
 
     public function jornada(): BelongsTo
     {
         return $this->belongsTo(Jornada::class, 'jornada_id');
+    }
+
+
+    public function rondaProgramada(): BelongsTo
+    {
+        return $this->belongsTo(RondaProgramada::class, 'ronda_programada_id');
     }
 
 

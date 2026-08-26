@@ -60,20 +60,6 @@
 }
 
 
-/* ----------Piscinas-------------- */
-
-.linea-titulo-piscinas {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 16px;
-}
-
-.linea-titulo-piscinas .titulo-seccion {
-    margin-bottom: 0;
-}
-
 /* ----------Movil-------------- */
 
 @media (max-width: 480px) {
@@ -91,12 +77,84 @@
         width: 100%;
     }
 
-    .linea-titulo-piscinas {
+}
+
+
+/* ----------Titulo de seccion con boton-------------- */
+
+.linea-titulo-seccion {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 10px;
+}
+
+.linea-titulo-seccion .titulo-seccion {
+    margin-bottom: 0;
+}
+
+.nota-suelta {
+    margin-top: 0;
+    margin-bottom: 14px;
+}
+
+
+/* ----------Campos editables dentro de la tabla-------------- */
+
+.campo-tabla {
+    width: 100%;
+    padding: 6px 9px;
+    font-size: 14px;
+    font-family: inherit;
+    color: #1a1a1a;
+    background-color: #ffffff;
+    border: 1px solid #c3ceda;
+    border-radius: 3px;
+    transition: 0.4s;
+}
+
+.campo-tabla:focus {
+    outline: none;
+    border-color: #00519e;
+    box-shadow: 0 0 0 3px #c9e9f8;
+}
+
+.campo-orden {
+    width: 72px;
+}
+
+.campo-hora {
+    width: 120px;
+}
+
+
+/* ----------Separacion entre secciones-------------- */
+
+.tabla-rondas {
+    margin-bottom: 0;
+}
+
+.caja-tabla + .linea-titulo-seccion {
+    margin-top: 34px;
+}
+
+
+/* ----------Movil-------------- */
+
+@media (max-width: 480px) {
+
+    .linea-titulo-seccion {
         flex-direction: column;
         align-items: stretch;
     }
 
-    .linea-titulo-piscinas .boton-primario {
+    .linea-titulo-seccion .boton-primario {
+        width: 100%;
+    }
+
+    .campo-orden,
+    .campo-hora {
         width: 100%;
     }
 

@@ -37,9 +37,11 @@
                         </td>
                         <td data-titulo="Contacto">{{ $hotel->contacto ?: '—' }}</td>
                         <td data-titulo="Rondas">
-                            {{ \Illuminate\Support\Str::substr($hotel->hora_ronda_manana, 0, 5) }}
-                            ·
-                            {{ \Illuminate\Support\Str::substr($hotel->hora_ronda_tarde, 0, 5) }}
+                            @forelse ($hotel->rondasProgramadas as $ronda)
+                                <span class="pastilla-ronda">{{ $ronda->nombre }} {{ \Illuminate\Support\Str::substr($ronda->hora, 0, 5) }}</span>
+                            @empty
+                                <span class="texto-vacio">Sin rondas</span>
+                            @endforelse
                         </td>
                         <td data-titulo="Piscinas">{{ $hotel->piscinas_count }}</td>
                         <td data-titulo="Estado">
@@ -48,7 +50,7 @@
                             </span>
                         </td>
                         <td data-titulo="Acciones" class="columna-acciones">
-                            <a class="boton-secundario boton-chico" href="{{ route('hoteles.show', $hotel) }}">Abrir</a>
+                            <a class="boton-secundario boton-chico" href="{{ route('hoteles.show', $hotel) }}">Editar</a>
                             <button class="boton-eliminar" type="button"
                                     data-id="{{ $hotel->id }}"
                                     data-nombre="{{ $hotel->nombre }}">Eliminar</button>
@@ -97,21 +99,7 @@
                            value="{{ old('direccion') }}" maxlength="150">
                 </div>
 
-                <div class="linea-horas">
-                    <div class="elemento-formulario">
-                        <label class="titulo-elemento" for="horaRondaManana">Ronda mañana</label>
-                        <input class="campo-formulario" type="time" id="horaRondaManana" name="horaRondaManana"
-                               value="{{ old('horaRondaManana', '06:00') }}" required>
-                    </div>
-
-                    <div class="elemento-formulario">
-                        <label class="titulo-elemento" for="horaRondaTarde">Ronda tarde</label>
-                        <input class="campo-formulario" type="time" id="horaRondaTarde" name="horaRondaTarde"
-                               value="{{ old('horaRondaTarde', '19:00') }}" required>
-                    </div>
-                </div>
-
-                <p class="nota-formulario">Las horas van en el horario de Aruba.</p>
+                <p class="nota-formulario">Las rondas se configuran después, al editar el hotel.</p>
 
                 <div class="linea-botones-popup">
                     <button class="boton-secundario" type="button" id="botonCerrarCrear">Cancelar</button>

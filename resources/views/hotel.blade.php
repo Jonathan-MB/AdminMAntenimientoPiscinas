@@ -41,18 +41,6 @@
                 <label class="titulo-elemento" for="direccion">Dirección</label>
                 <input class="campo-formulario" type="text" id="direccion" value="{{ $hotel->direccion }}" maxlength="150">
             </div>
-
-            <div class="elemento-formulario">
-                <label class="titulo-elemento" for="horaRondaManana">Ronda mañana</label>
-                <input class="campo-formulario" type="time" id="horaRondaManana"
-                       value="{{ \Illuminate\Support\Str::substr($hotel->hora_ronda_manana, 0, 5) }}">
-            </div>
-
-            <div class="elemento-formulario">
-                <label class="titulo-elemento" for="horaRondaTarde">Ronda tarde</label>
-                <input class="campo-formulario" type="time" id="horaRondaTarde"
-                       value="{{ \Illuminate\Support\Str::substr($hotel->hora_ronda_tarde, 0, 5) }}">
-            </div>
         </div>
 
         <div class="linea-estado">
@@ -63,15 +51,75 @@
 
             <button class="boton-primario" type="button" id="botonGuardarHotel">Guardar cambios</button>
         </div>
+    </div>
 
-        <p class="nota-formulario">Las horas de ronda van en el horario de Aruba.</p>
+    {{-- --------------------RONDAS------------------- --}}
+
+    <div class="linea-titulo-seccion">
+        <h2 class="titulo-seccion">Rondas del día</h2>
+        <button class="boton-primario" type="button" id="botonAbrirRonda">Agregar ronda</button>
+    </div>
+
+    <p class="nota-formulario nota-suelta">Cada hotel define sus propias rondas. Las horas van en el horario de Aruba.</p>
+
+    <div class="caja-tabla">
+        <table class="tabla-rondas">
+            <thead>
+                <tr>
+                    <th>Orden</th>
+                    <th>Ronda</th>
+                    <th>Hora</th>
+                    <th>Estado</th>
+                    <th class="columna-acciones">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse ($hotel->rondasProgramadas as $ronda)
+                    <tr data-ronda="{{ $ronda->id }}">
+                        <td data-titulo="Orden">
+                            <input class="campo-tabla campo-orden" type="number" value="{{ $ronda->orden }}" min="0" max="999">
+                        </td>
+                        <td data-titulo="Ronda">
+                            <input class="campo-tabla campo-nombre" type="text" value="{{ $ronda->nombre }}" maxlength="45">
+                        </td>
+                        <td data-titulo="Hora">
+                            <input class="campo-tabla campo-hora" type="time"
+                                   value="{{ \Illuminate\Support\Str::substr($ronda->hora, 0, 5) }}">
+                        </td>
+                        <td data-titulo="Estado">
+                            <span class="etiqueta-estado {{ $ronda->activa ? 'etiqueta-activo' : 'etiqueta-inactivo' }}">
+                                {{ $ronda->activa ? 'Activa' : 'Inactiva' }}
+                            </span>
+                        </td>
+                        <td data-titulo="Acciones" class="columna-acciones">
+                            <button class="boton-secundario boton-chico boton-guardar-ronda" type="button"
+                                    data-id="{{ $ronda->id }}">Guardar</button>
+
+                            <button class="boton-secundario boton-chico boton-alternar-ronda" type="button"
+                                    data-id="{{ $ronda->id }}"
+                                    data-activa="{{ $ronda->activa ? 1 : 0 }}">
+                                {{ $ronda->activa ? 'Desactivar' : 'Activar' }}
+                            </button>
+
+                            <button class="boton-eliminar boton-eliminar-ronda" type="button"
+                                    data-id="{{ $ronda->id }}"
+                                    data-nombre="{{ $ronda->nombre }}">Eliminar</button>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="5" class="texto-vacio">Este hotel aún no tiene rondas configuradas.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
     </div>
 
     {{-- --------------------PISCINAS------------------- --}}
 
-    <div class="linea-titulo-piscinas">
+    <div class="linea-titulo-seccion">
         <h2 class="titulo-seccion">Piscinas</h2>
-        <button class="boton-primario" type="button" id="botonAbrirCrear">Agregar piscina</button>
+        <button class="boton-primario" type="button" id="botonAbrirPiscina">Agregar piscina</button>
     </div>
 
     <div class="caja-tabla">
@@ -95,13 +143,13 @@
                             </span>
                         </td>
                         <td data-titulo="Acciones" class="columna-acciones">
-                            <button class="boton-secundario boton-chico boton-alternar" type="button"
+                            <button class="boton-secundario boton-chico boton-alternar-piscina" type="button"
                                     data-id="{{ $piscina->id }}"
                                     data-activa="{{ $piscina->activa ? 1 : 0 }}">
                                 {{ $piscina->activa ? 'Desactivar' : 'Activar' }}
                             </button>
 
-                            <button class="boton-eliminar" type="button"
+                            <button class="boton-eliminar boton-eliminar-piscina" type="button"
                                     data-id="{{ $piscina->id }}"
                                     data-nombre="{{ $piscina->nombre }}">Eliminar</button>
                         </td>
@@ -115,9 +163,46 @@
         </table>
     </div>
 
-    {{-- --------------------POP UP CREAR PISCINA------------------- --}}
+    {{-- --------------------POP UP AGREGAR RONDA------------------- --}}
 
-    <div class="fondo-popup" id="fondoPopupCrear">
+    <div class="fondo-popup" id="fondoPopupRonda">
+        <div class="popup">
+
+            <h2 class="titulo-popup">Agregar ronda</h2>
+
+            <form method="POST" action="{{ route('rondas.store', $hotel) }}">
+                @csrf
+
+                <div class="elemento-formulario">
+                    <label class="titulo-elemento" for="nombreRonda">Nombre de la ronda</label>
+                    <input class="campo-formulario" type="text" id="nombreRonda" name="nombre"
+                           value="{{ old('nombre') }}" maxlength="45" placeholder="Mediodía" required>
+                </div>
+
+                <div class="elemento-formulario">
+                    <label class="titulo-elemento" for="horaRonda">Hora</label>
+                    <input class="campo-formulario" type="time" id="horaRonda" name="hora"
+                           value="{{ old('hora') }}" required>
+                </div>
+
+                <div class="elemento-formulario">
+                    <label class="titulo-elemento" for="ordenRonda">Orden</label>
+                    <input class="campo-formulario" type="number" id="ordenRonda" name="orden"
+                           value="{{ old('orden') }}" min="0" max="999" placeholder="Al final">
+                </div>
+
+                <div class="linea-botones-popup">
+                    <button class="boton-secundario" type="button" id="botonCerrarRonda">Cancelar</button>
+                    <button class="boton-primario" type="submit">Guardar</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    {{-- --------------------POP UP AGREGAR PISCINA------------------- --}}
+
+    <div class="fondo-popup" id="fondoPopupPiscina">
         <div class="popup">
 
             <h2 class="titulo-popup">Agregar piscina</h2>
@@ -132,13 +217,13 @@
                 </div>
 
                 <div class="elemento-formulario">
-                    <label class="titulo-elemento" for="orden">Orden en el formato</label>
-                    <input class="campo-formulario" type="number" id="orden" name="orden"
+                    <label class="titulo-elemento" for="ordenPiscina">Orden en el formato</label>
+                    <input class="campo-formulario" type="number" id="ordenPiscina" name="orden"
                            value="{{ old('orden') }}" min="0" max="999" placeholder="Al final">
                 </div>
 
                 <div class="linea-botones-popup">
-                    <button class="boton-secundario" type="button" id="botonCerrarCrear">Cancelar</button>
+                    <button class="boton-secundario" type="button" id="botonCerrarPiscina">Cancelar</button>
                     <button class="boton-primario" type="submit">Guardar</button>
                 </div>
             </form>
@@ -152,6 +237,7 @@
     const hotelId = {{ $hotel->id }};
     const rutaHoteles = '/hoteles';
     const rutaPiscinas = '/piscinas';
+    const rutaRondas = '/rondas';
 </script>
 
 <script src="{{ asset('js/hotel.js') }}"></script>

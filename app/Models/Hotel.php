@@ -18,8 +18,6 @@ class Hotel extends Model
         'direccion',
         'telefono',
         'contacto',
-        'hora_ronda_manana',
-        'hora_ronda_tarde',
         'activo',
     ];
 
@@ -31,6 +29,12 @@ class Hotel extends Model
     public function piscinas(): HasMany
     {
         return $this->hasMany(Piscina::class, 'hotel_id');
+    }
+
+
+    public function rondasProgramadas(): HasMany
+    {
+        return $this->hasMany(RondaProgramada::class, 'hotel_id');
     }
 
 

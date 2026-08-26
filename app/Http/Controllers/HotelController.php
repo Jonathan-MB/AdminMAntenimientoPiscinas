@@ -11,7 +11,12 @@ class HotelController extends Controller
 {
     public function index(Request $request)
     {
-        $hoteles = Hotel::withCount('piscinas')->orderBy('nombre')->get();
+        $hoteles = Hotel::withCount('piscinas')
+            ->with(['rondasProgramadas' => function ($consulta) {
+                $consulta->orderBy('orden')->orderBy('nombre');
+            }])
+            ->orderBy('nombre')
+            ->get();
 
         return view('hoteles', compact('hoteles'));
     }
@@ -29,9 +34,11 @@ class HotelController extends Controller
 
     public function show(Request $request, Hotel $hotel)
     {
-        $hotel->load(['piscinas' => function ($consulta) {
+        $porOrden = function ($consulta) {
             $consulta->orderBy('orden')->orderBy('nombre');
-        }]);
+        };
+
+        $hotel->load(['piscinas' => $porOrden, 'rondasProgramadas' => $porOrden]);
 
         return view('hotel', compact('hotel'));
     }
@@ -47,14 +54,6 @@ class HotelController extends Controller
             return response()->json([
                 'message' => 'Sin datos'
             ], 422);
-        }
-
-        //  El formulario manda 05:00 y la base guarda 05:00:00. Sin igualar el
-        //  formato, isDirty() siempre da verdadero y guarda sin que haya cambios.
-        foreach (['hora_ronda_manana', 'hora_ronda_tarde'] as $campo) {
-            if (isset($data[$campo]) && strlen($data[$campo]) === 5) {
-                $data[$campo] .= ':00';
-            }
         }
 
         // Cargar datos sin guardar

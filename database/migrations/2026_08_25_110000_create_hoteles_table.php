@@ -14,11 +14,6 @@ return new class extends Migration
             $table->string('direccion',150)->nullable();
             $table->string('telefono',45)->nullable();
             $table->string('contacto',120)->nullable();
-
-            //  Cada hotel define a que hora se hacen sus dos rondas
-            $table->time('hora_ronda_manana')->default('06:00:00');
-            $table->time('hora_ronda_tarde')->default('19:00:00');
-
             $table->boolean('activo')->default(true);
 
             $table->timestamps();

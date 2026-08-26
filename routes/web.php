@@ -4,6 +4,7 @@ use App\Http\Controllers\AccesoController;
 use App\Http\Controllers\HotelController;
 use App\Http\Controllers\PanelController;
 use App\Http\Controllers\PiscinaController;
+use App\Http\Controllers\RondaProgramadaController;
 use App\Http\Controllers\UsuarioController;
 use Illuminate\Support\Facades\Route;
 
@@ -35,6 +36,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/hoteles/{hotel}/piscinas', [PiscinaController::class, 'store'])->name('piscinas.store');
         Route::patch('/piscinas/{piscina}', [PiscinaController::class, 'update'])->name('piscinas.update');
         Route::delete('/piscinas/{piscina}', [PiscinaController::class, 'destroy'])->name('piscinas.destroy');
+
+        Route::post('/hoteles/{hotel}/rondas', [RondaProgramadaController::class, 'store'])->name('rondas.store');
+        Route::patch('/rondas/{rondaProgramada}', [RondaProgramadaController::class, 'update'])->name('rondas.update');
+        Route::delete('/rondas/{rondaProgramada}', [RondaProgramadaController::class, 'destroy'])->name('rondas.destroy');
 
     });
 
