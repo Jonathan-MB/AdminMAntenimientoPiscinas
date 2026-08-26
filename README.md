@@ -16,8 +16,9 @@ los hoteles ven esta pantalla.
 | Acceso (login / logout) | Funcionando |
 | Roles y permisos | Funcionando |
 | Administración de usuarios | Funcionando |
-| Hoteles y piscinas | Pendiente |
-| Registro de mantenimientos | Pendiente |
+| Modelo de datos de la operación | Funcionando |
+| Hoteles y piscinas (pantallas) | Pendiente |
+| Registro de mantenimientos (pantallas) | Pendiente |
 | Reportes al hotel | Pendiente |
 
 ---
@@ -55,7 +56,8 @@ Ajusta las credenciales en `.env` y siembra:
 php artisan migrate --seed
 ```
 
-El seeder crea los cuatro roles y el usuario **master**.
+Los seeders crean los cuatro roles, el usuario **master**, los 9 productos químicos, el
+listado de trabajo diario y el hotel de ejemplo con sus piscinas.
 
 ### La contraseña del master
 
@@ -109,10 +111,14 @@ app/
   Http/Controllers/    AccesoController, PanelController, UsuarioController
   Http/Middleware/     VerificarRol      (alias 'rol', se usa 'rol:master,administrador')
   Http/Requests/       IniciarSesion, StoreUsuario, UpdateUsuario
-  Models/              Rol, Usuario
+  Models/              Rol, Usuario, Hotel, Piscina, Producto,
+                       Jornada, Ronda, Medicion, Dosis, Tarea, TareaRealizada
 database/
-  migrations/          sessions, cache, jobs, roles, usuarios
-  seeders/             RolSeeder, UsuarioMasterSeeder
+  migrations/          sessions, cache, jobs, roles, usuarios,
+                       hoteles, piscinas, productos, tareas, jornadas,
+                       rondas, mediciones, dosis, tareas_realizadas
+  seeders/             RolSeeder, UsuarioMasterSeeder, ProductoSeeder,
+                       TareaSeeder, HotelSeeder
 public/
   css/                 general.css + una hoja por vista
   js/                  un archivo por vista
@@ -199,6 +205,49 @@ Cuidados:
 - **Todos los nombres de archivo en `public/` van en minúscula.** Windows perdona las
   mayúsculas; Linux no.
 - Las migraciones se corren en el servidor.
+
+---
+
+## Zona horaria
+
+La operación es en **Aruba**. Toda la aplicación corre en `America/Aruba` (**AST, UTC−4, sin
+horario de verano**), configurado en `config/app.php` y en `APP_TIMEZONE`.
+
+En la máquina de desarrollo conviven tres relojes distintos: el de PHP, el de MySQL y el de
+Laravel. **Usa siempre `now()` de Laravel/Carbon.** Nunca `NOW()` ni `CURRENT_TIMESTAMP` de
+MySQL, ni `date()` de PHP a secas: esos devuelven la hora del servidor, no la de Aruba, y una
+ronda de las 19:00 puede terminar registrada en el día equivocado.
+
+Al desplegar, confirma que `APP_TIMEZONE` esté en el `.env` del servidor.
+
+---
+
+## Modelo de datos de la operación
+
+Sale directo de los dos formatos en papel que llenan los empleados.
+
+| Tabla | Qué guarda |
+|---|---|
+| `hoteles` | El cliente, con sus dos horas de ronda configurables |
+| `piscinas` | Las piscinas de cada hotel (POOL VIP, BIG POOL, SPA HOT…), editables |
+| `productos` | Los 9 químicos con su unidad: gallon, und, cup, pack, lb |
+| `jornadas` | La hoja del día: fecha, lectura del metro de agua, quién firma |
+| `rondas` | Mañana y tarde, con la hora real y la observación |
+| `mediciones` | Las 7 lecturas por piscina y ronda, más el retrolavado |
+| `dosis` | Cuánto se aplicó de cada producto |
+| `tareas` | El listado de trabajo diario, estándar para toda la operación |
+| `tareas_realizadas` | Qué se marcó ese día |
+
+Las **7 lecturas** son las del formato: `cl_libre`, `cl_total`, `cl_combinado`, `ph`,
+`alcalinidad`, `dureza_calcio` y `acido_cianurico`.
+
+`back Wash` del papel **no es un producto**: es una acción, y va como el booleano `retrolavado`
+en `mediciones`.
+
+### Las piscinas son datos, no columnas
+
+En el formato en papel, SPA HOT y SPA COLD están **escritas a mano** sobre las piscinas
+impresas. Por eso las piscinas se administran por hotel y nunca se escriben en el código.
 
 ---
 

@@ -19,6 +19,7 @@ class Usuario extends Authenticatable
         'password',
         'activo',
         'rol_id',
+        'hotel_id',
     ];
 
     protected $hidden = [
@@ -35,6 +36,13 @@ class Usuario extends Authenticatable
     public function rol(): BelongsTo
     {
         return $this->belongsTo(Rol::class, 'rol_id');
+    }
+
+
+    //  Solo lo usan los usuarios con rol hotel
+    public function hotel(): BelongsTo
+    {
+        return $this->belongsTo(Hotel::class, 'hotel_id');
     }
 
 
