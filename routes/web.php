@@ -3,8 +3,10 @@
 use App\Http\Controllers\AccesoController;
 use App\Http\Controllers\DiarioController;
 use App\Http\Controllers\HotelController;
+use App\Http\Controllers\MedicionController;
 use App\Http\Controllers\PanelController;
 use App\Http\Controllers\PiscinaController;
+use App\Http\Controllers\RegistroController;
 use App\Http\Controllers\RondaProgramadaController;
 use App\Http\Controllers\UsuarioController;
 use Illuminate\Support\Facades\Route;
@@ -23,6 +25,21 @@ Route::middleware('auth')->group(function () {
     //  Diario del hotel: lo ve el propio hotel, y tambien el personal de AQUALIVE
     Route::get('/diario/{hotel}', [DiarioController::class, 'index'])->name('diario.index');
     Route::get('/diario/{hotel}/dia/{fecha}', [DiarioController::class, 'dia'])->name('diario.dia');
+
+    //  Registro de la jornada: colaborador, administrador y master
+    Route::middleware('rol:master,administrador,colaborador')->group(function () {
+
+        Route::get('/registro', [RegistroController::class, 'index'])->name('registro.index');
+        Route::post('/registro', [RegistroController::class, 'store'])->name('registro.store');
+        Route::get('/jornada/{jornada}', [RegistroController::class, 'show'])->name('registro.jornada');
+        Route::patch('/jornada/{jornada}', [RegistroController::class, 'update'])->name('registro.jornada.update');
+        Route::patch('/jornada/{jornada}/tarea/{tarea}', [RegistroController::class, 'marcarTarea'])->name('registro.tarea');
+
+        Route::get('/jornada/{jornada}/medicion/{rondaProgramada}/{piscina}', [MedicionController::class, 'edit'])->name('registro.medicion');
+        Route::post('/jornada/{jornada}/medicion/{rondaProgramada}/{piscina}', [MedicionController::class, 'store'])->name('registro.medicion.store');
+
+    });
+
 
     //  Administracion: solo master y administrador
     Route::middleware('rol:master,administrador')->group(function () {

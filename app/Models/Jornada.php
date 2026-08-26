@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -47,5 +48,28 @@ class Jornada extends Model
     public function tareasRealizadas(): HasMany
     {
         return $this->hasMany(TareaRealizada::class, 'jornada_id');
+    }
+
+
+    //  La fecha se compara contra hoy en hora de Aruba, no la del servidor
+    public function esDeHoy(): bool
+    {
+        return $this->fecha->isSameDay(Carbon::today());
+    }
+
+
+    //  El colaborador solo corrige lo del mismo dia. Pasada la medianoche,
+    //  la correccion la hace un administrador.
+    public function puedeEditarla(Usuario $usuario): bool
+    {
+        if ($usuario->esMaster() || $usuario->esAdministrador()) {
+            return true;
+        }
+
+        if (! $usuario->tieneRol(Rol::COLABORADOR)) {
+            return false;
+        }
+
+        return $this->esDeHoy();
     }
 }

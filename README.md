@@ -19,7 +19,7 @@ los hoteles ven esta pantalla.
 | Modelo de datos de la operación | Funcionando |
 | Hoteles y piscinas (pantallas) | Funcionando |
 | Diario del hotel con calendario | Funcionando |
-| Registro de mantenimientos (pantallas) | Pendiente |
+| Registro de la jornada (colaborador) | Funcionando |
 | Rangos de referencia de los parámetros | Pendiente |
 | Reportes al hotel | Pendiente |
 
@@ -126,11 +126,13 @@ campo aunque venga en la petición.
 app/
   Http/Controllers/    AccesoController, PanelController, UsuarioController,
                        HotelController, PiscinaController,
-                       RondaProgramadaController, DiarioController
+                       RondaProgramadaController, DiarioController,
+                       RegistroController, MedicionController
   Http/Middleware/     VerificarRol      (alias 'rol', se usa 'rol:master,administrador')
   Http/Requests/       IniciarSesion, StoreUsuario, UpdateUsuario,
                        StoreHotel, UpdateHotel, StorePiscina, UpdatePiscina,
-                       StoreRondaProgramada, UpdateRondaProgramada
+                       StoreRondaProgramada, UpdateRondaProgramada,
+                       AbrirJornada, UpdateJornada, StoreMedicion
   Models/              Rol, Usuario, Hotel, Piscina, RondaProgramada, Producto,
                        Jornada, Ronda, Medicion, Dosis, Tarea, TareaRealizada
 database/
@@ -147,7 +149,8 @@ public/
   img/                 logo, isotipo y derivados
 resources/views/
   partials/            head, header, header-limpio, mensaje, footer
-  login, panel, usuarios, hoteles, hotel, diario
+  login, panel, usuarios, hoteles, hotel, diario,
+  registro, jornada, medicion
 Libro de marca/        Manual de marca, logos y paleta (copia para uso externo)
 docs/                  Convenciones de código
 ```
@@ -227,6 +230,37 @@ Cuidados:
 - **Todos los nombres de archivo en `public/` van en minúscula.** Windows perdona las
   mayúsculas; Linux no.
 - Las migraciones se corren en el servidor.
+
+---
+
+## Registro de la jornada
+
+Es la pantalla que reemplaza el papel. La usan `colaborador`, `administrador` y `master`.
+
+Tres pasos, pensados para un teléfono a las seis de la mañana:
+
+1. **`/registro`** — elegir hotel y fecha. Abre la jornada de ese día o retoma la que ya
+   estaba. Debajo quedan las jornadas recientes para entrar de un clic.
+2. **`/jornada/{id}`** — el centro del día: la lectura del metro de agua, el listado de
+   trabajo con sus casillas, y cada ronda con sus piscinas y un contador de avance
+   (`3 de 5`). Las piscinas ya registradas se marcan en verde con un visto.
+3. **`/jornada/{id}/medicion/{ronda}/{piscina}`** — una pantalla por piscina: las 7 lecturas,
+   los 9 químicos con su unidad, el retrolavado y la observación. El botón principal es
+   **«Guardar y seguir con {la siguiente piscina}»**, para no volver al menú entre piscina y
+   piscina.
+
+Dejar un campo en blanco significa **no medido**, que no es lo mismo que cero. Un químico en
+blanco significa que no se aplicó.
+
+La ronda se crea sola la primera vez que se guarda una piscina de esa ronda.
+
+### La ventana de corrección
+
+El `colaborador` solo puede editar la jornada **del día en curso**. Pasada la medianoche en
+hora de Aruba, la pantalla queda en solo lectura con un aviso, y la corrección la hace un
+`administrador` o el `master`, que no tienen ese límite.
+
+El bloqueo no es solo visual: los campos se deshabilitan **y** el servidor responde `403`.
 
 ---
 

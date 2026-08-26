@@ -1,0 +1,87 @@
+/* ----------Abrir jornada-------------- */
+
+.tarjeta-abrir {
+    background-color: #ffffff;
+    border: 1px solid #e3e7ed;
+    border-top: 4px solid #00519e;
+    border-radius: 4px;
+    padding: 24px 26px 26px;
+    max-width: 460px;
+}
+
+.titulo-seccion {
+    font-size: 17px;
+    font-weight: 600;
+    color: #00519e;
+    margin-bottom: 18px;
+}
+
+.titulo-recientes {
+    margin-top: 34px;
+}
+
+.campo-grande {
+    font-size: 16px;
+    padding: 12px 12px;
+}
+
+
+/* ----------Jornadas recientes-------------- */
+
+.lista-recientes {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 10px;
+}
+
+.tarjeta-reciente {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #ffffff;
+    border: 1px solid #e3e7ed;
+    border-radius: 4px;
+    padding: 14px 16px;
+    text-decoration: none;
+    transition: 0.4s;
+}
+
+.tarjeta-reciente:hover {
+    border-color: #00519e;
+}
+
+.fecha-reciente {
+    font-size: 15px;
+    font-weight: 600;
+    color: #00519e;
+    white-space: nowrap;
+}
+
+.hotel-reciente {
+    font-size: 13px;
+    color: #5f6062;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.marca-hoy {
+    margin-left: auto;
+    font-size: 11px;
+    font-weight: 600;
+    color: #00519e;
+    background-color: #c9e9f8;
+    border-radius: 2px;
+    padding: 3px 8px;
+}
+
+
+/* ----------Movil-------------- */
+
+@media (max-width: 480px) {
+
+    .tarjeta-abrir {
+        padding: 18px 16px 20px;
+    }
+
+}

@@ -14,6 +14,10 @@
         <nav class="barra-superior-menu">
             <a class="enlace-menu" href="{{ route('panel') }}">Panel</a>
 
+            @if (auth()->user()->tieneRol(\App\Models\Rol::MASTER, \App\Models\Rol::ADMINISTRADOR, \App\Models\Rol::COLABORADOR))
+                <a class="enlace-menu" href="{{ route('registro.index') }}">Registro</a>
+            @endif
+
             @if (auth()->user()->tieneRol(\App\Models\Rol::MASTER, \App\Models\Rol::ADMINISTRADOR))
                 <a class="enlace-menu" href="{{ route('hoteles.index') }}">Hoteles</a>
                 <a class="enlace-menu" href="{{ route('usuarios.index') }}">Usuarios</a>

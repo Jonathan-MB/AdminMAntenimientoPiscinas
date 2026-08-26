@@ -24,7 +24,7 @@
     @endif
 
     @if ($usuario->tieneRol(\App\Models\Rol::COLABORADOR))
-        <p class="texto-vacio">Aquí registrarás los mantenimientos cuando el módulo esté listo.</p>
+        <a class="boton-primario" href="{{ route('registro.index') }}">Registrar la jornada de hoy</a>
     @endif
 </div>
 
