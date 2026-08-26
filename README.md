@@ -127,7 +127,8 @@ app/
   Http/Controllers/    AccesoController, PanelController, UsuarioController,
                        HotelController, PiscinaController,
                        RondaProgramadaController, DiarioController,
-                       RegistroController, MedicionController
+                       RegistroController, MedicionController,
+                       SuplantacionController
   Http/Middleware/     VerificarRol      (alias 'rol', se usa 'rol:master,administrador')
   Http/Requests/       IniciarSesion, StoreUsuario, UpdateUsuario,
                        StoreHotel, UpdateHotel, StorePiscina, UpdatePiscina,
@@ -230,6 +231,38 @@ Cuidados:
 - **Todos los nombres de archivo en `public/` van en minúscula.** Windows perdona las
   mayúsculas; Linux no.
 - Las migraciones se corren en el servidor.
+
+---
+
+## Ver como otro usuario
+
+El `master` puede entrar a la aplicación como cualquier otro usuario, para ver exactamente lo
+que ese usuario ve. Sirve para soporte: cuando un hotel reporta un problema, se mira su
+pantalla sin pedirle la contraseña.
+
+En **Usuarios**, cada fila trae el botón **Ver como**. Mientras dura, arriba queda una franja
+naranja permanente con el nombre suplantado y el botón **Volver a mi cuenta**.
+
+### Las reglas
+
+- **Solo el `master`** puede iniciarla. Un `administrador` no ve el botón, y un POST directo a
+  la ruta le responde `403`.
+- **No se puede encadenar**: estando dentro de una suplantación no se puede empezar otra, o se
+  perdería el rastro del master original.
+- **No se puede suplantar a un usuario inactivo**, ni a uno mismo.
+- El id del master real se guarda en la **sesión**. Volver no exige ser master: exige tener esa
+  marca. Un usuario cualquiera que llame a `/volver-a-mi-cuenta` sin la marca simplemente
+  regresa a su panel, **no escala privilegios**.
+- Si la cuenta original quedó inactiva o dejó de ser master mientras tanto, se cierra la sesión
+  por completo en vez de devolver a una cuenta que ya no debería tener esos permisos.
+
+### Cuentas de prueba
+
+Para revisar las vistas de cada rol durante el desarrollo hay cuentas con dominio `.test`:
+`admin1`, `colab1` y `hotelaruba`, todas con la misma contraseña de pruebas.
+
+**Bórralas antes de producción.** No son rutas trampa ni puertas traseras: son usuarios
+normales, sujetos a las mismas reglas que cualquier otro.
 
 ---
 

@@ -2,6 +2,21 @@
 
 <body>
 
+@if (session()->has(\App\Http\Controllers\SuplantacionController::LLAVE))
+    <div class="franja-suplantacion">
+        <span>
+            Estás viendo la aplicación como
+            <strong>{{ auth()->user()->nombre_usuario }}</strong>
+            ({{ auth()->user()->rol->nombre }})
+        </span>
+
+        <form method="POST" action="{{ route('suplantacion.terminar') }}">
+            @csrf
+            <button class="boton-volver-cuenta" type="submit">Volver a mi cuenta</button>
+        </form>
+    </div>
+@endif
+
 <header class="barra-superior">
 
     <a class="barra-superior-marca" href="{{ route('panel') }}">

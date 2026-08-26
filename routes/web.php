@@ -8,6 +8,7 @@ use App\Http\Controllers\PanelController;
 use App\Http\Controllers\PiscinaController;
 use App\Http\Controllers\RegistroController;
 use App\Http\Controllers\RondaProgramadaController;
+use App\Http\Controllers\SuplantacionController;
 use App\Http\Controllers\UsuarioController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +22,14 @@ Route::post('/salir', [AccesoController::class, 'cerrar'])->name('acceso.cerrar'
 Route::middleware('auth')->group(function () {
 
     Route::get('/panel', [PanelController::class, 'index'])->name('panel');
+
+    //  Volver a la propia cuenta: no exige ser master, exige la marca en sesion
+    Route::post('/volver-a-mi-cuenta', [SuplantacionController::class, 'terminar'])->name('suplantacion.terminar');
+
+    //  Ver como otro usuario: solo el master
+    Route::post('/ver-como/{usuario}', [SuplantacionController::class, 'iniciar'])
+        ->middleware('rol:master')
+        ->name('suplantacion.iniciar');
 
     //  Diario del hotel: lo ve el propio hotel, y tambien el personal de AQUALIVE
     Route::get('/diario/{hotel}', [DiarioController::class, 'index'])->name('diario.index');

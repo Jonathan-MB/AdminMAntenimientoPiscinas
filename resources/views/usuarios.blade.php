@@ -38,6 +38,13 @@
                         <td data-titulo="Hotel">{{ $usuario->hotel?->nombre ?: '—' }}</td>
                         <td data-titulo="Estado">{{ $usuario->activo ? 'Activo' : 'Inactivo' }}</td>
                         <td data-titulo="Acciones" class="columna-acciones">
+                            @if (auth()->user()->esMaster() && $usuario->id !== auth()->id() && $usuario->activo)
+                                <form class="formulario-ver-como" method="POST" action="{{ route('suplantacion.iniciar', $usuario) }}">
+                                    @csrf
+                                    <button class="boton-secundario boton-chico" type="submit">Ver como</button>
+                                </form>
+                            @endif
+
                             @if ($usuario->rol->nombre === \App\Models\Rol::MASTER)
                                 <span class="nota-bloqueado">No se puede eliminar</span>
                             @elseif ($usuario->id === auth()->id())
