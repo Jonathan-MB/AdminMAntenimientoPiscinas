@@ -1,0 +1,36 @@
+/* ----------Tarjeta de sesion-------------- */
+
+.tarjeta-sesion {
+    background-color: #ffffff;
+    border: 1px solid #e3e7ed;
+    border-radius: 4px;
+    padding: 20px 22px;
+    margin-bottom: 24px;
+    max-width: 460px;
+}
+
+.dato-sesion {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    font-size: 15px;
+    color: #1a1a1a;
+    padding: 9px 0;
+    border-bottom: 1px solid #eef2f6;
+}
+
+.dato-sesion:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+}
+
+
+/* ----------Movil-------------- */
+
+@media (max-width: 480px) {
+
+    .tarjeta-sesion {
+        padding: 16px 16px;
+    }
+
+}

@@ -1,0 +1,493 @@
+/* ==========================================================
+   AQUALIVE - Pool Technology
+   Hoja base. Paleta tomada del logo oficial (perfil FOGRA27).
+
+   Azul corporativo   #00519e   C100 M70 Y0 K0   (AQUA)
+   Negro              #000000   K100             (ALIVE)
+   Gris corporativo   #5f6062   K77              (descriptor)
+   Azul agua          #91d4f2   C46 M0 Y0 K0     (icono)
+   Azul agua claro    #c9e9f8   C25 M0 Y0 K0     (icono)
+   Indigo profundo    #332b67   C92 M97 Y25 K10  (gotas)
+   ========================================================== */
+
+
+/* ----------Base-------------- */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    background-color: #f5f7fa;
+    color: #1a1a1a;
+}
+
+
+/* ----------Barra superior-------------- */
+
+.barra-superior {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 0 30px;
+    height: 64px;
+    background-color: #ffffff;
+    border-bottom: 3px solid #00519e;
+}
+
+.barra-superior-marca {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    letter-spacing: 0.5px;
+    color: #00519e;
+    text-decoration: none;
+    transition: 0.4s;
+}
+
+.barra-superior-marca:hover {
+    color: #003a78;
+}
+
+.barra-superior-logo {
+    height: 38px;
+    width: auto;
+}
+
+.barra-superior-descriptor {
+    font-size: 12px;
+    font-weight: normal;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #5f6062;
+}
+
+
+/* ----------Contenedor general-------------- */
+
+.contenedor-general {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 30px 25px;
+}
+
+.vista-titulo {
+    font-size: 26px;
+    font-weight: 600;
+    color: #00519e;
+    padding-bottom: 12px;
+    margin-bottom: 25px;
+    border-bottom: 1px solid #e3e7ed;
+}
+
+.texto-vacio {
+    font-size: 15px;
+    color: #5f6062;
+}
+
+
+/* ----------Mensajes-------------- */
+
+.mensaje {
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    border-radius: 4px;
+    border-left: 4px solid;
+    font-size: 14px;
+    background-color: #ffffff;
+}
+
+.mensaje-exito {
+    border-left-color: #1b7a4b;
+    color: #1b7a4b;
+}
+
+.mensaje-alerta {
+    border-left-color: #c07a00;
+    color: #c07a00;
+}
+
+.mensaje-error {
+    border-left-color: #b3261e;
+    color: #b3261e;
+}
+
+
+/* ----------Tablet-------------- */
+
+@media (max-width: 768px) {
+
+    .barra-superior {
+        padding: 0 18px;
+        height: 56px;
+    }
+
+    .barra-superior-marca {
+        font-size: 18px;
+    }
+
+    .barra-superior-logo {
+        height: 32px;
+    }
+
+    .barra-superior-descriptor {
+        display: none;
+    }
+
+    .contenedor-general {
+        padding: 22px 16px;
+    }
+
+    .vista-titulo {
+        font-size: 22px;
+    }
+
+}
+
+
+/* ----------Movil-------------- */
+
+@media (max-width: 480px) {
+
+    .barra-superior {
+        padding: 0 14px;
+        height: 52px;
+    }
+
+    .barra-superior-marca {
+        font-size: 16px;
+    }
+
+    .barra-superior-logo {
+        height: 28px;
+    }
+
+    .contenedor-general {
+        padding: 18px 12px;
+    }
+
+    .vista-titulo {
+        font-size: 19px;
+    }
+
+    .mensaje {
+        font-size: 13px;
+    }
+
+}
+
+
+/* ----------Menu de la barra-------------- */
+
+.barra-superior-menu {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    margin-left: auto;
+}
+
+.enlace-menu {
+    font-size: 14px;
+    font-weight: 600;
+    color: #5f6062;
+    text-decoration: none;
+    padding: 4px 0;
+    border-bottom: 2px solid transparent;
+    transition: 0.4s;
+}
+
+.enlace-menu:hover {
+    color: #00519e;
+    border-bottom-color: #00519e;
+}
+
+.barra-superior-sesion {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-left: 22px;
+    border-left: 1px solid #e3e7ed;
+}
+
+.sesion-usuario {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.boton-salir {
+    background-color: transparent;
+    color: #5f6062;
+    border: 1px solid #c3ceda;
+    border-radius: 3px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: 0.4s;
+}
+
+.boton-salir:hover {
+    color: #b3261e;
+    border-color: #b3261e;
+}
+
+
+/* ----------Botones-------------- */
+
+.boton-primario {
+    display: inline-block;
+    background-color: #00519e;
+    color: #ffffff;
+    border: 1px solid #00519e;
+    border-radius: 3px;
+    padding: 10px 22px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.4s;
+}
+
+.boton-primario:hover {
+    background-color: #003a78;
+    border-color: #003a78;
+}
+
+.boton-secundario {
+    display: inline-block;
+    background-color: #ffffff;
+    color: #00519e;
+    border: 1px solid #c3ceda;
+    border-radius: 3px;
+    padding: 10px 22px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    transition: 0.4s;
+}
+
+.boton-secundario:hover {
+    border-color: #00519e;
+}
+
+.boton-ancho {
+    width: 100%;
+}
+
+
+/* ----------Formularios-------------- */
+
+.elemento-formulario {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 18px;
+}
+
+.titulo-elemento {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #5f6062;
+}
+
+.campo-formulario {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 15px;
+    font-family: inherit;
+    color: #1a1a1a;
+    background-color: #ffffff;
+    border: 1px solid #c3ceda;
+    border-radius: 3px;
+    transition: 0.4s;
+}
+
+.campo-formulario:focus {
+    outline: none;
+    border-color: #00519e;
+    box-shadow: 0 0 0 3px #c9e9f8;
+}
+
+
+/* ----------Tablas-------------- */
+
+.caja-tabla {
+    width: 100%;
+    overflow-x: auto;
+    background-color: #ffffff;
+    border: 1px solid #e3e7ed;
+    border-radius: 4px;
+}
+
+.caja-tabla table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+}
+
+.caja-tabla th {
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #5f6062;
+    background-color: #eaf0f6;
+    padding: 12px 15px;
+    border-bottom: 1px solid #e3e7ed;
+    white-space: nowrap;
+}
+
+.caja-tabla td {
+    padding: 12px 15px;
+    border-bottom: 1px solid #eef2f6;
+    color: #1a1a1a;
+}
+
+.caja-tabla tr:last-child td {
+    border-bottom: 0;
+}
+
+
+/* ----------Pop up-------------- */
+
+.fondo-popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(26, 26, 26, 0.55);
+    padding: 20px;
+    overflow-y: auto;
+    z-index: 50;
+}
+
+.popup-visible {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+}
+
+.popup {
+    width: 100%;
+    max-width: 460px;
+    margin-top: 60px;
+    background-color: #ffffff;
+    border-radius: 4px;
+    padding: 26px 28px 28px;
+}
+
+.titulo-popup {
+    font-size: 20px;
+    color: #00519e;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #e3e7ed;
+}
+
+.linea-botones-popup {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
+
+
+/* ----------Menu y tabla en tablet-------------- */
+
+@media (max-width: 768px) {
+
+    .barra-superior {
+        flex-wrap: wrap;
+        height: auto;
+        padding: 10px 18px;
+        gap: 10px;
+    }
+
+    .barra-superior-menu {
+        gap: 16px;
+        order: 3;
+        width: 100%;
+        margin-left: 0;
+        padding-top: 8px;
+        border-top: 1px solid #e3e7ed;
+    }
+
+    .barra-superior-sesion {
+        padding-left: 0;
+        border-left: 0;
+    }
+
+    .popup {
+        margin-top: 20px;
+    }
+
+}
+
+
+/* ----------Tabla apilada en movil-------------- */
+
+@media (max-width: 480px) {
+
+    .caja-tabla {
+        border: 0;
+        background-color: transparent;
+        overflow-x: visible;
+    }
+
+    .caja-tabla thead {
+        display: none;
+    }
+
+    .caja-tabla tr {
+        display: block;
+        background-color: #ffffff;
+        border: 1px solid #e3e7ed;
+        border-radius: 4px;
+        margin-bottom: 12px;
+        padding: 6px 0;
+    }
+
+    .caja-tabla td {
+        display: flex;
+        justify-content: space-between;
+        gap: 14px;
+        border-bottom: 0;
+        padding: 7px 14px;
+    }
+
+    .caja-tabla td::before {
+        content: attr(data-titulo);
+        font-size: 11px;
+        font-weight: 600;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: #5f6062;
+    }
+
+    .linea-botones-popup {
+        flex-direction: column-reverse;
+    }
+
+    .linea-botones-popup button {
+        width: 100%;
+    }
+
+}

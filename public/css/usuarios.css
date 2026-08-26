@@ -1,0 +1,95 @@
+/* ----------Acciones-------------- */
+
+.linea-acciones {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 18px;
+}
+
+
+/* ----------Etiquetas de rol-------------- */
+
+.etiqueta-rol {
+    display: inline-block;
+    padding: 3px 11px;
+    border-radius: 2px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.etiqueta-master {
+    background-color: #332b67;
+    color: #ffffff;
+}
+
+.etiqueta-administrador {
+    background-color: #00519e;
+    color: #ffffff;
+}
+
+.etiqueta-colaborador {
+    background-color: #c9e9f8;
+    color: #1a1a1a;
+}
+
+.etiqueta-hotel {
+    background-color: #eaf0f6;
+    color: #5f6062;
+}
+
+
+/* ----------Columna de acciones-------------- */
+
+.columna-acciones {
+    width: 1%;
+    white-space: nowrap;
+}
+
+.boton-eliminar {
+    background-color: transparent;
+    color: #b3261e;
+    border: 1px solid #e3c4c2;
+    border-radius: 3px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-family: inherit;
+    cursor: pointer;
+    transition: 0.4s;
+}
+
+.boton-eliminar:hover {
+    background-color: #fbe9e8;
+    border-color: #b3261e;
+}
+
+.boton-eliminar:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.nota-bloqueado {
+    font-size: 12px;
+    font-style: italic;
+    color: #5f6062;
+}
+
+
+/* ----------Movil-------------- */
+
+@media (max-width: 480px) {
+
+    .linea-acciones {
+        justify-content: stretch;
+    }
+
+    .linea-acciones .boton-primario {
+        width: 100%;
+    }
+
+    .columna-acciones {
+        width: auto;
+        white-space: normal;
+    }
+
+}

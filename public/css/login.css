@@ -1,0 +1,84 @@
+/* ----------Pantalla de acceso-------------- */
+
+.cuerpo-acceso {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 30px 20px;
+    background-color: #eaf0f6;
+}
+
+.contenedor-acceso {
+    width: 100%;
+    max-width: 400px;
+}
+
+.tarjeta-acceso {
+    background-color: #ffffff;
+    border-top: 4px solid #00519e;
+    border-radius: 4px;
+    padding: 34px 32px 32px;
+}
+
+.acceso-logo {
+    display: block;
+    width: 140px;
+    height: auto;
+    margin: 0 auto 20px;
+}
+
+.acceso-titulo {
+    font-size: 17px;
+    font-weight: 600;
+    text-align: center;
+    color: #5f6062;
+    padding-bottom: 20px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid #e3e7ed;
+}
+
+.formulario-acceso {
+    margin-top: 4px;
+}
+
+.linea-recordarme {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #5f6062;
+    margin-bottom: 22px;
+}
+
+.linea-recordarme label {
+    cursor: pointer;
+}
+
+.acceso-pie {
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #5f6062;
+    margin-top: 22px;
+}
+
+
+/* ----------Movil-------------- */
+
+@media (max-width: 480px) {
+
+    .tarjeta-acceso {
+        padding: 26px 20px 24px;
+    }
+
+    .acceso-logo {
+        width: 115px;
+    }
+
+    .acceso-titulo {
+        font-size: 15px;
+    }
+
+}

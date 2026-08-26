@@ -1,0 +1,41 @@
+AQUALIVE - Pool Technology
+Paleta oficial decodificada del logo vectorial (perfil Coated FOGRA27)
+Generada el 25 de agosto de 2026
+
+PRIMARIOS (del logotipo)
+  Azul corporativo    #00519E    RGB 0 81 158      CMYK 100 70 0 0
+  Negro marca         #000000    RGB 0 0 0         CMYK 0 0 0 100
+  Gris corporativo    #5F6062    RGB 95 96 98      CMYK 0 0 0 77
+
+SECUNDARIOS (del isotipo, solo acento - nunca texto)
+  Azul agua clara     #C9E9F8    RGB 201 233 248   CMYK 25 0 0 0
+  Azul agua           #91D4F2    RGB 145 212 242   CMYK 46 0 0 0
+  Indigo profundo     #332B67    RGB 51 43 103     CMYK 92 97 25 10
+
+NEUTROS DE INTERFAZ
+  Blanco              #FFFFFF
+  Fondo aplicacion    #F5F7FA
+  Fondo hueco         #EAF0F6
+  Borde               #E3E7ED
+  Borde marcado       #C3CEDA
+  Texto principal     #1A1A1A
+  Texto secundario    #5F6062
+
+ESTADO (funcionales, no son colores de marca)
+  Correcto            #1B7A4B    fondo suave #E6F4EC
+  Alerta              #C07A00    fondo suave #FDF1DC
+  Error               #B3261E    fondo suave #FBE9E8
+
+PROPORCION POR PANTALLA
+  70% neutros / 20% azul corporativo / 7% gris / 3% azul agua
+
+CONTRASTE SOBRE BLANCO (WCAG 2.1)
+  #00519E   7.9:1   AAA
+  #332B67  12.5:1   AAA
+  #5F6062   6.3:1   AA
+  #91D4F2   1.6:1   FALLA - solo decorativo
+  #C9E9F8   1.2:1   FALLA - solo como fondo
+
+ADVERTENCIA
+  El descriptor del archivo maestro vertical dice "POLL TECHNOLOGY", no "POOL".
+  Los PNG de la carpeta logos/ son fieles al maestro y arrastran esa errata.
