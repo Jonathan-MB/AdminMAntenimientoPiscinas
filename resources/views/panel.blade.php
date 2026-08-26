@@ -19,8 +19,8 @@
         <a class="boton-primario" href="{{ route('usuarios.index') }}">Administrar usuarios</a>
     @endif
 
-    @if ($usuario->tieneRol(\App\Models\Rol::HOTEL))
-        <p class="texto-vacio">Aquí verás la información de tus piscinas cuando el módulo esté listo.</p>
+    @if ($usuario->tieneRol(\App\Models\Rol::HOTEL) && $usuario->hotel_id)
+        <a class="boton-primario" href="{{ route('diario.index', $usuario->hotel_id) }}">Ver el diario de mis piscinas</a>
     @endif
 
     @if ($usuario->tieneRol(\App\Models\Rol::COLABORADOR))

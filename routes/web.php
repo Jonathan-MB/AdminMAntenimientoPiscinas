@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccesoController;
+use App\Http\Controllers\DiarioController;
 use App\Http\Controllers\HotelController;
 use App\Http\Controllers\PanelController;
 use App\Http\Controllers\PiscinaController;
@@ -18,6 +19,10 @@ Route::post('/salir', [AccesoController::class, 'cerrar'])->name('acceso.cerrar'
 Route::middleware('auth')->group(function () {
 
     Route::get('/panel', [PanelController::class, 'index'])->name('panel');
+
+    //  Diario del hotel: lo ve el propio hotel, y tambien el personal de AQUALIVE
+    Route::get('/diario/{hotel}', [DiarioController::class, 'index'])->name('diario.index');
+    Route::get('/diario/{hotel}/dia/{fecha}', [DiarioController::class, 'dia'])->name('diario.dia');
 
     //  Administracion: solo master y administrador
     Route::middleware('rol:master,administrador')->group(function () {

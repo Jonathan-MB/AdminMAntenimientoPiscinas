@@ -18,7 +18,9 @@ los hoteles ven esta pantalla.
 | Administración de usuarios | Funcionando |
 | Modelo de datos de la operación | Funcionando |
 | Hoteles y piscinas (pantallas) | Funcionando |
+| Diario del hotel con calendario | Funcionando |
 | Registro de mantenimientos (pantallas) | Pendiente |
+| Rangos de referencia de los parámetros | Pendiente |
 | Reportes al hotel | Pendiente |
 
 ---
@@ -124,7 +126,7 @@ campo aunque venga en la petición.
 app/
   Http/Controllers/    AccesoController, PanelController, UsuarioController,
                        HotelController, PiscinaController,
-                       RondaProgramadaController
+                       RondaProgramadaController, DiarioController
   Http/Middleware/     VerificarRol      (alias 'rol', se usa 'rol:master,administrador')
   Http/Requests/       IniciarSesion, StoreUsuario, UpdateUsuario,
                        StoreHotel, UpdateHotel, StorePiscina, UpdatePiscina,
@@ -137,14 +139,15 @@ database/
                        tareas, jornadas, rondas, mediciones, dosis,
                        tareas_realizadas
   seeders/             RolSeeder, UsuarioMasterSeeder, ProductoSeeder,
-                       TareaSeeder, HotelSeeder
+                       TareaSeeder, HotelSeeder,
+                       JornadaDemoSeeder (datos de ejemplo, no se llama solo)
 public/
   css/                 general.css + una hoja por vista
   js/                  un archivo por vista
   img/                 logo, isotipo y derivados
 resources/views/
   partials/            head, header, header-limpio, mensaje, footer
-  login, panel, usuarios, hoteles, hotel
+  login, panel, usuarios, hoteles, hotel, diario
 Libro de marca/        Manual de marca, logos y paleta (copia para uso externo)
 docs/                  Convenciones de código
 ```
@@ -224,6 +227,40 @@ Cuidados:
 - **Todos los nombres de archivo en `public/` van en minúscula.** Windows perdona las
   mayúsculas; Linux no.
 - Las migraciones se corren en el servidor.
+
+---
+
+## Diario del hotel
+
+`/diario/{hotel}` muestra la operación de un día y un calendario para revisar días anteriores.
+
+- El calendario marca con un punto los días que tienen registro, y no deja abrir días futuros.
+- Al elegir un día, el detalle se carga **sin recargar la página**, por
+  `/diario/{hotel}/dia/{fecha}`, y la fecha queda en la barra de direcciones.
+- Cada ronda se muestra con una tarjeta por piscina: las 7 lecturas, los químicos aplicados
+  con su unidad, el retrolavado y las observaciones.
+
+**Quién lo ve:** el personal de AQUALIVE puede abrir el de cualquier hotel. Un usuario con rol
+`hotel` **solo puede abrir el suyo**; cualquier otro devuelve 403, tanto la vista como el JSON.
+
+### Datos de ejemplo
+
+Mientras el formulario del colaborador no exista, no hay forma de capturar jornadas. Para ver
+el diario funcionando:
+
+```bash
+php artisan db:seed --class=JornadaDemoSeeder
+```
+
+Crea unos 15 días de registros inventados, saltando algunos para que el calendario muestre
+días con y sin datos. **No se llama desde `DatabaseSeeder`**: se corre a mano y se puede
+borrar cuando ya no haga falta.
+
+### Los parámetros no se juzgan todavía
+
+El diario muestra los valores tal cual, sin marcar si están dentro o fuera de rango. Los
+rangos aceptables los define AQUALIVE y todavía no están cargados; poner umbrales inventados
+frente a un hotel sería peor que no mostrarlos.
 
 ---
 

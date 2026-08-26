@@ -50,6 +50,7 @@
                             </span>
                         </td>
                         <td data-titulo="Acciones" class="columna-acciones">
+                            <a class="boton-secundario boton-chico" href="{{ route('diario.index', $hotel) }}">Diario</a>
                             <a class="boton-secundario boton-chico" href="{{ route('hoteles.show', $hotel) }}">Editar</a>
                             <button class="boton-eliminar" type="button"
                                     data-id="{{ $hotel->id }}"

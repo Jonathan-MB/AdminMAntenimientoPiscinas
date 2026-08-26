@@ -1,0 +1,409 @@
+/* ----------Reja general-------------- */
+
+.reja-diario {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 26px;
+    align-items: start;
+}
+
+
+/* ----------Calendario-------------- */
+
+.panel-calendario {
+    background-color: #ffffff;
+    border: 1px solid #e3e7ed;
+    border-radius: 4px;
+    padding: 18px 18px 16px;
+    position: sticky;
+    top: 20px;
+}
+
+.linea-mes {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.nombre-mes {
+    font-size: 15px;
+    font-weight: 600;
+    color: #00519e;
+    text-align: center;
+    flex: 1;
+}
+
+.boton-mes {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+    line-height: 1;
+    color: #5f6062;
+    text-decoration: none;
+    border: 1px solid #c3ceda;
+    border-radius: 3px;
+    transition: 0.4s;
+}
+
+.boton-mes:hover {
+    color: #00519e;
+    border-color: #00519e;
+}
+
+.rejilla-dias {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+}
+
+.cabecera-dia {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    color: #5f6062;
+    padding-bottom: 6px;
+}
+
+.celda-dia {
+    position: relative;
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-family: inherit;
+    color: #1a1a1a;
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: 0.4s;
+}
+
+.celda-dia:hover:not(:disabled) {
+    background-color: #eaf0f6;
+}
+
+.celda-fuera {
+    color: #c3ceda;
+}
+
+.celda-dia:disabled {
+    color: #dde4ec;
+    cursor: default;
+}
+
+/*  Punto azul: ese dia tiene registro  */
+.celda-con-datos::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background-color: #00519e;
+}
+
+.celda-hoy {
+    border-color: #91d4f2;
+    font-weight: 600;
+}
+
+.celda-elegida {
+    background-color: #00519e;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.celda-elegida::after {
+    background-color: #ffffff;
+}
+
+.celda-elegida:hover:not(:disabled) {
+    background-color: #003a78;
+}
+
+.leyenda {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    font-size: 11px;
+    color: #5f6062;
+    margin-top: 16px;
+    padding-top: 12px;
+    border-top: 1px solid #eef2f6;
+}
+
+.punto-leyenda {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    margin-left: 6px;
+}
+
+.punto-leyenda:first-child {
+    margin-left: 0;
+}
+
+.punto-con-datos {
+    background-color: #00519e;
+}
+
+.punto-hoy {
+    background-color: #91d4f2;
+}
+
+
+/* ----------Detalle del dia-------------- */
+
+.cabecera-dia-detalle {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    margin-bottom: 18px;
+}
+
+.titulo-dia {
+    font-size: 19px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.cargando {
+    font-size: 12px;
+    color: #5f6062;
+    opacity: 0;
+    transition: 0.4s;
+}
+
+.cargando-visible {
+    opacity: 1;
+}
+
+.sin-registro {
+    background-color: #ffffff;
+    border: 1px dashed #c3ceda;
+    border-radius: 4px;
+    padding: 34px 20px;
+    text-align: center;
+    color: #5f6062;
+    font-size: 15px;
+}
+
+
+/* ----------Resumen de la jornada-------------- */
+
+.resumen-jornada {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    background-color: #ffffff;
+    border: 1px solid #e3e7ed;
+    border-radius: 4px;
+    margin-bottom: 22px;
+    overflow: hidden;
+}
+
+.dato-resumen {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    flex: 1;
+    min-width: 130px;
+    padding: 14px 18px;
+    border-right: 1px solid #eef2f6;
+}
+
+.dato-resumen:last-child {
+    border-right: 0;
+}
+
+.dato-resumen strong {
+    font-size: 17px;
+    color: #00519e;
+}
+
+
+/* ----------Ronda-------------- */
+
+.bloque-ronda {
+    margin-bottom: 26px;
+}
+
+.cabecera-ronda {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+    border-bottom: 2px solid #00519e;
+}
+
+.nombre-ronda {
+    font-size: 16px;
+    font-weight: 600;
+    color: #00519e;
+}
+
+.hora-ronda {
+    font-size: 13px;
+    color: #5f6062;
+}
+
+
+/* ----------Tarjeta de piscina-------------- */
+
+.tarjeta-piscina {
+    background-color: #ffffff;
+    border: 1px solid #e3e7ed;
+    border-radius: 4px;
+    padding: 14px 16px 16px;
+    margin-bottom: 10px;
+}
+
+.cabecera-piscina {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.nombre-piscina {
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: #1a1a1a;
+}
+
+.marca-retrolavado {
+    font-size: 11px;
+    font-weight: 600;
+    color: #00519e;
+    background-color: #c9e9f8;
+    border-radius: 2px;
+    padding: 3px 9px;
+}
+
+.rejilla-lecturas {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(84px, 1fr));
+    gap: 1px;
+    background-color: #eef2f6;
+    border: 1px solid #eef2f6;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.lectura {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    background-color: #ffffff;
+    padding: 9px 10px;
+}
+
+.lectura span {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    color: #5f6062;
+}
+
+.lectura strong {
+    font-size: 16px;
+    color: #1a1a1a;
+}
+
+.linea-dosis {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 12px;
+}
+
+.pastilla-dosis {
+    font-size: 12px;
+    color: #5f6062;
+    background-color: #eaf0f6;
+    border-radius: 2px;
+    padding: 4px 10px;
+}
+
+.observacion-piscina {
+    font-size: 13px;
+    color: #5f6062;
+    font-style: italic;
+    margin-top: 10px;
+}
+
+.observacion-ronda {
+    font-size: 13px;
+    color: #5f6062;
+    background-color: #eaf0f6;
+    border-left: 3px solid #91d4f2;
+    border-radius: 0 3px 3px 0;
+    padding: 10px 14px;
+    margin-top: 4px;
+}
+
+
+/* ----------Tablet-------------- */
+
+@media (max-width: 768px) {
+
+    .reja-diario {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    .panel-calendario {
+        position: static;
+    }
+
+}
+
+
+/* ----------Movil-------------- */
+
+@media (max-width: 480px) {
+
+    .panel-calendario {
+        padding: 14px 12px 12px;
+    }
+
+    .titulo-dia {
+        font-size: 16px;
+    }
+
+    .cabecera-dia-detalle {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+
+    .dato-resumen {
+        min-width: 100px;
+        padding: 11px 14px;
+    }
+
+    .rejilla-lecturas {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .lectura strong {
+        font-size: 15px;
+    }
+
+}
