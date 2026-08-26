@@ -35,8 +35,8 @@ los hoteles ven esta pantalla.
 ## Instalación
 
 ```bash
-git clone https://github.com/Jonathan-MB/AdminMAntenimientoPiscinas.git
-cd AdminMAntenimientoPiscinas
+git clone https://github.com/Jonathan-MB/AdminMantenimientoPiscinas.git
+cd AdminMantenimientoPiscinas
 composer install
 cp .env.example .env
 php artisan key:generate
