@@ -259,6 +259,23 @@ estructura, no el aspecto:
 .titulo-elemento
 ```
 
+
+### Componentes compartidos
+
+Si un patrón aparece en dos vistas, vive en `general.css`, no duplicado en cada hoja.
+
+| Clase | Para qué |
+|---|---|
+| `.linea-titulo` | Título de la vista y su botón principal, en la misma línea. Se apila en móvil. |
+| `.fila-historial` | Un registro por línea en escritorio: `.fila-fecha`, `.fila-datos`, `.fila-marca`, `.fila-acciones`. Se usa en el panel y en el registro. |
+| `.contenedor-estrecho` | 620px centrado, para formularios de una columna. |
+| `.contenedor-medio` | 900px centrado, para vistas de dos columnas. |
+| `.caja-vacia` | El recuadro punteado de «todavía no hay nada». |
+| `.caja-tabla` | Tabla que en móvil se apila en tarjetas. **Cada `<td>` necesita su `data-titulo`**, que es lo que se muestra como etiqueta al apilarse. |
+
+Las vistas de lista (hoteles, usuarios, panel, registro) se ven todas igual porque usan las
+mismas clases. Antes cada una tenía las suyas y se habían ido separando.
+
 - Colores en hexadecimal, repetidos. La paleta está documentada en la cabecera de `general.css`.
 - Efectos con `transform: scale()` y `transition: 0.4s` en los `:hover`.
 - Separadores en comentario: `/* ----------Título-------------- */`

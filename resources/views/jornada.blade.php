@@ -8,9 +8,14 @@
 
     <a class="enlace-volver" href="{{ route('registro.index') }}">← Volver al registro</a>
 
-    <h1 class="vista-titulo">{{ $jornada->hotel->nombre }}</h1>
+    <div class="linea-titulo">
+        <div>
+            <h1 class="vista-titulo sin-borde">{{ $jornada->hotel->nombre }}</h1>
+            <p class="subtitulo-jornada">{{ $jornada->fecha->format('d/m/Y') }}</p>
+        </div>
 
-    <p class="subtitulo-jornada">{{ $jornada->fecha->format('d/m/Y') }}</p>
+        <a class="boton-secundario" href="{{ route('diario.index', ['hotel' => $jornada->hotel, 'fecha' => $jornada->fecha->format('Y-m-d')]) }}">Ver el diario</a>
+    </div>
 
     @include('partials.mensaje')
 
@@ -25,7 +30,7 @@
     <div class="tarjeta-metro">
         <div class="elemento-formulario">
             <label class="titulo-elemento" for="lecturaMetroAgua">Lectura del metro de agua</label>
-            <input class="campo-formulario campo-grande" type="number" step="0.01" min="0"
+            <input class="campo-formulario campo-metro" type="number" step="0.01" min="0"
                    id="lecturaMetroAgua" value="{{ $jornada->lectura_metro_agua }}"
                    @disabled(! $editable)>
         </div>

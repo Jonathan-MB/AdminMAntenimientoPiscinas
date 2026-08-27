@@ -6,7 +6,9 @@
 
 <div class="contenedor-general">
 
-    <h1 class="vista-titulo">Mi perfil</h1>
+  <div class="contenedor-medio">
+
+    <h1 class="vista-titulo titulo-centrado">Mi perfil</h1>
 
     @include('partials.mensaje')
 
@@ -88,6 +90,8 @@
         </div>
 
     </div>
+
+  </div>
 
 </div>
 

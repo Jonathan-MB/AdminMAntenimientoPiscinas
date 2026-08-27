@@ -5,17 +5,17 @@
 @include('partials.header')
 
 <div class="contenedor-general">
-    <h1 class="vista-titulo">Usuarios</h1>
+    <div class="linea-titulo">
+        <h1 class="vista-titulo sin-borde">Usuarios</h1>
+
+        <button class="boton-primario" type="button" id="botonAbrirCrear">Crear usuario</button>
+    </div>
 
     @include('partials.mensaje')
 
     @if ($errors->any())
         <div class="mensaje mensaje-error">{{ $errors->first() }}</div>
     @endif
-
-    <div class="linea-acciones">
-        <button class="boton-primario" type="button" id="botonAbrirCrear">Crear usuario</button>
-    </div>
 
     <div class="caja-tabla">
         <table class="tabla-usuarios">

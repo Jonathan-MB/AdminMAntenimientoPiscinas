@@ -6,6 +6,8 @@
 
 <div class="contenedor-general">
 
+  <div class="contenedor-captura">
+
     <a class="enlace-volver" href="{{ route('registro.jornada', $jornada) }}">← Volver a la jornada</a>
 
     <div class="cabecera-medicion">
@@ -136,6 +138,8 @@
             </a>
         @endif
     </div>
+
+  </div>
 
 </div>
 

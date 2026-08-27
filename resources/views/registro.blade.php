@@ -5,58 +5,70 @@
 @include('partials.header')
 
 <div class="contenedor-general">
-    <h1 class="vista-titulo">Registro del día</h1>
 
-    @include('partials.mensaje')
+    <div class="contenedor-estrecho">
 
-    @if ($errors->any())
-        <div class="mensaje mensaje-error">{{ $errors->first() }}</div>
-    @endif
+        <h1 class="vista-titulo titulo-centrado">Registro del día</h1>
 
-    <div class="tarjeta-abrir">
-        <h2 class="titulo-seccion">Abrir o retomar una jornada</h2>
+        @include('partials.mensaje')
 
-        <form method="POST" action="{{ route('registro.store') }}">
-            @csrf
+        @if ($errors->any())
+            <div class="mensaje mensaje-error">{{ $errors->first() }}</div>
+        @endif
 
-            <div class="elemento-formulario">
-                <label class="titulo-elemento" for="hotelId">Hotel</label>
-                <select class="campo-formulario campo-grande" id="hotelId" name="hotelId" required>
-                    <option value="">Elige el hotel</option>
-                    @foreach ($hoteles as $hotel)
-                        <option value="{{ $hotel->id }}" @selected(old('hotelId') == $hotel->id)>{{ $hotel->nombre }}</option>
-                    @endforeach
-                </select>
-            </div>
+        <div class="tarjeta-abrir">
+            <h2 class="titulo-seccion titulo-centrado">Abrir o retomar una jornada</h2>
 
-            <div class="elemento-formulario">
-                <label class="titulo-elemento" for="fecha">Fecha</label>
-                <input class="campo-formulario campo-grande" type="date" id="fecha" name="fecha"
-                       value="{{ old('fecha', now()->toDateString()) }}"
-                       max="{{ now()->toDateString() }}" required>
-            </div>
+            <form method="POST" action="{{ route('registro.store') }}">
+                @csrf
 
-            <p class="nota-formulario">La fecha y la hora van en el horario de Aruba.</p>
+                <div class="elemento-formulario">
+                    <label class="titulo-elemento" for="hotelId">Hotel</label>
+                    <select class="campo-formulario campo-grande" id="hotelId" name="hotelId" required>
+                        <option value="">Elige el hotel</option>
+                        @foreach ($hoteles as $hotel)
+                            <option value="{{ $hotel->id }}" @selected(old('hotelId') == $hotel->id)>{{ $hotel->nombre }}</option>
+                        @endforeach
+                    </select>
+                </div>
 
-            <button class="boton-primario boton-ancho boton-grande" type="submit">Continuar</button>
-        </form>
+                <div class="elemento-formulario">
+                    <label class="titulo-elemento" for="fecha">Fecha</label>
+                    <input class="campo-formulario campo-grande" type="date" id="fecha" name="fecha"
+                           value="{{ old('fecha', now()->toDateString()) }}"
+                           max="{{ now()->toDateString() }}" required>
+                </div>
+
+                <p class="nota-formulario">La fecha y la hora van en el horario de Aruba.</p>
+
+                <button class="boton-primario boton-ancho boton-grande" type="submit">Continuar</button>
+            </form>
+        </div>
+
     </div>
 
     @if ($recientes->count())
         <h2 class="titulo-seccion titulo-recientes">Jornadas recientes</h2>
 
-        <div class="lista-recientes">
-            @foreach ($recientes as $reciente)
-                <a class="tarjeta-reciente" href="{{ route('registro.jornada', $reciente) }}">
-                    <span class="fecha-reciente">{{ $reciente->fecha->format('d/m/Y') }}</span>
-                    <span class="hotel-reciente">{{ $reciente->hotel->nombre }}</span>
+        @foreach ($recientes as $reciente)
+            <a class="fila-historial" href="{{ route('registro.jornada', $reciente) }}">
 
-                    @if ($reciente->esDeHoy())
-                        <span class="marca-hoy">Hoy</span>
-                    @endif
-                </a>
-            @endforeach
-        </div>
+                <div class="fila-fecha">
+                    <strong>{{ $reciente->fecha->format('d/m') }}</strong>
+                    <span>{{ $reciente->fecha->format('Y') }}</span>
+                </div>
+
+                <div class="fila-datos">
+                    <span class="fila-titulo">{{ $reciente->hotel->nombre }}</span>
+                    <span class="fila-nota">Registró {{ $reciente->usuario->nombre_usuario }}</span>
+                </div>
+
+                @if ($reciente->esDeHoy())
+                    <span class="fila-marca marca-azul">Hoy</span>
+                @endif
+
+            </a>
+        @endforeach
     @endif
 
 </div>

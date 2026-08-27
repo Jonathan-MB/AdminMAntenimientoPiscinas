@@ -16,8 +16,7 @@
 .subtitulo-jornada {
     font-size: 15px;
     color: #5f6062;
-    margin-top: -16px;
-    margin-bottom: 22px;
+    margin-top: 4px;
 }
 
 .titulo-seccion {
@@ -47,7 +46,7 @@
     margin-bottom: 0;
 }
 
-.campo-grande {
+.campo-metro {
     font-size: 17px;
     font-weight: 600;
     padding: 12px 12px;

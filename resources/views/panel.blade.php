@@ -1,12 +1,11 @@
 @include('partials.head')
-<link rel="stylesheet" href="@recurso('css/panel.css')">
 <title>Panel</title>
 
 @include('partials.header')
 
 <div class="contenedor-general">
 
-    <div class="linea-titulo-panel">
+    <div class="linea-titulo">
         <h1 class="vista-titulo sin-borde">Últimas jornadas</h1>
 
         <a class="boton-primario" href="{{ route('registro.index') }}">Registrar jornada</a>
@@ -27,23 +26,23 @@
             $completa = $esperado > 0 && $hechas >= $esperado;
         @endphp
 
-        <div class="tarjeta-jornada">
+        <div class="fila-historial">
 
-            <div class="jornada-fecha">
+            <div class="fila-fecha">
                 <strong>{{ $jornada->fecha->format('d/m') }}</strong>
                 <span>{{ $jornada->fecha->format('Y') }}</span>
             </div>
 
-            <div class="jornada-datos">
-                <span class="jornada-hotel">{{ $jornada->hotel->nombre }}</span>
-                <span class="jornada-quien">Registró {{ $jornada->usuario->nombre_usuario }}</span>
+            <div class="fila-datos">
+                <span class="fila-titulo">{{ $jornada->hotel->nombre }}</span>
+                <span class="fila-nota">Registró {{ $jornada->usuario->nombre_usuario }}</span>
             </div>
 
-            <span class="jornada-avance {{ $completa ? 'avance-completo' : '' }}">
+            <span class="fila-marca {{ $completa ? 'marca-verde' : '' }}">
                 {{ $hechas }} de {{ $esperado }}
             </span>
 
-            <div class="jornada-acciones">
+            <div class="fila-acciones">
                 <a class="boton-secundario boton-chico" href="{{ route('diario.index', ['hotel' => $jornada->hotel, 'fecha' => $jornada->fecha->format('Y-m-d')]) }}">Ver</a>
                 <a class="boton-secundario boton-chico" href="{{ route('registro.jornada', $jornada) }}">Abrir</a>
             </div>
@@ -51,7 +50,7 @@
         </div>
     @empty
         @if (empty($sinHotel))
-            <p class="sin-jornadas">Todavía no hay jornadas registradas.</p>
+            <p class="caja-vacia">Todavía no hay jornadas registradas.</p>
         @endif
     @endforelse
 
