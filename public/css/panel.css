@@ -1,0 +1,69 @@
+/* ----------Barra de filtros-------------- */
+
+.barra-filtros {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+    background-color: #ffffff;
+    border: 1px solid #e3e7ed;
+    border-radius: 4px;
+    padding: 16px 18px;
+    margin-bottom: 16px;
+}
+
+.elemento-filtro {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1;
+    min-width: 165px;
+}
+
+.elemento-fecha {
+    flex: 0 1 155px;
+    min-width: 140px;
+}
+
+.botones-filtro {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+
+/* ----------Conteo-------------- */
+
+.conteo-resultados {
+    font-size: 13px;
+    color: #5f6062;
+    margin-bottom: 14px;
+}
+
+
+/* ----------Movil-------------- */
+
+@media (max-width: 480px) {
+
+    .barra-filtros {
+        padding: 14px;
+        gap: 10px;
+    }
+
+    .elemento-filtro,
+    .elemento-fecha {
+        flex: 1 1 100%;
+        min-width: 0;
+    }
+
+    .botones-filtro {
+        width: 100%;
+    }
+
+    .botones-filtro .boton-primario,
+    .botones-filtro .boton-secundario {
+        flex: 1;
+        text-align: center;
+    }
+
+}

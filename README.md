@@ -249,6 +249,24 @@ a lo que va a hacer.
 `PanelController` redirige según el rol. Un usuario `hotel` sin hotel asignado sí ve el panel,
 pero con un aviso de que pida su asignación.
 
+
+### Filtros del panel
+
+El panel de jornadas filtra por **hotel**, por **empleado** y por **rango de fechas**, y los
+cuatro se combinan entre sí. El filtro va por GET, así que la URL se puede compartir o guardar:
+`/panel?hotel=1&empleado=3&desde=2026-08-01`.
+
+La lista de empleados solo muestra a quienes **de verdad han registrado alguna jornada**, no a
+todos los usuarios.
+
+Se muestran hasta 30 resultados. Si el filtro devuelve más, el conteo lo dice para que se acote
+en vez de creer que eso es todo.
+
+**Ojo con lo que significa «empleado»:** filtra por `jornadas.usuario_id`, que es **quien abrió
+la jornada**, no quien tomó cada medición. Si dos colaboradores se reparten el mismo día, todo
+queda atribuido al que la abrió. Si eso llega a importar, habría que guardar el autor en cada
+medición.
+
 ---
 
 ## Mi perfil

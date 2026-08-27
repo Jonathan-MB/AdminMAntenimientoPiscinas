@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Hotel;
 use App\Models\Jornada;
 use App\Models\Rol;
+use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -20,34 +22,70 @@ class PanelController extends Controller
 
         if ($usuario->tieneRol(Rol::HOTEL)) {
             if (! $usuario->hotel_id) {
-                return view('panel', ['jornadas' => collect(), 'sinHotel' => true]);
+                return view('panel', [
+                    'jornadas' => collect(),
+                    'hoteles'  => collect(),
+                    'empleados' => collect(),
+                    'sinHotel' => true,
+                ]);
             }
 
             return redirect()->route('diario.index', $usuario->hotel_id);
         }
 
-        //  Master y administrador: las ultimas jornadas de todos los hoteles
-        $jornadas = Jornada::with([
+        //  Master y administrador: las jornadas de todos los hoteles, filtrables
+        $hotelId    = $request->query('hotel');
+        $empleadoId = $request->query('empleado');
+        $desde      = $request->query('desde');
+        $hasta      = $request->query('hasta');
+
+        $consulta = Jornada::with([
                 'usuario',
-                'hotel' => function ($consulta) {
-                    $consulta->withCount([
-                        'piscinas' => function ($c) {
-                            $c->where('activa', true);
+                'hotel' => function ($c) {
+                    $c->withCount([
+                        'piscinas' => function ($p) {
+                            $p->where('activa', true);
                         },
-                        'rondasProgramadas' => function ($c) {
-                            $c->where('activa', true);
+                        'rondasProgramadas' => function ($p) {
+                            $p->where('activa', true);
                         },
                     ]);
                 },
-                'rondas' => function ($consulta) {
-                    $consulta->withCount('mediciones');
+                'rondas' => function ($c) {
+                    $c->withCount('mediciones');
                 },
-            ])
-            ->orderByDesc('fecha')
+            ]);
+
+        if ($hotelId) {
+            $consulta->where('hotel_id', $hotelId);
+        }
+
+        if ($empleadoId) {
+            $consulta->where('usuario_id', $empleadoId);
+        }
+
+        if ($desde) {
+            $consulta->whereDate('fecha', '>=', $desde);
+        }
+
+        if ($hasta) {
+            $consulta->whereDate('fecha', '<=', $hasta);
+        }
+
+        $total = (clone $consulta)->count();
+
+        $jornadas = $consulta->orderByDesc('fecha')
             ->orderByDesc('id')
-            ->limit(12)
+            ->limit(30)
             ->get();
 
-        return view('panel', compact('jornadas'));
+        $hoteles = Hotel::orderBy('nombre')->get();
+
+        //  Solo quienes de verdad han registrado alguna jornada
+        $empleados = Usuario::whereIn('id', Jornada::select('usuario_id')->distinct())
+            ->orderBy('nombre_usuario')
+            ->get();
+
+        return view('panel', compact('jornadas', 'hoteles', 'empleados', 'total', 'hotelId', 'empleadoId', 'desde', 'hasta'));
     }
 }
