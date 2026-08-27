@@ -1,5 +1,5 @@
 @include('partials.head')
-<link rel="stylesheet" href="{{ asset('css/jornada.css') }}">
+<link rel="stylesheet" href="@recurso('css/jornada.css')">
 <title>Jornada {{ $jornada->fecha->format('d/m/Y') }}</title>
 
 @include('partials.header')
@@ -100,6 +100,6 @@
     const rutaJornada = '/jornada/{{ $jornada->id }}';
 </script>
 
-<script src="{{ asset('js/jornada.js') }}"></script>
+<script src="@recurso('js/jornada.js')"></script>
 
 @include('partials.footer')

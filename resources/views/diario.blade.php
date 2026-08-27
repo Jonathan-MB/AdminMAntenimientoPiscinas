@@ -1,5 +1,5 @@
 @include('partials.head')
-<link rel="stylesheet" href="{{ asset('css/diario.css') }}">
+<link rel="stylesheet" href="@recurso('css/diario.css')">
 <title>Diario · {{ $hotel->nombre }}</title>
 
 @include('partials.header')
@@ -160,6 +160,6 @@
     const rutaDia = '/diario/{{ $hotel->id }}/dia';
 </script>
 
-<script src="{{ asset('js/diario.js') }}"></script>
+<script src="@recurso('js/diario.js')"></script>
 
 @include('partials.footer')

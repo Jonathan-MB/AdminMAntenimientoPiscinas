@@ -128,12 +128,13 @@ app/
                        HotelController, PiscinaController,
                        RondaProgramadaController, DiarioController,
                        RegistroController, MedicionController,
-                       SuplantacionController
+                       SuplantacionController, PerfilController
   Http/Middleware/     VerificarRol      (alias 'rol', se usa 'rol:master,administrador')
   Http/Requests/       IniciarSesion, StoreUsuario, UpdateUsuario,
                        StoreHotel, UpdateHotel, StorePiscina, UpdatePiscina,
                        StoreRondaProgramada, UpdateRondaProgramada,
-                       AbrirJornada, UpdateJornada, StoreMedicion
+                       AbrirJornada, UpdateJornada, StoreMedicion,
+                       UpdatePerfil, CambiarPassword
   Models/              Rol, Usuario, Hotel, Piscina, RondaProgramada, Producto,
                        Jornada, Ronda, Medicion, Dosis, Tarea, TareaRealizada
 database/
@@ -151,7 +152,7 @@ public/
 resources/views/
   partials/            head, header, header-limpio, mensaje, footer
   login, panel, usuarios, hoteles, hotel, diario,
-  registro, jornada, medicion
+  registro, jornada, medicion, perfil
 Libro de marca/        Manual de marca, logos y paleta (copia para uso externo)
 docs/                  Convenciones de código
 ```
@@ -231,6 +232,46 @@ Cuidados:
 - **Todos los nombres de archivo en `public/` van en minúscula.** Windows perdona las
   mayúsculas; Linux no.
 - Las migraciones se corren en el servidor.
+
+---
+
+## A dónde entra cada rol
+
+Al iniciar sesión nadie aterriza en una pantalla con sus propios datos: cada rol entra directo
+a lo que va a hacer.
+
+| Rol | Aterriza en |
+|---|---|
+| `colaborador` | `/registro` — elegir hotel y fecha, con sus jornadas recientes debajo |
+| `hotel` | `/diario/{su hotel}` — el calendario de sus piscinas |
+| `master` y `administrador` | `/panel` — las últimas 12 jornadas de todos los hoteles, con su avance |
+
+`PanelController` redirige según el rol. Un usuario `hotel` sin hotel asignado sí ve el panel,
+pero con un aviso de que pida su asignación.
+
+---
+
+## Mi perfil
+
+El nombre de usuario en la barra superior es un enlace a `/perfil`. Ahí cualquier usuario ve
+sus datos y puede:
+
+- **Cambiar su correo** — validado como único entre todos los usuarios.
+- **Cambiar su contraseña** — pide la actual, la nueva dos veces, mínimo 8 caracteres y que sea
+  distinta de la actual. Al cambiarla se **regenera la sesión**, por si alguien más la conocía.
+
+El **nombre de usuario y el rol no se cambian desde ahí**: son identidad, y los administra un
+administrador.
+
+---
+
+## Las hojas de estilo llevan versión
+
+`@recurso('css/panel.css')` devuelve la ruta con la fecha de modificación del archivo detrás
+(`?v=1787872758`). La directiva está en `AppServiceProvider`.
+
+Sin esto el navegador sigue sirviendo la hoja vieja después de cada cambio, y uno cree que el
+CSS no funciona cuando en realidad ni se descargó.
 
 ---
 

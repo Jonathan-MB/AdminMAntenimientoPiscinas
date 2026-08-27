@@ -1,5 +1,5 @@
 @include('partials.head')
-<link rel="stylesheet" href="{{ asset('css/hotel.css') }}">
+<link rel="stylesheet" href="@recurso('css/hotel.css')">
 <title>{{ $hotel->nombre }}</title>
 
 @include('partials.header')
@@ -240,6 +240,6 @@
     const rutaRondas = '/rondas';
 </script>
 
-<script src="{{ asset('js/hotel.js') }}"></script>
+<script src="@recurso('js/hotel.js')"></script>
 
 @include('partials.footer')

@@ -1,5 +1,5 @@
 @include('partials.head')
-<link rel="stylesheet" href="{{ asset('css/hoteles.css') }}">
+<link rel="stylesheet" href="@recurso('css/hoteles.css')">
 <title>Hoteles</title>
 
 @include('partials.header')
@@ -117,6 +117,6 @@
     const rutaHoteles = '/hoteles';
 </script>
 
-<script src="{{ asset('js/hoteles.js') }}"></script>
+<script src="@recurso('js/hoteles.js')"></script>
 
 @include('partials.footer')

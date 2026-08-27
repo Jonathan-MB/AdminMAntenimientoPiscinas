@@ -1,5 +1,5 @@
 @include('partials.head')
-<link rel="stylesheet" href="{{ asset('css/registro.css') }}">
+<link rel="stylesheet" href="@recurso('css/registro.css')">
 <title>Abrir jornada</title>
 
 @include('partials.header')

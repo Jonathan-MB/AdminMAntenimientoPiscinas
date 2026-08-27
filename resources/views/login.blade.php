@@ -1,5 +1,5 @@
 @include('partials.head')
-<link rel="stylesheet" href="{{ asset('css/login.css') }}">
+<link rel="stylesheet" href="@recurso('css/login.css')">
 <title>Ingresar</title>
 
 @include('partials.header-limpio')

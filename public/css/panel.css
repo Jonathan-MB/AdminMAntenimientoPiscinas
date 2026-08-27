@@ -1,27 +1,130 @@
-/* ----------Tarjeta de sesion-------------- */
+/* ----------Titulo con boton-------------- */
 
-.tarjeta-sesion {
+.linea-titulo-panel {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-bottom: 12px;
+    margin-bottom: 22px;
+    border-bottom: 1px solid #e3e7ed;
+}
+
+.sin-borde {
+    padding-bottom: 0;
+    margin-bottom: 0;
+    border-bottom: 0;
+}
+
+
+/* ----------Tarjeta de jornada-------------- */
+
+.tarjeta-jornada {
+    display: flex;
+    align-items: center;
+    gap: 16px;
     background-color: #ffffff;
     border: 1px solid #e3e7ed;
     border-radius: 4px;
-    padding: 20px 22px;
-    margin-bottom: 24px;
-    max-width: 460px;
+    padding: 14px 18px;
+    margin-bottom: 10px;
+    transition: 0.4s;
 }
 
-.dato-sesion {
+.tarjeta-jornada:hover {
+    border-color: #c3ceda;
+}
+
+.jornada-fecha {
     display: flex;
     flex-direction: column;
-    gap: 3px;
-    font-size: 15px;
-    color: #1a1a1a;
-    padding: 9px 0;
-    border-bottom: 1px solid #eef2f6;
+    align-items: center;
+    justify-content: center;
+    min-width: 62px;
+    padding: 6px 0;
+    background-color: #eaf0f6;
+    border-radius: 3px;
+    flex-shrink: 0;
 }
 
-.dato-sesion:last-child {
-    border-bottom: 0;
-    padding-bottom: 0;
+.jornada-fecha strong {
+    font-size: 16px;
+    color: #00519e;
+    line-height: 1.2;
+}
+
+.jornada-fecha span {
+    font-size: 11px;
+    color: #5f6062;
+}
+
+.jornada-datos {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+}
+
+.jornada-hotel {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1a1a1a;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.jornada-quien {
+    font-size: 12px;
+    color: #5f6062;
+}
+
+.jornada-avance {
+    font-size: 12px;
+    font-weight: 600;
+    color: #5f6062;
+    background-color: #eaf0f6;
+    border-radius: 2px;
+    padding: 4px 11px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.avance-completo {
+    color: #1b7a4b;
+    background-color: #e6f4ec;
+}
+
+.jornada-acciones {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.sin-jornadas {
+    background-color: #ffffff;
+    border: 1px dashed #c3ceda;
+    border-radius: 4px;
+    padding: 34px 20px;
+    text-align: center;
+    color: #5f6062;
+    font-size: 15px;
+}
+
+
+/* ----------Tablet-------------- */
+
+@media (max-width: 768px) {
+
+    .tarjeta-jornada {
+        flex-wrap: wrap;
+    }
+
+    .jornada-acciones {
+        margin-left: auto;
+    }
+
 }
 
 
@@ -29,8 +132,29 @@
 
 @media (max-width: 480px) {
 
-    .tarjeta-sesion {
-        padding: 16px 16px;
+    .linea-titulo-panel {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .linea-titulo-panel .boton-primario {
+        width: 100%;
+        text-align: center;
+    }
+
+    .tarjeta-jornada {
+        padding: 12px 14px;
+        gap: 12px;
+    }
+
+    .jornada-acciones {
+        width: 100%;
+    }
+
+    .jornada-acciones .boton-secundario {
+        flex: 1;
+        text-align: center;
     }
 
 }

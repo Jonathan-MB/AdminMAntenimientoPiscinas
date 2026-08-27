@@ -1,5 +1,5 @@
 @include('partials.head')
-<link rel="stylesheet" href="{{ asset('css/usuarios.css') }}">
+<link rel="stylesheet" href="@recurso('css/usuarios.css')">
 <title>Usuarios</title>
 
 @include('partials.header')
@@ -128,6 +128,6 @@
     const rolHotelId = {{ $roles->firstWhere('nombre', \App\Models\Rol::HOTEL)?->id ?? 0 }};
 </script>
 
-<script src="{{ asset('js/usuarios.js') }}"></script>
+<script src="@recurso('js/usuarios.js')"></script>
 
 @include('partials.footer')

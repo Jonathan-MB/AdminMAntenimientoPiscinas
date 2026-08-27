@@ -222,6 +222,15 @@ body {
     font-size: 13px;
     font-weight: 600;
     color: #1a1a1a;
+    text-decoration: none;
+    padding: 4px 0;
+    border-bottom: 2px solid transparent;
+    transition: 0.4s;
+}
+
+.sesion-usuario:hover {
+    color: #00519e;
+    border-bottom-color: #00519e;
 }
 
 .boton-salir {

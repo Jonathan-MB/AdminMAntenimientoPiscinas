@@ -5,6 +5,7 @@ use App\Http\Controllers\DiarioController;
 use App\Http\Controllers\HotelController;
 use App\Http\Controllers\MedicionController;
 use App\Http\Controllers\PanelController;
+use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\PiscinaController;
 use App\Http\Controllers\RegistroController;
 use App\Http\Controllers\RondaProgramadaController;
@@ -22,6 +23,11 @@ Route::post('/salir', [AccesoController::class, 'cerrar'])->name('acceso.cerrar'
 Route::middleware('auth')->group(function () {
 
     Route::get('/panel', [PanelController::class, 'index'])->name('panel');
+
+    //  Perfil propio: lo tiene cualquier usuario con sesion
+    Route::get('/perfil', [PerfilController::class, 'index'])->name('perfil.index');
+    Route::patch('/perfil', [PerfilController::class, 'update'])->name('perfil.update');
+    Route::patch('/perfil/password', [PerfilController::class, 'cambiarPassword'])->name('perfil.password');
 
     //  Volver a la propia cuenta: no exige ser master, exige la marca en sesion
     Route::post('/volver-a-mi-cuenta', [SuplantacionController::class, 'terminar'])->name('suplantacion.terminar');

@@ -1,0 +1,61 @@
+/* ----------Reja del perfil-------------- */
+
+.reja-perfil {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+    align-items: start;
+}
+
+.tarjeta-perfil {
+    background-color: #ffffff;
+    border: 1px solid #e3e7ed;
+    border-radius: 4px;
+    padding: 22px 24px 24px;
+}
+
+.titulo-seccion {
+    font-size: 17px;
+    font-weight: 600;
+    color: #00519e;
+    padding-bottom: 12px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid #eef2f6;
+}
+
+
+/* ----------Datos que no se editan aqui-------------- */
+
+.dato-fijo {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 9px 0;
+    border-bottom: 1px solid #eef2f6;
+}
+
+.dato-fijo strong {
+    font-size: 16px;
+    color: #1a1a1a;
+    text-transform: capitalize;
+}
+
+.tarjeta-perfil form {
+    margin-top: 18px;
+}
+
+
+/* ----------Movil-------------- */
+
+@media (max-width: 480px) {
+
+    .tarjeta-perfil {
+        padding: 18px 16px 20px;
+    }
+
+    .tarjeta-perfil .boton-primario,
+    .tarjeta-perfil .boton-secundario {
+        width: 100%;
+    }
+
+}

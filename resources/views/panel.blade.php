@@ -1,31 +1,60 @@
 @include('partials.head')
-<link rel="stylesheet" href="{{ asset('css/panel.css') }}">
+<link rel="stylesheet" href="@recurso('css/panel.css')">
 <title>Panel</title>
 
 @include('partials.header')
 
 <div class="contenedor-general">
-    <h1 class="vista-titulo">Panel</h1>
+
+    <div class="linea-titulo-panel">
+        <h1 class="vista-titulo sin-borde">Últimas jornadas</h1>
+
+        <a class="boton-primario" href="{{ route('registro.index') }}">Registrar jornada</a>
+    </div>
 
     @include('partials.mensaje')
 
-    <div class="tarjeta-sesion">
-        <p class="dato-sesion"><span class="titulo-elemento">Usuario</span> {{ $usuario->nombre_usuario }}</p>
-        <p class="dato-sesion"><span class="titulo-elemento">Correo</span> {{ $usuario->correo }}</p>
-        <p class="dato-sesion"><span class="titulo-elemento">Rol</span> {{ $usuario->rol->nombre }}</p>
-    </div>
-
-    @if ($usuario->tieneRol(\App\Models\Rol::MASTER, \App\Models\Rol::ADMINISTRADOR))
-        <a class="boton-primario" href="{{ route('usuarios.index') }}">Administrar usuarios</a>
+    @if (! empty($sinHotel))
+        <div class="mensaje mensaje-alerta">
+            Tu usuario todavía no tiene un hotel asignado. Pide a un administrador que te lo asigne.
+        </div>
     @endif
 
-    @if ($usuario->tieneRol(\App\Models\Rol::HOTEL) && $usuario->hotel_id)
-        <a class="boton-primario" href="{{ route('diario.index', $usuario->hotel_id) }}">Ver el diario de mis piscinas</a>
-    @endif
+    @forelse ($jornadas as $jornada)
+        @php
+            $hechas   = $jornada->rondas->sum('mediciones_count');
+            $esperado = $jornada->hotel->piscinas_count * $jornada->hotel->rondas_programadas_count;
+            $completa = $esperado > 0 && $hechas >= $esperado;
+        @endphp
 
-    @if ($usuario->tieneRol(\App\Models\Rol::COLABORADOR))
-        <a class="boton-primario" href="{{ route('registro.index') }}">Registrar la jornada de hoy</a>
-    @endif
+        <div class="tarjeta-jornada">
+
+            <div class="jornada-fecha">
+                <strong>{{ $jornada->fecha->format('d/m') }}</strong>
+                <span>{{ $jornada->fecha->format('Y') }}</span>
+            </div>
+
+            <div class="jornada-datos">
+                <span class="jornada-hotel">{{ $jornada->hotel->nombre }}</span>
+                <span class="jornada-quien">Registró {{ $jornada->usuario->nombre_usuario }}</span>
+            </div>
+
+            <span class="jornada-avance {{ $completa ? 'avance-completo' : '' }}">
+                {{ $hechas }} de {{ $esperado }}
+            </span>
+
+            <div class="jornada-acciones">
+                <a class="boton-secundario boton-chico" href="{{ route('diario.index', ['hotel' => $jornada->hotel, 'fecha' => $jornada->fecha->format('Y-m-d')]) }}">Ver</a>
+                <a class="boton-secundario boton-chico" href="{{ route('registro.jornada', $jornada) }}">Abrir</a>
+            </div>
+
+        </div>
+    @empty
+        @if (empty($sinHotel))
+            <p class="sin-jornadas">Todavía no hay jornadas registradas.</p>
+        @endif
+    @endforelse
+
 </div>
 
 @include('partials.footer')

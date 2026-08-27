@@ -9,4 +9,4 @@
     <link rel="icon" href="{{ asset('favicon.ico') }}" sizes="any">
     <link rel="apple-touch-icon" href="{{ asset('img/apple-touch-icon.png') }}">
 
-    <link rel="stylesheet" href="{{ asset('css/general.css') }}">
+    <link rel="stylesheet" href="@recurso('css/general.css')">

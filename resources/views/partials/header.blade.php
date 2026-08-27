@@ -40,7 +40,9 @@
         </nav>
 
         <div class="barra-superior-sesion">
-            <span class="sesion-usuario">{{ auth()->user()->nombre_usuario }}</span>
+            <a class="sesion-usuario" href="{{ route('perfil.index') }}" title="Ver mi perfil">
+                {{ auth()->user()->nombre_usuario }}
+            </a>
 
             <form method="POST" action="{{ route('acceso.cerrar') }}">
                 @csrf

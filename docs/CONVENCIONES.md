@@ -187,7 +187,7 @@ Los mensajes de error van en español, con `messages()`.
 
 ```blade
 @include('partials.head')      {{-- abre <head>, NO lo cierra --}}
-<link rel="stylesheet" href="{{ asset('css/usuarios.css') }}">
+<link rel="stylesheet" href="@recurso('css/usuarios.css')">
 <title>Usuarios</title>
 
 @include('partials.header')    {{-- cierra </head> y abre <body> --}}
@@ -263,6 +263,8 @@ estructura, no el aspecto:
 - Efectos con `transform: scale()` y `transition: 0.4s` en los `:hover`.
 - Separadores en comentario: `/* ----------Título-------------- */`
 - Dos cortes responsive y solo dos: `768px` y `480px`.
+- Las hojas se enlazan con `@recurso('css/x.css')`, no con `asset()`: la directiva le pega
+  detrás la fecha del archivo para que el navegador no sirva una versión vieja.
 
 ---
 

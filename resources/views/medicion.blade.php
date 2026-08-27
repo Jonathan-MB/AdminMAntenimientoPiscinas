@@ -1,5 +1,5 @@
 @include('partials.head')
-<link rel="stylesheet" href="{{ asset('css/medicion.css') }}">
+<link rel="stylesheet" href="@recurso('css/medicion.css')">
 <title>{{ $piscina->nombre }} · {{ $rondaProgramada->nombre }}</title>
 
 @include('partials.header')
