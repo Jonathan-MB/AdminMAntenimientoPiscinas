@@ -25,7 +25,7 @@
                     <th>Correo</th>
                     <th>Rol</th>
                     <th>Hotel</th>
-                    <th>Estado</th>
+                    <th title="Un usuario inactivo no puede iniciar sesión">Estado</th>
                     <th class="columna-acciones">Acciones</th>
                 </tr>
             </thead>
@@ -41,7 +41,8 @@
                             @if (auth()->user()->esMaster() && $usuario->id !== auth()->id() && $usuario->activo)
                                 <form class="formulario-ver-como" method="POST" action="{{ route('suplantacion.iniciar', $usuario) }}">
                                     @csrf
-                                    <button class="boton-secundario boton-chico" type="submit">Ver como</button>
+                                    <button class="boton-secundario boton-chico" type="submit"
+                                            title="Entrar a la aplicación como este usuario, para ver lo que él ve">Ver como</button>
                                 </form>
                             @endif
 

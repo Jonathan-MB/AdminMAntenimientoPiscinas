@@ -66,7 +66,7 @@
         <table class="tabla-rondas">
             <thead>
                 <tr>
-                    <th>Orden</th>
+                    <th title="En qué orden aparecen las rondas al registrar">Orden</th>
                     <th>Ronda</th>
                     <th>Hora</th>
                     <th>Estado</th>
@@ -93,7 +93,8 @@
                         </td>
                         <td data-titulo="Acciones" class="columna-acciones">
                             <button class="boton-secundario boton-chico boton-guardar-ronda" type="button"
-                                    data-id="{{ $ronda->id }}">Guardar</button>
+                                    data-id="{{ $ronda->id }}"
+                                    title="Guardar el nombre, la hora y el orden de esta ronda">Guardar</button>
 
                             <button class="boton-secundario boton-chico boton-alternar-ronda" type="button"
                                     data-id="{{ $ronda->id }}"
@@ -122,11 +123,16 @@
         <button class="boton-primario" type="button" id="botonAbrirPiscina">Agregar piscina</button>
     </div>
 
+    <p class="nota-formulario nota-suelta">
+        Una piscina con mediciones registradas no se puede eliminar: se desactiva y deja de
+        aparecer al registrar.
+    </p>
+
     <div class="caja-tabla">
         <table class="tabla-piscinas">
             <thead>
                 <tr>
-                    <th>Orden</th>
+                    <th title="En qué orden aparecen las piscinas al registrar">Orden</th>
                     <th>Piscina</th>
                     <th>Estado</th>
                     <th class="columna-acciones">Acciones</th>

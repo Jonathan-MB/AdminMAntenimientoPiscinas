@@ -23,9 +23,9 @@
                 <tr>
                     <th>Hotel</th>
                     <th>Contacto</th>
-                    <th>Rondas</th>
-                    <th>Piscinas</th>
-                    <th>Estado</th>
+                    <th title="Las rondas de pruebas que este hotel tiene programadas">Rondas</th>
+                    <th title="Cuántas piscinas tiene registradas">Piscinas</th>
+                    <th title="Un hotel inactivo no aparece al registrar una jornada">Estado</th>
                     <th class="columna-acciones">Acciones</th>
                 </tr>
             </thead>

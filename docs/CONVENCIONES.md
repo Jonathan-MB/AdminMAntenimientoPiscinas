@@ -286,6 +286,17 @@ modifica. Si el texto no alcanza para ser claro, se agrega un `title` que lo exp
 Un número que no se explica solo lleva su `title`: `10 de 10` no dice nada hasta que se sabe
 que son 5 piscinas × 2 rondas.
 
+### Todo bloque de datos lleva encabezado
+
+Si en una pantalla hay un dato suelto, el usuario tiene que adivinar de dónde sale. Cada grupo
+lleva su nombre: «Pruebas del agua», «Químicos aplicados», «Observación del técnico».
+
+Las columnas de tabla que no son obvias llevan `title`: qué significa «Orden», qué implica que
+un usuario esté «Inactivo», qué son las «Rondas» de un hotel.
+
+Cuando una acción tiene una consecuencia que no se ve, se dice antes de que ocurra: «Una
+piscina con mediciones registradas no se puede eliminar: se desactiva».
+
 - Colores en hexadecimal, repetidos. La paleta está documentada en la cabecera de `general.css`.
 - Efectos con `transform: scale()` y `transition: 0.4s` en los `:hover`.
 - Separadores en comentario: `/* ----------Título-------------- */`

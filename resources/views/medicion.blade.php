@@ -20,7 +20,7 @@
             </p>
         </div>
 
-        <span class="contador-piscinas">{{ $posicion + 1 }} de {{ $piscinas->count() }}</span>
+        <span class="contador-piscinas" title="Piscina {{ $posicion + 1 }} de las {{ $piscinas->count() }} activas de este hotel">Piscina {{ $posicion + 1 }} de {{ $piscinas->count() }}</span>
     </div>
 
     @include('partials.mensaje')
@@ -89,6 +89,8 @@
 
         {{-- --------------------OTROS------------------- --}}
 
+        <h2 class="titulo-seccion">Filtro y observaciones</h2>
+
         <div class="tarjeta-otros">
             <label class="interruptor">
                 <input type="checkbox" name="retrolavado" value="1"
@@ -98,7 +100,7 @@
             </label>
 
             <div class="elemento-formulario">
-                <label class="titulo-elemento" for="observacion">Observación</label>
+                <label class="titulo-elemento" for="observacion">Observación del técnico</label>
                 <textarea class="campo-formulario" id="observacion" name="observacion" rows="2" maxlength="255"
                           @disabled(! $editable)>{{ old('observacion', $medicion?->observacion) }}</textarea>
             </div>

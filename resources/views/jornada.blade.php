@@ -44,6 +44,10 @@
 
     <h2 class="titulo-seccion">Rondas</h2>
 
+    <p class="nota-formulario nota-suelta">
+        Toca una piscina para registrar sus pruebas. Las que ya tienen registro quedan en verde.
+    </p>
+
     @forelse ($jornada->hotel->rondasProgramadas as $programada)
         @php
             $piscinasHechas = $hechas[$programada->id] ?? [];
@@ -57,8 +61,9 @@
                     <span class="hora-ronda">{{ \Illuminate\Support\Str::substr($programada->hora, 0, 5) }}</span>
                 </div>
 
-                <span class="avance {{ count($piscinasHechas) === $total && $total > 0 ? 'avance-completo' : '' }}">
-                    {{ count($piscinasHechas) }} de {{ $total }}
+                <span class="avance {{ count($piscinasHechas) === $total && $total > 0 ? 'avance-completo' : '' }}"
+                      title="Piscinas con registro en esta ronda">
+                    {{ count($piscinasHechas) }} de {{ $total }} piscinas
                 </span>
             </div>
 
@@ -81,6 +86,10 @@
     {{-- --------------------LISTADO DE TRABAJO------------------- --}}
 
     <h2 class="titulo-seccion">Listado de trabajo</h2>
+
+    <p class="nota-formulario nota-suelta">
+        Marca cada tarea a medida que la completes. Se guarda sola.
+    </p>
 
     @foreach ($tareas as $bloque => $lista)
         <div class="bloque-tareas">
