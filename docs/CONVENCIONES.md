@@ -268,6 +268,7 @@ Si un patrón aparece en dos vistas, vive en `general.css`, no duplicado en cada
 |---|---|
 | `.linea-titulo` | Título de la vista y su botón principal, en la misma línea. Se apila en móvil. |
 | `.fila-historial` | Un registro por línea en escritorio: `.fila-fecha`, `.fila-datos`, `.fila-marca`, `.fila-acciones`. Se usa en el panel y en el registro. |
+| `.encabezado-historial` | Nombra las columnas de esas filas. Se oculta en móvil, donde las filas se apilan y cada dato se lee solo. |
 | `.contenedor-estrecho` | 620px centrado, para formularios de una columna. |
 | `.contenedor-medio` | 900px centrado, para vistas de dos columnas. |
 | `.caja-vacia` | El recuadro punteado de «todavía no hay nada». |
@@ -275,6 +276,15 @@ Si un patrón aparece en dos vistas, vive en `general.css`, no duplicado en cada
 
 Las vistas de lista (hoteles, usuarios, panel, registro) se ven todas igual porque usan las
 mismas clases. Antes cada una tenía las suyas y se habían ido separando.
+
+### Los botones dicen a dónde llevan
+
+Nada de «Ver» y «Abrir», que no dicen nada. La misma acción se llama igual en toda la
+aplicación: **Diario** lleva a la consulta del hotel, **Editar** abre la pantalla donde se
+modifica. Si el texto no alcanza para ser claro, se agrega un `title` que lo explique.
+
+Un número que no se explica solo lleva su `title`: `10 de 10` no dice nada hasta que se sabe
+que son 5 piscinas × 2 rondas.
 
 - Colores en hexadecimal, repetidos. La paleta está documentada en la cabecera de `general.css`.
 - Efectos con `transform: scale()` y `transition: 0.4s` en los `:hover`.

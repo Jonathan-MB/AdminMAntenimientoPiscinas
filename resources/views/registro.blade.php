@@ -50,6 +50,11 @@
     @if ($recientes->count())
         <h2 class="titulo-seccion titulo-recientes">Jornadas recientes</h2>
 
+        <div class="encabezado-historial">
+            <span class="fila-fecha">Fecha</span>
+            <span class="fila-datos">Hotel y quién registró</span>
+        </div>
+
         @foreach ($recientes as $reciente)
             <a class="fila-historial" href="{{ route('registro.jornada', $reciente) }}">
 

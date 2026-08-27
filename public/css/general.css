@@ -651,6 +651,29 @@ body {
 }
 
 
+/* ----------Encabezado del historial-------------- */
+/*  Nombra las columnas de las filas. Se oculta en movil, donde las
+    filas se apilan y cada dato se lee por si solo.  */
+
+.encabezado-historial {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 0 18px 8px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #5f6062;
+}
+
+.encabezado-historial .fila-fecha {
+    background-color: transparent;
+    padding: 0;
+    justify-content: flex-start;
+}
+
+
 /* ----------Fila de historial-------------- */
 /*  Una linea por registro en escritorio, apilada en movil.
     La usan el panel y la pantalla de registro.  */
@@ -777,6 +800,10 @@ body {
 /* ----------Historial en tablet-------------- */
 
 @media (max-width: 768px) {
+
+    .encabezado-historial {
+        display: none;
+    }
 
     .fila-historial {
         flex-wrap: wrap;

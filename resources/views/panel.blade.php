@@ -74,6 +74,15 @@
             @endif
         </p>
 
+        @if ($jornadas->count())
+            <div class="encabezado-historial">
+                <span class="fila-fecha">Fecha</span>
+                <span class="fila-datos">Hotel y quién registró</span>
+                <span class="fila-marca">Mediciones</span>
+                <span class="fila-acciones">Acciones</span>
+            </div>
+        @endif
+
         @foreach ($jornadas as $jornada)
             @php
                 $hechas   = $jornada->rondas->sum('mediciones_count');
@@ -93,13 +102,19 @@
                     <span class="fila-nota">Registró {{ $jornada->usuario->nombre_usuario }}</span>
                 </div>
 
-                <span class="fila-marca {{ $completa ? 'marca-verde' : '' }}">
+                <span class="fila-marca {{ $completa ? 'marca-verde' : '' }}"
+                      title="{{ $jornada->hotel->piscinas_count }} piscinas × {{ $jornada->hotel->rondas_programadas_count }} rondas">
                     {{ $hechas }} de {{ $esperado }}
                 </span>
 
                 <div class="fila-acciones">
-                    <a class="boton-secundario boton-chico" href="{{ route('diario.index', ['hotel' => $jornada->hotel, 'fecha' => $jornada->fecha->format('Y-m-d')]) }}">Ver</a>
-                    <a class="boton-secundario boton-chico" href="{{ route('registro.jornada', $jornada) }}">Abrir</a>
+                    <a class="boton-secundario boton-chico"
+                       href="{{ route('diario.index', ['hotel' => $jornada->hotel, 'fecha' => $jornada->fecha->format('Y-m-d')]) }}"
+                       title="Consultar este día en el diario del hotel">Diario</a>
+
+                    <a class="boton-secundario boton-chico"
+                       href="{{ route('registro.jornada', $jornada) }}"
+                       title="Abrir el registro para completarlo o corregirlo">Editar</a>
                 </div>
 
             </div>
