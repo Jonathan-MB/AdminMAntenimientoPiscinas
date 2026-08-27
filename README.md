@@ -20,6 +20,9 @@ los hoteles ven esta pantalla.
 | Hoteles y piscinas (pantallas) | Funcionando |
 | Diario del hotel con calendario | Funcionando |
 | Registro de la jornada (colaborador) | Funcionando |
+| Perfil propio y cambio de contraseña | Funcionando |
+| Filtros del panel (hotel, empleado, fechas) | Funcionando |
+| Ver como otro usuario (soporte) | Funcionando |
 | Rangos de referencia de los parámetros | Pendiente |
 | Reportes al hotel | Pendiente |
 
@@ -453,8 +456,31 @@ php artisan route:list             # rutas declaradas
 
 ## Pendientes
 
-- Definir cuánto dura la ventana en la que un `colaborador` puede corregir lo que acaba de
-  guardar. Está decidido que solo puede corregir «en el momento», falta el plazo.
-- Vincular el usuario con rol `hotel` a su registro de hotel y sus piscinas.
-- Módulo de hoteles y piscinas.
-- Módulo de registro de mantenimientos.
+### Bloqueado, esperando una decisión
+
+- **Rangos de referencia de los parámetros.** Hacen falta el mínimo y el máximo de cloro libre,
+  pH, alcalinidad, dureza de calcio y ácido cianúrico, y saber si el spa lleva rangos distintos
+  de la piscina. Sin eso el diario muestra números sin decir si están bien o mal. Es lo más
+  barato de implementar y lo que más valor le agrega a lo ya construido.
+
+### Funcionalidad que falta
+
+- **Reportes al hotel**: el equivalente impreso o en PDF del formato que hoy se entrega en papel.
+- **Editar usuarios desde la pantalla.** `UsuarioController::update` existe y está probado, pero
+  no hay botón: hoy solo se pueden crear y eliminar.
+- **Editar y reordenar piscinas.** Las rondas sí se editan en línea; las piscinas solo se crean,
+  activan y eliminan. Es una inconsistencia.
+- **Recuperar contraseña olvidada.** Se quitó al inicio porque no se pidió. Hoy la única salida
+  es que un administrador la cambie, y para eso hace falta el punto anterior.
+- **Paginación del panel.** Muestra hasta 30 jornadas y avisa si hay más. Con meses de operación
+  va a hacer falta paginar.
+- **Autor por medición.** Hoy la jornada guarda un solo `usuario_id`, el de quien la abrió. Si dos
+  colaboradores se reparten el día, todo queda atribuido a uno solo.
+
+### Antes de producción
+
+- **Borrar las cuentas de prueba** `admin1`, `colab1` y `hotelaruba`, y los datos de
+  `JornadaDemoSeeder`.
+- **Corregir la errata del logo**: el `.ai` dice «POLL TECHNOLOGY» y los PNG la arrastran.
+- Confirmar `APP_TIMEZONE=America/Aruba` en el `.env` del servidor.
+- Generar las cachés por SSH en el servidor, nunca subir `bootstrap/cache/`.
