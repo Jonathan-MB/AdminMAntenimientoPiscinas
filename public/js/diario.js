@@ -46,6 +46,7 @@ function dibujarDia(datos) {
                 + '<span class="nombre-piscina">' + limpiar(medicion.piscina) + '</span>'
                 + (medicion.retrolavado ? '<span class="marca-retrolavado">Retrolavado</span>' : '')
                 + '</div>'
+                + '<span class="etiqueta-bloque">Pruebas del agua</span>'
                 + '<div class="rejilla-lecturas">'
                 + '<div class="lectura"><span>Cl libre</span><strong>' + valor(medicion.clLibre) + '</strong></div>'
                 + '<div class="lectura"><span>Cl total</span><strong>' + valor(medicion.clTotal) + '</strong></div>'
@@ -57,7 +58,8 @@ function dibujarDia(datos) {
                 + '</div>';
 
             if (medicion.dosis.length) {
-                html += '<div class="linea-dosis">';
+                html += '<span class="etiqueta-bloque">Químicos aplicados</span>'
+                    + '<div class="linea-dosis">';
 
                 medicion.dosis.forEach(function (dosis) {
                     html += '<span class="pastilla-dosis">' + limpiar(dosis.producto) + ' · ' + limpiar(dosis.cantidad) + ' ' + limpiar(dosis.unidad) + '</span>';
@@ -67,14 +69,17 @@ function dibujarDia(datos) {
             }
 
             if (medicion.observacion) {
-                html += '<p class="observacion-piscina">' + limpiar(medicion.observacion) + '</p>';
+                html += '<span class="etiqueta-bloque">Observación del técnico</span>'
+                    + '<p class="observacion-piscina">' + limpiar(medicion.observacion) + '</p>';
             }
 
             html += '</div>';
         });
 
         if (ronda.observacion) {
-            html += '<p class="observacion-ronda">' + limpiar(ronda.observacion) + '</p>';
+            html += '<p class="observacion-ronda">'
+                + '<span class="etiqueta-observacion">Observación de la ronda</span>'
+                + limpiar(ronda.observacion) + '</p>';
         }
 
         html += '</div>';

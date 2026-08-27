@@ -116,6 +116,8 @@
                                         @endif
                                     </div>
 
+                                    <span class="etiqueta-bloque">Pruebas del agua</span>
+
                                     <div class="rejilla-lecturas">
                                         <div class="lectura"><span>Cl libre</span><strong>{{ $medicion->cl_libre ?? '—' }}</strong></div>
                                         <div class="lectura"><span>Cl total</span><strong>{{ $medicion->cl_total ?? '—' }}</strong></div>
@@ -127,6 +129,8 @@
                                     </div>
 
                                     @if ($medicion->dosis->count())
+                                        <span class="etiqueta-bloque">Químicos aplicados</span>
+
                                         <div class="linea-dosis">
                                             @foreach ($medicion->dosis as $dosis)
                                                 <span class="pastilla-dosis">{{ $dosis->producto->nombre }} · {{ $dosis->cantidad }} {{ $dosis->producto->unidad }}</span>
@@ -135,13 +139,18 @@
                                     @endif
 
                                     @if ($medicion->observacion)
+                                        <span class="etiqueta-bloque">Observación del técnico</span>
+
                                         <p class="observacion-piscina">{{ $medicion->observacion }}</p>
                                     @endif
                                 </div>
                             @endforeach
 
                             @if ($ronda->observacion)
-                                <p class="observacion-ronda">{{ $ronda->observacion }}</p>
+                                <p class="observacion-ronda">
+                                    <span class="etiqueta-observacion">Observación de la ronda</span>
+                                    {{ $ronda->observacion }}
+                                </p>
                             @endif
                         </div>
                     @endforeach

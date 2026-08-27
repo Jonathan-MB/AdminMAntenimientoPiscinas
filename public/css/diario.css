@@ -295,6 +295,31 @@
     padding: 3px 9px;
 }
 
+.etiqueta-bloque {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #5f6062;
+    margin-top: 14px;
+    margin-bottom: 6px;
+}
+
+.cabecera-piscina + .etiqueta-bloque {
+    margin-top: 0;
+}
+
+.etiqueta-observacion {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #00519e;
+    margin-bottom: 4px;
+}
+
 .rejilla-lecturas {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(84px, 1fr));
@@ -330,7 +355,6 @@
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
-    margin-top: 12px;
 }
 
 .pastilla-dosis {
@@ -343,9 +367,10 @@
 
 .observacion-piscina {
     font-size: 13px;
-    color: #5f6062;
-    font-style: italic;
-    margin-top: 10px;
+    color: #1a1a1a;
+    background-color: #f5f7fa;
+    border-radius: 3px;
+    padding: 9px 12px;
 }
 
 .observacion-ronda {
