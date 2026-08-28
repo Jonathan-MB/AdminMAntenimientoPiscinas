@@ -9,18 +9,20 @@ class ProductoSeeder extends Seeder
 {
     public function run(): void
     {
-        //  Los químicos del formato de pruebas, con la unidad tal como está impresa.
+        //  Los químicos del formato de pruebas. La unidad es la que se usa al
+        //  dosificar en piscina: líquidos en galones u onzas según el tamaño de
+        //  la dosis, sólidos en libras. Las tabletas se cuentan, no se pesan.
         //  "back Wash" no está aquí: es una acción, va como booleano en mediciones.
         $productos = [
-            ['nombre' => 'Ácido muriático',      'unidad' => 'gallon'],
-            ['nombre' => 'Alguicida',            'unidad' => 'und'],
-            ['nombre' => 'Super blue',           'unidad' => 'und'],
-            ['nombre' => 'Cloro granulado',      'unidad' => '1.5 lb / cup'],
-            ['nombre' => 'Tricloro',             'unidad' => 'cup'],
-            ['nombre' => 'Tabletas 3"',          'unidad' => 'und'],
-            ['nombre' => 'Bicarbonato de sodio', 'unidad' => 'pack'],
-            ['nombre' => 'Ácido cianúrico',      'unidad' => 'lb'],
-            ['nombre' => 'Balance fosfato',      'unidad' => 'und'],
+            ['nombre' => 'Ácido muriático',      'unidad' => 'galones'],
+            ['nombre' => 'Alguicida',            'unidad' => 'onzas'],
+            ['nombre' => 'Super blue',           'unidad' => 'onzas'],
+            ['nombre' => 'Cloro granulado',      'unidad' => 'libras'],
+            ['nombre' => 'Tricloro',             'unidad' => 'libras'],
+            ['nombre' => 'Tabletas 3"',          'unidad' => 'tabletas'],
+            ['nombre' => 'Bicarbonato de sodio', 'unidad' => 'libras'],
+            ['nombre' => 'Ácido cianúrico',      'unidad' => 'libras'],
+            ['nombre' => 'Balance fosfato',      'unidad' => 'onzas'],
         ];
 
         $orden = 1;

@@ -424,7 +424,7 @@ Sale directo de los dos formatos en papel que llenan los empleados.
 | `hoteles` | El cliente |
 | `rondas_programadas` | La lista de rondas de cada hotel: nombre, hora y orden |
 | `piscinas` | Las piscinas de cada hotel (POOL VIP, BIG POOL, SPA HOT…), editables |
-| `productos` | Los 9 químicos con su unidad: gallon, und, cup, pack, lb |
+| `productos` | Los 9 químicos con su unidad: galones, onzas, libras o tabletas |
 | `jornadas` | La hoja del día: fecha, lectura del metro de agua, quién firma |
 | `rondas` | La ronda que se hizo ese día, con la hora real y la observación |
 | `mediciones` | Las 7 lecturas por piscina y ronda, más el retrolavado |
@@ -437,6 +437,26 @@ Las **7 lecturas** son las del formato: `cl_libre`, `cl_total`, `cl_combinado`, 
 
 `back Wash` del papel **no es un producto**: es una acción, y va como el booleano `retrolavado`
 en `mediciones`.
+
+
+### Las unidades de los químicos
+
+El formato en papel decía «und» en varios químicos, que no mide nada. Cada producto lleva ahora
+la unidad con la que de verdad se dosifica:
+
+| Unidad | Productos |
+|---|---|
+| **galones** | Ácido muriático |
+| **onzas** | Alguicida, Super blue, Balance fosfato |
+| **libras** | Cloro granulado, Tricloro, Bicarbonato de sodio, Ácido cianúrico |
+| **tabletas** | Tabletas 3" |
+
+El criterio: líquidos en galones u onzas según el tamaño de la dosis, sólidos en libras. Las
+tabletas son la excepción y se cuentan: nadie las pesa, echa tres. «Cloro granulado» decía
+«1.5 lb / cup», que era la medida del cacito y no una unidad.
+
+Están en `ProductoSeeder`. Como usa `firstOrCreate`, cambiar una unidad ahí **no actualiza** los
+productos ya sembrados: hay que tocarlos también en la base.
 
 ### Las piscinas y las rondas son datos, no columnas
 
