@@ -125,7 +125,7 @@
 </div>
 
 <script>
-    const rutaUsuarios = '/usuarios';
+    const rutaUsuarios = '{{ url('/usuarios') }}';
     const rolHotelId = {{ $roles->firstWhere('nombre', \App\Models\Rol::HOTEL)?->id ?? 0 }};
 </script>
 

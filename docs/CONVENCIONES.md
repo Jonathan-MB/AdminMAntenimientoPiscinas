@@ -239,8 +239,28 @@ JS plano, un archivo por vista, sin frameworks ni compilación. Se carga al fina
 - Banners de sección: `// ============ ELIMINAR ============`
 - Validación en el cliente; el servidor revalida igual.
 
-Las rutas del `fetch` van **absolutas** (`/usuarios`) porque el sitio cuelga de la raíz del
-dominio. No se cambian a relativas: si algo falla en local, el problema es el montaje local.
+### Las rutas del fetch las genera Blade
+
+Las rutas del `fetch` son **absolutas**, nunca relativas. Pero **no se escriben a mano**: las
+genera Blade con `url()`.
+
+```blade
+<script>
+    const rutaUsuarios = '{{ url('/usuarios') }}';
+</script>
+```
+
+El motivo es concreto. Escribir `'/usuarios'` a mano da una ruta desde la raíz del dominio, y
+esta aplicación cuelga de un subdirectorio: la petición se iba a `http://localhost/usuarios`,
+que no existe, y el `catch` del JavaScript mostraba «Error de conexión».
+
+`url()` devuelve la ruta correcta esté donde esté montada la aplicación, en local y en
+producción, sin tocar el código.
+
+**Al probar una llamada de JavaScript, hay que armar la URL como la arma el navegador.** Este
+error estuvo en las siete constantes de ruta del proyecto y no lo detectó ninguna prueba,
+porque las pruebas usaban `curl` con la URL completa mientras el navegador usaba la corta. Una
+prueba que no reproduce el camino real no prueba nada.
 
 ---
 

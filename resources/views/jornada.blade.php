@@ -111,7 +111,7 @@
 
 <script>
     const jornadaId = {{ $jornada->id }};
-    const rutaJornada = '/jornada/{{ $jornada->id }}';
+    const rutaJornada = '{{ url('/jornada/' . $jornada->id) }}';
 </script>
 
 <script src="@recurso('js/jornada.js')"></script>

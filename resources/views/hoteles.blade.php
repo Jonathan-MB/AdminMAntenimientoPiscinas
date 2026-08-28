@@ -114,7 +114,7 @@
 </div>
 
 <script>
-    const rutaHoteles = '/hoteles';
+    const rutaHoteles = '{{ url('/hoteles') }}';
 </script>
 
 <script src="@recurso('js/hoteles.js')"></script>

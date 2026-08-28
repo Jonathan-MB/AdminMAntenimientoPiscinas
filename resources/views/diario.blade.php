@@ -166,7 +166,7 @@
 
 <script>
     const hotelId = {{ $hotel->id }};
-    const rutaDia = '/diario/{{ $hotel->id }}/dia';
+    const rutaDia = '{{ url('/diario/' . $hotel->id . '/dia') }}';
 </script>
 
 <script src="@recurso('js/diario.js')"></script>

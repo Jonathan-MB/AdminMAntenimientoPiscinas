@@ -241,9 +241,9 @@
 
 <script>
     const hotelId = {{ $hotel->id }};
-    const rutaHoteles = '/hoteles';
-    const rutaPiscinas = '/piscinas';
-    const rutaRondas = '/rondas';
+    const rutaHoteles = '{{ url('/hoteles') }}';
+    const rutaPiscinas = '{{ url('/piscinas') }}';
+    const rutaRondas = '{{ url('/rondas') }}';
 </script>
 
 <script src="@recurso('js/hotel.js')"></script>
