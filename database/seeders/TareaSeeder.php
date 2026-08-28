@@ -22,7 +22,6 @@ class TareaSeeder extends Seeder
                 'Realizar las pruebas químicas al agua de la piscina',
                 'Llenar los formatos según los resultados',
                 'Tomar también la secuencia del lleno de agua de la piscina',
-                'Retiro de químicos que sean necesario utilizar',
                 'Suministrar los químicos necesarios según resultado de pruebas químicas',
             ]],
 
@@ -52,7 +51,6 @@ class TareaSeeder extends Seeder
                 'Llenar los formatos según los resultados',
                 'Tomar también la secuencia del lleno de agua de la piscina',
                 'Suministrar los químicos necesarios según resultado de pruebas químicas',
-                'Realizar el retrolavado de los filtros según indique la presión de los mismos',
             ]],
         ];
 
