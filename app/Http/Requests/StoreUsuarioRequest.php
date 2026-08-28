@@ -21,7 +21,8 @@ class StoreUsuarioRequest extends FormRequest
             'nombre_usuario' => ['required', 'string', 'max:45', 'unique:usuarios,nombre_usuario'],
             'correo'         => ['required', 'email', 'max:120', 'unique:usuarios,correo'],
             'password'       => ['required', 'string', 'min:8', 'max:60'],
-            'rol_id'         => ['required', 'integer', 'exists:roles,id'],
+            'roles'          => ['required', 'array', 'min:1'],
+            'roles.*'        => ['integer', 'exists:roles,id'],
             'hotel_id'       => ['nullable', 'integer', 'exists:hoteles,id'],
         ];
     }
@@ -37,8 +38,9 @@ class StoreUsuarioRequest extends FormRequest
             'correo.unique'           => 'Ese correo ya esta registrado',
             'password.required'       => 'La contrasena es obligatoria',
             'password.min'            => 'La contrasena debe tener al menos 8 caracteres',
-            'rol_id.required'         => 'Debes elegir un rol',
-            'rol_id.exists'           => 'El rol elegido no existe',
+            'roles.required'          => 'Debes elegir al menos un rol',
+            'roles.min'               => 'Debes elegir al menos un rol',
+            'roles.*.exists'          => 'Uno de los roles elegidos no existe',
         ];
     }
 
@@ -47,7 +49,6 @@ class StoreUsuarioRequest extends FormRequest
     {
         $this->merge([
             'nombre_usuario' => $this->nombreUsuario,
-            'rol_id'         => $this->rolId,
             'hotel_id'       => $this->hotelId,
         ]);
     }

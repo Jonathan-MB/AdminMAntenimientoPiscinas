@@ -29,8 +29,8 @@
             </div>
 
             <div class="dato-fijo">
-                <span class="titulo-elemento">Rol</span>
-                <strong>{{ $usuario->rol->nombre }}</strong>
+                <span class="titulo-elemento">{{ count($usuario->nombresDeRoles()) === 1 ? 'Rol' : 'Roles' }}</span>
+                <strong>{{ implode(', ', $usuario->nombresDeRoles()) }}</strong>
             </div>
 
             @if ($usuario->hotel)
@@ -40,7 +40,7 @@
                 </div>
             @endif
 
-            <p class="nota-formulario">El nombre de usuario y el rol los cambia un administrador.</p>
+            <p class="nota-formulario">El nombre de usuario y los roles los cambia un administrador.</p>
 
             <form method="POST" action="{{ route('perfil.update') }}">
                 @csrf

@@ -25,7 +25,8 @@ class UpdateUsuarioRequest extends FormRequest
                 'nombre_usuario' => ['required', 'string', 'max:45', Rule::unique('usuarios', 'nombre_usuario')->ignore($id)],
                 'correo'         => ['required', 'email', 'max:120', Rule::unique('usuarios', 'correo')->ignore($id)],
                 'password'       => ['nullable', 'string', 'min:8', 'max:60'],
-                'rol_id'         => ['required', 'integer', 'exists:roles,id'],
+                'roles'          => ['required', 'array', 'min:1'],
+                'roles.*'        => ['integer', 'exists:roles,id'],
                 'activo'         => ['required', 'boolean'],
             ];
         }
@@ -35,7 +36,8 @@ class UpdateUsuarioRequest extends FormRequest
             'nombre_usuario' => ['sometimes', 'string', 'max:45', Rule::unique('usuarios', 'nombre_usuario')->ignore($id)],
             'correo'         => ['sometimes', 'email', 'max:120', Rule::unique('usuarios', 'correo')->ignore($id)],
             'password'       => ['sometimes', 'string', 'min:8', 'max:60'],
-            'rol_id'         => ['sometimes', 'integer', 'exists:roles,id'],
+            'roles'          => ['sometimes', 'array', 'min:1'],
+            'roles.*'        => ['integer', 'exists:roles,id'],
             'activo'         => ['sometimes', 'boolean'],
         ];
     }
@@ -48,7 +50,8 @@ class UpdateUsuarioRequest extends FormRequest
             'correo.email'          => 'El correo no tiene un formato valido',
             'correo.unique'         => 'Ese correo ya esta registrado',
             'password.min'          => 'La contrasena debe tener al menos 8 caracteres',
-            'rol_id.exists'         => 'El rol elegido no existe',
+            'roles.min'             => 'Debes elegir al menos un rol',
+            'roles.*.exists'        => 'Uno de los roles elegidos no existe',
         ];
     }
 
@@ -59,10 +62,6 @@ class UpdateUsuarioRequest extends FormRequest
 
         if ($this->has('nombreUsuario')) {
             $data['nombre_usuario'] = $this->nombreUsuario;
-        }
-
-        if ($this->has('rolId')) {
-            $data['rol_id'] = $this->rolId;
         }
 
         $this->merge($data);

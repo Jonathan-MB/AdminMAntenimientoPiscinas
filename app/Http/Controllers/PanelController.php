@@ -15,22 +15,27 @@ class PanelController extends Controller
     {
         $usuario = Auth::user();
 
-        //  Cada rol entra directo a lo suyo, no a mirar sus propios datos
-        if ($usuario->tieneRol(Rol::COLABORADOR)) {
-            return redirect()->route('registro.index');
-        }
+        //  Cada rol entra directo a lo suyo, no a mirar sus propios datos.
+        //  Con varios roles manda el mas amplio: quien ademas administra ve el
+        //  panel, no la pantalla de registro.
+        if (! $usuario->tieneRol(Rol::MASTER, Rol::ADMINISTRADOR)) {
 
-        if ($usuario->tieneRol(Rol::HOTEL)) {
-            if (! $usuario->hotel_id) {
-                return view('panel', [
-                    'jornadas' => collect(),
-                    'hoteles'  => collect(),
-                    'empleados' => collect(),
-                    'sinHotel' => true,
-                ]);
+            if ($usuario->tieneRol(Rol::COLABORADOR)) {
+                return redirect()->route('registro.index');
             }
 
-            return redirect()->route('diario.index', $usuario->hotel_id);
+            if ($usuario->tieneRol(Rol::HOTEL)) {
+                if (! $usuario->hotel_id) {
+                    return view('panel', [
+                        'jornadas'  => collect(),
+                        'hoteles'   => collect(),
+                        'empleados' => collect(),
+                        'sinHotel'  => true,
+                    ]);
+                }
+
+                return redirect()->route('diario.index', $usuario->hotel_id);
+            }
         }
 
         //  Master y administrador: las jornadas de todos los hoteles, filtrables

@@ -42,9 +42,9 @@ class UsuarioPruebaSeeder extends Seeder
             $usuario->correo   = $nombre . '@aqualive.test';
             $usuario->password = $clave;
             $usuario->activo   = true;
-            $usuario->rol_id   = $rol->id;
             $usuario->hotel_id = $hotelId;
             $usuario->save();
+            $usuario->roles()->sync([$rol->id]);
 
             $this->command->info("Cuenta de prueba: $nombre ($rolNombre)");
         }

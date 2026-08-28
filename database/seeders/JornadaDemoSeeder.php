@@ -28,7 +28,7 @@ class JornadaDemoSeeder extends Seeder
             return;
         }
 
-        $usuario = Usuario::whereHas('rol', function ($consulta) {
+        $usuario = Usuario::whereHas('roles', function ($consulta) {
             $consulta->where('nombre', Rol::COLABORADOR);
         })->first() ?? Usuario::first();
 

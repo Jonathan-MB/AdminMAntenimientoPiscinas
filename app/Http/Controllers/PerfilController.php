@@ -11,7 +11,7 @@ class PerfilController extends Controller
 {
     public function index(Request $request)
     {
-        $usuario = Auth::user()->load('rol', 'hotel');
+        $usuario = Auth::user()->load('roles', 'hotel');
 
         return view('perfil', compact('usuario'));
     }

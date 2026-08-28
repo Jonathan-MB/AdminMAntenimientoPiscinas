@@ -23,7 +23,7 @@
                 <tr>
                     <th>Usuario</th>
                     <th>Correo</th>
-                    <th>Rol</th>
+                    <th>Roles</th>
                     <th>Hotel</th>
                     <th title="Un usuario inactivo no puede iniciar sesión">Estado</th>
                     <th class="columna-acciones">Acciones</th>
@@ -34,7 +34,11 @@
                     <tr data-usuario="{{ $usuario->id }}">
                         <td data-titulo="Usuario">{{ $usuario->nombre_usuario }}</td>
                         <td data-titulo="Correo">{{ $usuario->correo }}</td>
-                        <td data-titulo="Rol"><span class="etiqueta-rol etiqueta-{{ $usuario->rol->nombre }}">{{ $usuario->rol->nombre }}</span></td>
+                        <td data-titulo="Roles">
+                            @foreach ($usuario->nombresDeRoles() as $nombreRol)
+                                <span class="etiqueta-rol etiqueta-{{ $nombreRol }}">{{ $nombreRol }}</span>
+                            @endforeach
+                        </td>
                         <td data-titulo="Hotel">{{ $usuario->hotel?->nombre ?: '—' }}</td>
                         <td data-titulo="Estado">{{ $usuario->activo ? 'Activo' : 'Inactivo' }}</td>
                         <td data-titulo="Acciones" class="columna-acciones">
@@ -46,11 +50,11 @@
                                 </form>
                             @endif
 
-                            @if ($usuario->rol->nombre === \App\Models\Rol::MASTER)
+                            @if ($usuario->esMaster())
                                 <span class="nota-bloqueado">No se puede eliminar</span>
                             @elseif ($usuario->id === auth()->id())
                                 <span class="nota-bloqueado">Eres tú</span>
-                            @elseif ($usuario->rol->nombre === \App\Models\Rol::ADMINISTRADOR && ! auth()->user()->esMaster())
+                            @elseif ($usuario->esAdministrador() && ! auth()->user()->esMaster())
                                 <span class="nota-bloqueado">Solo el master</span>
                             @else
                                 <button class="boton-eliminar" type="button"
@@ -93,13 +97,20 @@
                 </div>
 
                 <div class="elemento-formulario">
-                    <label class="titulo-elemento" for="rolId">Rol</label>
-                    <select class="campo-formulario" id="rolId" name="rolId" required>
-                        <option value="">Elige un rol</option>
+                    <span class="titulo-elemento">Roles</span>
+
+                    <p class="nota-formulario nota-suelta">Un usuario puede tener varios. Los permisos se suman.</p>
+
+                    <div class="lista-roles">
                         @foreach ($roles as $rol)
-                            <option value="{{ $rol->id }}" @selected(old('rolId') == $rol->id)>{{ $rol->nombre }}</option>
+                            <label class="linea-rol">
+                                <input type="checkbox" name="roles[]" value="{{ $rol->id }}"
+                                       data-rol="{{ $rol->nombre }}"
+                                       @checked(in_array($rol->id, old('roles', [])))>
+                                <span>{{ $rol->nombre }}</span>
+                            </label>
                         @endforeach
-                    </select>
+                    </div>
                 </div>
 
                 <div class="elemento-formulario" id="grupoHotel">

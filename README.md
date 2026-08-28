@@ -79,12 +79,29 @@ Los seeders usan `firstOrCreate`, así que se pueden correr dos veces sin duplic
 El login es con **nombre de usuario y contraseña** (no con correo).
 El correo se pide al crear el usuario, pero no sirve para entrar.
 
+**Un usuario puede tener varios roles**, guardados en la tabla `rol_usuario`. La excepción es
+`master`, que es exclusivo: quien lo tiene no lleva ningún otro, y no se asigna desde la
+pantalla.
+
 | Rol | Qué puede hacer |
 |---|---|
-| **master** | Todo. Es el único que puede eliminar administradores. **No lo puede eliminar nadie.** |
+| **master** | Todo. Es el único que puede eliminar administradores. **No lo puede eliminar nadie.** Es un rol **exclusivo**. |
 | **administrador** | Crear usuarios y asignar roles. **No puede eliminar a otro administrador.** |
 | **colaborador** | Ingresar la información de mantenimiento. |
 | **hotel** | Ver su información y la de sus piscinas. Solo lectura. |
+
+### Los permisos se suman, las protecciones no
+
+Dos reglas que se leen distinto cuando alguien tiene varios roles:
+
+- **Los permisos se suman.** Quien es `colaborador` y `administrador` puede hacer lo de ambos:
+  entra al registro y también a usuarios y hoteles.
+- **Las protecciones no se suman: gana la más fuerte.** A ese mismo usuario **solo lo puede
+  eliminar el master**, porque entre sus roles está `administrador`. Lo contrario dejaría un
+  hueco: bastaría añadirle un rol menor a un administrador para poder borrarlo.
+
+Por lo mismo, **al entrar manda el rol más amplio**: quien es colaborador y además administra
+aterriza en el panel, no en la pantalla de registro.
 
 ### Reglas de eliminación
 
@@ -92,7 +109,7 @@ Están en `UsuarioController::destroy` y se aplican en este orden:
 
 1. Al `master` no lo elimina nadie, nunca.
 2. Nadie se elimina a sí mismo.
-3. A un `administrador` solo lo elimina el `master`.
+3. Si entre sus roles está `administrador`, solo lo elimina el `master`.
 4. Al resto lo puede eliminar `master` o `administrador`.
 
 ### El rol master no se asigna desde la pantalla

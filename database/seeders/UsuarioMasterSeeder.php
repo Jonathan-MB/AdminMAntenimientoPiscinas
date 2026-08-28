@@ -36,13 +36,15 @@ class UsuarioMasterSeeder extends Seeder
             $generada = true;
         }
 
-        Usuario::create([
+        $usuario = Usuario::create([
             'nombre_usuario' => $nombreUsuario,
             'correo'         => env('MASTER_CORREO', 'master@aqualive.test'),
             'password'       => $password,
             'activo'         => true,
-            'rol_id'         => $rol->id,
         ]);
+
+        //  El master es exclusivo: no lleva ningun otro rol
+        $usuario->roles()->sync([$rol->id]);
 
         $this->command->info("Usuario master creado: $nombreUsuario");
 

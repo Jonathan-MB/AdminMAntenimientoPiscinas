@@ -14,7 +14,7 @@ class UsuarioController extends Controller
 {
     public function index(Request $request)
     {
-        $usuarios = Usuario::with('rol', 'hotel')->orderBy('nombre_usuario')->get();
+        $usuarios = Usuario::with('roles', 'hotel')->orderBy('nombre_usuario')->get();
         $roles    = $this->rolesQuePuedeAsignar();
         $hoteles  = Hotel::where('activo', true)->orderBy('nombre')->get();
 
@@ -26,16 +26,17 @@ class UsuarioController extends Controller
     public function store(StoreUsuarioRequest $request)
     {
         $datos = $request->validated();
+        $roles = $datos['roles'];
+        unset($datos['roles']);
 
-        //  Nadie crea un master desde la pantalla, ni siquiera el master
-        $rol = Rol::find($datos['rol_id']);
+        $error = $this->revisarRoles($roles);
 
-        if ($rol->nombre === Rol::MASTER) {
-            return redirect()->back()->with('error', 'El rol master no se asigna desde aqui');
+        if ($error) {
+            return redirect()->back()->withInput()->with('error', $error);
         }
 
         //  Solo el rol hotel lleva un hotel asignado
-        if ($rol->nombre === Rol::HOTEL) {
+        if ($this->incluyeRol($roles, Rol::HOTEL)) {
             if (empty($datos['hotel_id'])) {
                 return redirect()->back()
                     ->withInput()
@@ -45,7 +46,8 @@ class UsuarioController extends Controller
             $datos['hotel_id'] = null;
         }
 
-        Usuario::create($datos);
+        $usuario = Usuario::create($datos);
+        $usuario->roles()->sync($roles);
 
         return redirect()->back()->with('mensajeCreado', 'Usuario creado correctamente');
     }
@@ -55,16 +57,18 @@ class UsuarioController extends Controller
     public function update(UpdateUsuarioRequest $request, Usuario $usuario)
     {
         $data = $request->validated();
+        $roles = $data['roles'] ?? null;
+        unset($data['roles']);
 
         // PATCH sin data
-        if (empty($data)) {
+        if (empty($data) && $roles === null) {
             return response()->json([
                 'message' => 'Sin datos'
             ], 422);
         }
 
-        //  Al master no se le cambia el rol ni se le desactiva
-        if ($usuario->esMaster() && (isset($data['rol_id']) || isset($data['activo']))) {
+        //  Al master no se le cambian los roles ni se le desactiva
+        if ($usuario->esMaster() && ($roles !== null || isset($data['activo']))) {
             return response()->json([
                 'message' => 'El usuario master no se puede modificar de esa forma'
             ], 403);
@@ -77,22 +81,21 @@ class UsuarioController extends Controller
             ], 403);
         }
 
-        //  Nadie asciende a nadie a master
-        if (isset($data['rol_id'])) {
-            $rol = Rol::find($data['rol_id']);
+        if ($roles !== null) {
+            $error = $this->revisarRoles($roles);
 
-            if ($rol->nombre === Rol::MASTER) {
-                return response()->json([
-                    'message' => 'El rol master no se asigna desde aqui'
-                ], 403);
+            if ($error) {
+                return response()->json(['message' => $error], 403);
             }
         }
 
         // Cargar datos sin guardar
         $usuario->fill($data);
 
+        $cambioRoles = $roles !== null && $usuario->roles->pluck('id')->sort()->values()->all() !== collect($roles)->map('intval')->sort()->values()->all();
+
         // No hubo cambios
-        if (! $usuario->isDirty()) {
+        if (! $usuario->isDirty() && ! $cambioRoles) {
             return response()->json([
                 'message' => 'No se detectaron cambios'
             ], 422);
@@ -100,9 +103,13 @@ class UsuarioController extends Controller
 
         $usuario->save();
 
+        if ($cambioRoles) {
+            $usuario->roles()->sync($roles);
+        }
+
         return response()->json([
             'message' => 'Actualizado Correctamente',
-            'data'    => $usuario->fresh()->load('rol')
+            'data'    => $usuario->fresh()->load('roles')
         ], 200);
     }
 
@@ -126,7 +133,8 @@ class UsuarioController extends Controller
             ], 403);
         }
 
-        //  A un administrador solo lo elimina el master
+        //  Con varios roles gana la proteccion mas fuerte: si entre sus roles
+        //  esta administrador, solo el master puede eliminarlo
         if ($usuario->esAdministrador() && ! $actual->esMaster()) {
             return response()->json([
                 'message' => 'Solo el master puede eliminar a un administrador'
@@ -142,9 +150,30 @@ class UsuarioController extends Controller
 
 
 
+    //  El master es exclusivo: no se asigna desde la pantalla ni convive con otros roles
+    private function revisarRoles(array $roles): ?string
+    {
+        $master = Rol::where('nombre', Rol::MASTER)->first();
+
+        if ($master && in_array($master->id, array_map('intval', $roles), true)) {
+            return 'El rol master no se asigna desde aqui';
+        }
+
+        return null;
+    }
+
+
+
+    private function incluyeRol(array $roles, string $nombre): bool
+    {
+        return Rol::whereIn('id', $roles)->where('nombre', $nombre)->exists();
+    }
+
+
+
     //  El master tampoco asigna master desde la pantalla: ese rol se siembra
     private function rolesQuePuedeAsignar()
     {
-        return Rol::where('nombre', '!=', Rol::MASTER)->orderBy('nombre')->get();
+        return Rol::where('nombre', '!=', Rol::MASTER)->orderBy('id')->get();
     }
 }

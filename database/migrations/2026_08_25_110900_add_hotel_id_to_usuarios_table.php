@@ -10,7 +10,7 @@ return new class extends Migration
     {
         //  Solo lo usan los usuarios con rol hotel: es el hotel que pueden consultar
         Schema::table('usuarios', function (Blueprint $table) {
-            $table->foreignId('hotel_id')->nullable()->after('rol_id')->constrained('hoteles')->nullOnDelete();
+            $table->foreignId('hotel_id')->nullable()->after('activo')->constrained('hoteles')->nullOnDelete();
         });
     }
 

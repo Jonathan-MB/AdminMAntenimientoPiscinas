@@ -73,13 +73,20 @@ botonesEliminar.forEach(function (boton) {
 
 // ============ EL HOTEL SOLO APLICA AL ROL HOTEL ============
 
-const selectorRol = document.getElementById('rolId');
+const casillasRol = document.querySelectorAll('input[name="roles[]"]');
 const grupoHotel = document.getElementById('grupoHotel');
 const selectorHotel = document.getElementById('hotelId');
 
 
 function alternarHotel() {
-    const esHotel = selectorRol.value !== '' && Number(selectorRol.value) === rolHotelId;
+    //  El hotel solo hace falta si entre los roles marcados esta el de hotel
+    let esHotel = false;
+
+    casillasRol.forEach(function (casilla) {
+        if (casilla.checked && Number(casilla.value) === rolHotelId) {
+            esHotel = true;
+        }
+    });
 
     grupoHotel.style.display = esHotel ? 'flex' : 'none';
     selectorHotel.required = esHotel;
@@ -90,7 +97,10 @@ function alternarHotel() {
 }
 
 
-selectorRol.addEventListener('change', alternarHotel);
+casillasRol.forEach(function (casilla) {
+    casilla.addEventListener('change', alternarHotel);
+});
+
 alternarHotel();
 
 

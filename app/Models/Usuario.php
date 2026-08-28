@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -18,7 +19,6 @@ class Usuario extends Authenticatable
         'correo',
         'password',
         'activo',
-        'rol_id',
         'hotel_id',
     ];
 
@@ -33,9 +33,9 @@ class Usuario extends Authenticatable
     ];
 
 
-    public function rol(): BelongsTo
+    public function roles(): BelongsToMany
     {
-        return $this->belongsTo(Rol::class, 'rol_id');
+        return $this->belongsToMany(Rol::class, 'rol_usuario', 'usuario_id', 'rol_id');
     }
 
 
@@ -46,10 +46,11 @@ class Usuario extends Authenticatable
     }
 
 
-    //  Compara contra el nombre del rol, no contra el id
+    //  Los permisos se suman: basta con tener uno de los roles preguntados.
+    //  Se compara contra el nombre del rol, nunca contra el id.
     public function tieneRol(string ...$nombres): bool
     {
-        return $this->rol !== null && in_array($this->rol->nombre, $nombres, true);
+        return $this->roles->whereIn('nombre', $nombres)->isNotEmpty();
     }
 
 
@@ -62,5 +63,12 @@ class Usuario extends Authenticatable
     public function esAdministrador(): bool
     {
         return $this->tieneRol(Rol::ADMINISTRADOR);
+    }
+
+
+    //  Los nombres de sus roles, en orden, para mostrarlos
+    public function nombresDeRoles(): array
+    {
+        return $this->roles->sortBy('id')->pluck('nombre')->all();
     }
 }

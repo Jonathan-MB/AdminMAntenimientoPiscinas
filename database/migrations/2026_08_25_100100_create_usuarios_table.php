@@ -16,8 +16,6 @@ return new class extends Migration
             $table->boolean('activo')->default(true);
             $table->rememberToken();
 
-            $table->foreignId('rol_id')->constrained('roles')->restrictOnDelete();
-
             $table->timestamps();
 
         });
