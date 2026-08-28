@@ -20,7 +20,13 @@
             </p>
         </div>
 
-        <span class="contador-piscinas" title="Piscina {{ $posicion + 1 }} de las {{ $piscinas->count() }} activas de este hotel">Piscina {{ $posicion + 1 }} de {{ $piscinas->count() }}</span>
+        <div class="lado-cabecera">
+            <span class="contador-piscinas" title="Piscina {{ $posicion + 1 }} de las {{ $piscinas->count() }} activas de este hotel">Piscina {{ $posicion + 1 }} de {{ $piscinas->count() }}</span>
+
+            @if ($editable)
+                <span class="estado-guardado" id="estadoGuardado">Se guarda solo</span>
+            @endif
+        </div>
     </div>
 
     @include('partials.mensaje')
@@ -35,7 +41,8 @@
         </div>
     @endunless
 
-    <form method="POST" action="{{ route('registro.medicion.store', ['jornada' => $jornada, 'rondaProgramada' => $rondaProgramada, 'piscina' => $piscina]) }}">
+    <form id="formularioMedicion" method="POST"
+          action="{{ route('registro.medicion.store', ['jornada' => $jornada, 'rondaProgramada' => $rondaProgramada, 'piscina' => $piscina]) }}">
         @csrf
 
         {{-- --------------------LECTURAS------------------- --}}
@@ -119,21 +126,27 @@
         {{-- --------------------BOTONES------------------- --}}
 
         @if ($editable)
-            <div class="linea-guardar">
-                @if ($siguiente)
-                    <button class="boton-primario boton-grande" type="submit" name="siguiente" value="{{ $siguiente->id }}">
-                        Guardar y seguir con {{ $siguiente->nombre }}
-                    </button>
-                @endif
-
-                <button class="boton-secundario boton-grande" type="submit">
-                    Guardar y volver
-                </button>
-            </div>
+            <noscript>
+                <div class="linea-guardar">
+                    <button class="boton-primario boton-grande" type="submit">Guardar</button>
+                </div>
+            </noscript>
         @endif
     </form>
 
     {{-- --------------------NAVEGACION ENTRE PISCINAS------------------- --}}
+
+    <div class="linea-salida">
+        <a class="boton-primario boton-grande" href="{{ route('registro.jornada', $jornada) }}">
+            Listo, volver a las piscinas
+        </a>
+
+        @if ($siguiente)
+            <a class="boton-secundario boton-grande" href="{{ route('registro.medicion', ['jornada' => $jornada, 'rondaProgramada' => $rondaProgramada, 'piscina' => $siguiente]) }}">
+                Seguir con {{ $siguiente->nombre }}
+            </a>
+        @endif
+    </div>
 
     <div class="linea-navegacion">
         @if ($anterior)
@@ -143,16 +156,12 @@
         @else
             <span></span>
         @endif
-
-        @if ($siguiente)
-            <a class="enlace-navegacion" href="{{ route('registro.medicion', ['jornada' => $jornada, 'rondaProgramada' => $rondaProgramada, 'piscina' => $siguiente]) }}">
-                {{ $siguiente->nombre }} →
-            </a>
-        @endif
     </div>
 
   </div>
 
 </div>
+
+<script src="@recurso('js/medicion.js')"></script>
 
 @include('partials.footer')

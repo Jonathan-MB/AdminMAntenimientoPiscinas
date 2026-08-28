@@ -7,39 +7,88 @@ function cabeceras() {
 }
 
 
-// ============ LA TARJETA DE LA JORNADA ============
+// ============ GUARDADO AUTOMATICO DE LA TARJETA ============
 
-const botonGuardarJornada = document.getElementById('botonGuardarJornada');
+const estado = document.getElementById('estadoGuardado');
 
-if (botonGuardarJornada) {
-    botonGuardarJornada.addEventListener('click', async function () {
-        //  Una lectura por metro, indexada por el id del metro
-        const lecturas = {};
+let guardando = false;
+let pendiente = false;
 
-        document.querySelectorAll('[data-metro]').forEach(function (campo) {
-            lecturas[campo.dataset.metro] = campo.value;
+
+function mostrar(texto, clase) {
+    if (! estado) {
+        return;
+    }
+
+    estado.textContent = texto;
+    estado.className = 'estado-guardado ' + (clase || '');
+}
+
+
+async function guardarJornada() {
+    if (guardando) {
+        pendiente = true;
+        return;
+    }
+
+    guardando = true;
+    mostrar('Guardando…', 'estado-trabajando');
+
+    //  Una lectura por metro, indexada por el id del metro
+    const lecturas = {};
+
+    document.querySelectorAll('[data-metro]').forEach(function (campo) {
+        lecturas[campo.dataset.metro] = campo.value;
+    });
+
+    const materiales = document.getElementById('materialesSacados');
+
+    try {
+        const res = await fetch(rutaJornada, {
+            method: 'PATCH',
+            headers: cabeceras(),
+            body: JSON.stringify({
+                materialesSacados: materiales ? materiales.value : '',
+                lecturas: lecturas
+            })
         });
 
-        botonGuardarJornada.disabled = true;
+        const datos = await res.json();
 
-        try {
-            const res = await fetch(rutaJornada, {
-                method: 'PATCH',
-                headers: cabeceras(),
-                body: JSON.stringify({
-                    materialesSacados: document.getElementById('materialesSacados').value,
-                    lecturas: lecturas
-                })
-            });
-
-            const datos = await res.json();
-            alert(datos.message);
-        } catch (error) {
-            alert('Error de conexión al guardar');
+        if (res.ok) {
+            mostrar('Guardado ' + datos.hora, 'estado-hecho');
+        } else if (res.status === 422 && datos.errors) {
+            const primero = Object.values(datos.errors)[0][0];
+            mostrar(primero, 'estado-fallo');
+        } else if (res.status === 422) {
+            //  "No se detectaron cambios" no es un fallo: es que ya estaba guardado
+            mostrar('Guardado', 'estado-hecho');
+        } else {
+            mostrar(datos.message || 'No se pudo guardar', 'estado-fallo');
         }
+    } catch (error) {
+        mostrar('Sin conexión. Lo escrito no se ha guardado.', 'estado-fallo');
+    }
 
-        botonGuardarJornada.disabled = false;
+    guardando = false;
+
+    if (pendiente) {
+        pendiente = false;
+        guardarJornada();
+    }
+}
+
+
+if (estado) {
+    document.querySelectorAll('[data-metro]').forEach(function (campo) {
+        campo.addEventListener('change', guardarJornada);
     });
+
+    const materiales = document.getElementById('materialesSacados');
+
+    if (materiales) {
+        materiales.addEventListener('change', guardarJornada);
+    }
 }
 
 

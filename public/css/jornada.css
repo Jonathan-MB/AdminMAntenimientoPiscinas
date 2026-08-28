@@ -15,6 +15,16 @@
     padding: 22px 24px 24px;
 }
 
+.cabecera-tarjeta {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 12px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid #eef2f6;
+}
+
 .titulo-tarjeta {
     font-size: 18px;
     font-weight: 600;

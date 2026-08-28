@@ -117,8 +117,8 @@ class RegistroController extends Controller
         $jornada->save();
 
         return response()->json([
-            'message' => 'Actualizado Correctamente',
-            'data'    => $jornada->fresh()
+            'message' => 'Guardado',
+            'hora'    => now()->format('H:i'),
         ], 200);
     }
 

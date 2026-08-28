@@ -59,8 +59,13 @@ class MedicionController extends Controller
         $this->verificarPertenencia($jornada, $rondaProgramada, $piscina);
 
         if (! $jornada->puedeEditarla(Auth::user())) {
-            return redirect()->back()
-                ->with('error', 'Esta jornada ya no se puede editar. Pide a un administrador que la corrija.');
+            $aviso = 'Esta jornada ya no se puede editar. Pide a un administrador que la corrija.';
+
+            if ($request->expectsJson()) {
+                return response()->json(['message' => $aviso], 403);
+            }
+
+            return redirect()->back()->with('error', $aviso);
         }
 
         $datos = $request->validated();
@@ -96,13 +101,12 @@ class MedicionController extends Controller
             }
         });
 
-        //  "Guardar y siguiente" manda a donde diga el boton
-        if ($request->filled('siguiente')) {
-            return redirect()->route('registro.medicion', [
-                'jornada'         => $jornada,
-                'rondaProgramada' => $rondaProgramada,
-                'piscina'         => $request->input('siguiente'),
-            ])->with('mensajeCreado', $piscina->nombre . ' guardada');
+        //  El guardado automatico pide JSON; el formulario sin JavaScript, no
+        if ($request->expectsJson()) {
+            return response()->json([
+                'message' => 'Guardado',
+                'hora'    => now()->format('H:i'),
+            ], 200);
         }
 
         return redirect()->route('registro.jornada', $jornada)

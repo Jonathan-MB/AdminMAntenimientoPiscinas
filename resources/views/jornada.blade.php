@@ -31,7 +31,13 @@
 
         <section class="tarjeta-grande">
 
-            <h2 class="titulo-tarjeta">La jornada</h2>
+            <div class="cabecera-tarjeta">
+                <h2 class="titulo-tarjeta sin-borde">La jornada</h2>
+
+                @if ($editable)
+                    <span class="estado-guardado" id="estadoGuardado">Se guarda solo</span>
+                @endif
+            </div>
 
             <h3 class="titulo-bloque">Lecturas del metro de agua</h3>
 
@@ -72,12 +78,6 @@
                           placeholder="2 galones de ácido muriático, 1 caja de tabletas…"
                           @disabled(! $editable)>{{ $jornada->materiales_sacados }}</textarea>
             </div>
-
-            @if ($editable)
-                <button class="boton-primario boton-ancho boton-grande" type="button" id="botonGuardarJornada">
-                    Guardar la jornada
-                </button>
-            @endif
 
         </section>
 

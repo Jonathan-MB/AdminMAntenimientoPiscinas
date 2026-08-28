@@ -351,14 +351,35 @@ Tres pasos, pensados para un teléfono a las seis de la mañana:
      Las que ya tienen registro se marcan en verde con un visto.
 3. **`/jornada/{id}/medicion/{ronda}/{piscina}`** — una pantalla por piscina: las 7 lecturas,
    los 9 químicos con su unidad, el **nivel del agua** (alto, normal o bajo), el retrolavado y
-   la observación. El botón principal es **«Guardar y seguir con {la siguiente piscina}»**, para
-   no volver al menú entre piscina y piscina.
+   la observación.
 
 Dejar un campo en blanco significa **no medido**, que no es lo mismo que cero. Un químico en
 blanco significa que no se aplicó.
 
 La ronda se crea sola la primera vez que se guarda una piscina de esa ronda.
 
+
+
+### Se guarda solo
+
+No hay botón de guardar. **Cada campo se guarda al salir de él**, tanto en la tarjeta de la
+jornada como en la pantalla de cada piscina. Arriba a la derecha un indicador dice qué está
+pasando: «Guardando…», «Guardado 06:42» o el error concreto si algo no pasó la validación.
+
+El botón de abajo, **«Listo, volver a las piscinas»**, solo navega: lo escrito ya está en la
+base. Antes había dos botones de guardar y era fácil salir creyendo haber guardado.
+
+Detalles que importan:
+
+- Si un guardado se dispara mientras otro está en curso, **se encola uno solo al final** en vez
+  de mandar una petición por tecla.
+- Un `422` de «No se detectaron cambios» **no es un error**: es que ese valor ya estaba
+  guardado, y el indicador lo muestra como guardado.
+- Si se cae la conexión, el indicador lo dice en rojo: **«Sin conexión. Lo escrito no se ha
+  guardado.»** El técnico se entera en el momento, no al día siguiente.
+- Sin JavaScript el formulario sigue funcionando: hay un botón de guardar dentro de
+  `<noscript>` y el controlador responde con redirección en vez de JSON cuando la petición no
+  pide JSON.
 
 ### Los metros de agua
 
