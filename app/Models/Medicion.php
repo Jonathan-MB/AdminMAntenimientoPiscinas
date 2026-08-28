@@ -11,6 +11,11 @@ class Medicion extends Model
 {
     use HasFactory;
 
+    //  Los niveles se comparan por nombre, nunca por posicion
+    public const NIVEL_ALTO   = 'alto';
+    public const NIVEL_NORMAL = 'normal';
+    public const NIVEL_BAJO   = 'bajo';
+
     //  Laravel pluralizaria "Medicion" como "medicions"
     protected $table = 'mediciones';
 
@@ -23,6 +28,7 @@ class Medicion extends Model
         'dureza_calcio',
         'acido_cianurico',
         'retrolavado',
+        'nivel_agua',
         'observacion',
         'ronda_id',
         'piscina_id',

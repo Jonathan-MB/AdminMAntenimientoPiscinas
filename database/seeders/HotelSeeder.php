@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Hotel;
+use App\Models\MetroAgua;
 use App\Models\Piscina;
 use App\Models\RondaProgramada;
 use Illuminate\Database\Seeder;
@@ -46,5 +47,11 @@ class HotelSeeder extends Seeder
                 ['hora' => $ronda['hora'], 'orden' => $ronda['orden']]
             );
         }
+
+        //  Un metro para empezar. Se agregan mas desde la pantalla del hotel.
+        MetroAgua::firstOrCreate(
+            ['hotel_id' => $hotel->id, 'nombre' => 'Metro principal'],
+            ['orden' => 1]
+        );
     }
 }

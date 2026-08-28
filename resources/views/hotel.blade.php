@@ -116,6 +116,67 @@
         </table>
     </div>
 
+    {{-- --------------------METROS DE AGUA------------------- --}}
+
+    <div class="linea-titulo-seccion">
+        <h2 class="titulo-seccion">Metros de agua</h2>
+        <button class="boton-primario" type="button" id="botonAbrirMetro">Agregar metro</button>
+    </div>
+
+    <p class="nota-formulario nota-suelta">
+        Cada hotel define cuántos metros de agua tiene y cómo se llama cada uno, para
+        identificarlos al registrar la jornada.
+    </p>
+
+    <div class="caja-tabla">
+        <table class="tabla-metros">
+            <thead>
+                <tr>
+                    <th title="En qué orden aparecen los metros al registrar">Orden</th>
+                    <th>Metro</th>
+                    <th>Estado</th>
+                    <th class="columna-acciones">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse ($hotel->metrosAgua as $metro)
+                    <tr data-metro="{{ $metro->id }}">
+                        <td data-titulo="Orden">
+                            <input class="campo-tabla campo-orden" type="number" value="{{ $metro->orden }}" min="0" max="999">
+                        </td>
+                        <td data-titulo="Metro">
+                            <input class="campo-tabla campo-nombre" type="text" value="{{ $metro->nombre }}" maxlength="45">
+                        </td>
+                        <td data-titulo="Estado">
+                            <span class="etiqueta-estado {{ $metro->activo ? 'etiqueta-activo' : 'etiqueta-inactivo' }}">
+                                {{ $metro->activo ? 'Activo' : 'Inactivo' }}
+                            </span>
+                        </td>
+                        <td data-titulo="Acciones" class="columna-acciones">
+                            <button class="boton-secundario boton-chico boton-guardar-metro" type="button"
+                                    data-id="{{ $metro->id }}"
+                                    title="Guardar el nombre y el orden de este metro">Guardar</button>
+
+                            <button class="boton-secundario boton-chico boton-alternar-metro" type="button"
+                                    data-id="{{ $metro->id }}"
+                                    data-activo="{{ $metro->activo ? 1 : 0 }}">
+                                {{ $metro->activo ? 'Desactivar' : 'Activar' }}
+                            </button>
+
+                            <button class="boton-eliminar boton-eliminar-metro" type="button"
+                                    data-id="{{ $metro->id }}"
+                                    data-nombre="{{ $metro->nombre }}">Eliminar</button>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="4" class="texto-vacio">Este hotel aún no tiene metros de agua.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+
     {{-- --------------------PISCINAS------------------- --}}
 
     <div class="linea-titulo-seccion">
@@ -206,6 +267,37 @@
         </div>
     </div>
 
+    {{-- --------------------POP UP AGREGAR METRO------------------- --}}
+
+    <div class="fondo-popup" id="fondoPopupMetro">
+        <div class="popup">
+
+            <h2 class="titulo-popup">Agregar metro de agua</h2>
+
+            <form method="POST" action="{{ route('metros.store', $hotel) }}">
+                @csrf
+
+                <div class="elemento-formulario">
+                    <label class="titulo-elemento" for="nombreMetro">Nombre del metro</label>
+                    <input class="campo-formulario" type="text" id="nombreMetro" name="nombre"
+                           value="{{ old('nombre') }}" maxlength="45" placeholder="Metro principal" required>
+                </div>
+
+                <div class="elemento-formulario">
+                    <label class="titulo-elemento" for="ordenMetro">Orden</label>
+                    <input class="campo-formulario" type="number" id="ordenMetro" name="orden"
+                           value="{{ old('orden') }}" min="0" max="999" placeholder="Al final">
+                </div>
+
+                <div class="linea-botones-popup">
+                    <button class="boton-secundario" type="button" id="botonCerrarMetro">Cancelar</button>
+                    <button class="boton-primario" type="submit">Guardar</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
     {{-- --------------------POP UP AGREGAR PISCINA------------------- --}}
 
     <div class="fondo-popup" id="fondoPopupPiscina">
@@ -244,6 +336,7 @@
     const rutaHoteles = '{{ url('/hoteles') }}';
     const rutaPiscinas = '{{ url('/piscinas') }}';
     const rutaRondas = '{{ url('/rondas') }}';
+    const rutaMetros = '{{ url('/metros') }}';
 </script>
 
 <script src="@recurso('js/hotel.js')"></script>

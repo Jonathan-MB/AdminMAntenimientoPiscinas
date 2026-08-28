@@ -38,6 +38,12 @@ class Hotel extends Model
     }
 
 
+    public function metrosAgua(): HasMany
+    {
+        return $this->hasMany(MetroAgua::class, 'hotel_id');
+    }
+
+
     public function jornadas(): HasMany
     {
         return $this->hasMany(Jornada::class, 'hotel_id');

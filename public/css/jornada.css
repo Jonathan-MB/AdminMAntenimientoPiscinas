@@ -1,3 +1,53 @@
+/* ----------Las dos tarjetas-------------- */
+
+.reja-jornada {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 20px;
+    align-items: start;
+}
+
+.tarjeta-grande {
+    background-color: #ffffff;
+    border: 1px solid #e3e7ed;
+    border-top: 3px solid #00519e;
+    border-radius: 4px;
+    padding: 22px 24px 24px;
+}
+
+.titulo-tarjeta {
+    font-size: 18px;
+    font-weight: 600;
+    color: #00519e;
+    padding-bottom: 12px;
+    margin-bottom: 18px;
+    border-bottom: 1px solid #eef2f6;
+}
+
+.titulo-bloque {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #5f6062;
+    margin-top: 26px;
+    margin-bottom: 12px;
+}
+
+.tarjeta-grande > .titulo-bloque:first-of-type {
+    margin-top: 0;
+}
+
+.tarjeta-grande textarea {
+    resize: vertical;
+    font-size: 15px;
+}
+
+.tarjeta-grande .boton-grande {
+    margin-top: 22px;
+}
+
+
 /* ----------Cabecera-------------- */
 
 .enlace-volver {
@@ -30,22 +80,6 @@
 
 /* ----------Metro de agua-------------- */
 
-.tarjeta-metro {
-    display: flex;
-    align-items: flex-end;
-    gap: 14px;
-    background-color: #ffffff;
-    border: 1px solid #e3e7ed;
-    border-radius: 4px;
-    padding: 18px 20px 20px;
-    max-width: 460px;
-}
-
-.tarjeta-metro .elemento-formulario {
-    flex: 1;
-    margin-bottom: 0;
-}
-
 .campo-metro {
     font-size: 17px;
     font-weight: 600;
@@ -56,11 +90,7 @@
 /* ----------Rondas-------------- */
 
 .bloque-ronda {
-    background-color: #ffffff;
-    border: 1px solid #e3e7ed;
-    border-radius: 4px;
-    padding: 16px 18px 18px;
-    margin-bottom: 14px;
+    margin-bottom: 22px;
 }
 
 .cabecera-ronda {
@@ -104,7 +134,7 @@
 
 .lista-piscinas {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     gap: 10px;
 }
 
@@ -159,11 +189,9 @@
 /* ----------Listado de trabajo-------------- */
 
 .bloque-tareas {
-    background-color: #ffffff;
-    border: 1px solid #e3e7ed;
+    border: 1px solid #eef2f6;
     border-radius: 4px;
-    padding: 14px 18px 16px;
-    margin-bottom: 10px;
+    padding: 4px 14px;
 }
 
 .linea-tarea {
@@ -196,16 +224,6 @@
 /* ----------Movil-------------- */
 
 @media (max-width: 480px) {
-
-    .tarjeta-metro {
-        flex-direction: column;
-        align-items: stretch;
-        padding: 16px;
-    }
-
-    .tarjeta-metro .boton-secundario {
-        width: 100%;
-    }
 
     .lista-piscinas {
         grid-template-columns: 1fr;

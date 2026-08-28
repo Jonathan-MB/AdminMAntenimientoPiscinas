@@ -6,6 +6,7 @@ use App\Http\Requests\AbrirJornadaRequest;
 use App\Http\Requests\UpdateJornadaRequest;
 use App\Models\Hotel;
 use App\Models\Jornada;
+use App\Models\LecturaMetro;
 use App\Models\Rol;
 use App\Models\Tarea;
 use App\Models\TareaRealizada;
@@ -53,6 +54,10 @@ class RegistroController extends Controller
             'hotel.rondasProgramadas' => function ($consulta) {
                 $consulta->where('activa', true)->orderBy('orden')->orderBy('nombre');
             },
+            'hotel.metrosAgua' => function ($consulta) {
+                $consulta->where('activo', true)->orderBy('orden')->orderBy('nombre');
+            },
+            'lecturasMetro',
             'usuario',
             'rondas.mediciones',
             'tareasRealizadas',
@@ -68,9 +73,12 @@ class RegistroController extends Controller
         $tareas  = Tarea::where('activa', true)->orderBy('orden')->get();
         $marcadas = $jornada->tareasRealizadas->where('hecha', true)->pluck('tarea_id')->all();
 
+        //  Lo ya leido en cada metro, indexado por metro
+        $lecturas = $jornada->lecturasMetro->pluck('lectura', 'metro_agua_id')->all();
+
         $editable = $jornada->puedeEditarla($usuario);
 
-        return view('jornada', compact('jornada', 'hechas', 'tareas', 'marcadas', 'editable'));
+        return view('jornada', compact('jornada', 'hechas', 'tareas', 'marcadas', 'editable', 'lecturas'));
     }
 
 
@@ -84,9 +92,11 @@ class RegistroController extends Controller
         }
 
         $data = $request->validated();
+        $lecturas = $data['lecturas'] ?? null;
+        unset($data['lecturas'], $data['llavesLecturas']);
 
         // PATCH sin data
-        if (empty($data)) {
+        if (empty($data) && $lecturas === null) {
             return response()->json([
                 'message' => 'Sin datos'
             ], 422);
@@ -95,8 +105,10 @@ class RegistroController extends Controller
         // Cargar datos sin guardar
         $jornada->fill($data);
 
+        $cambioLecturas = $lecturas !== null && $this->guardarLecturas($jornada, $lecturas);
+
         // No hubo cambios
-        if (! $jornada->isDirty()) {
+        if (! $jornada->isDirty() && ! $cambioLecturas) {
             return response()->json([
                 'message' => 'No se detectaron cambios'
             ], 422);
@@ -108,6 +120,38 @@ class RegistroController extends Controller
             'message' => 'Actualizado Correctamente',
             'data'    => $jornada->fresh()
         ], 200);
+    }
+
+
+
+    //  Guarda la lectura de cada metro. Devuelve si algo cambio de verdad.
+    private function guardarLecturas(Jornada $jornada, array $lecturas): bool
+    {
+        //  Solo los metros activos de este hotel: lo demas se ignora
+        $permitidos = $jornada->hotel->metrosAgua()->where('activo', true)->pluck('id')->all();
+        $hubo = false;
+
+        foreach ($lecturas as $metroId => $valor) {
+            if (! in_array((int) $metroId, $permitidos)) {
+                continue;
+            }
+
+            $valor = ($valor === '' || $valor === null) ? null : $valor;
+
+            $lectura = LecturaMetro::firstOrNew([
+                'jornada_id'    => $jornada->id,
+                'metro_agua_id' => $metroId,
+            ]);
+
+            $lectura->lectura = $valor;
+
+            if ($lectura->isDirty()) {
+                $lectura->save();
+                $hubo = true;
+            }
+        }
+
+        return $hubo;
     }
 
 

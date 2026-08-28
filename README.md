@@ -344,18 +344,30 @@ Tres pasos, pensados para un teléfono a las seis de la mañana:
 
 1. **`/registro`** — elegir hotel y fecha. Abre la jornada de ese día o retoma la que ya
    estaba. Debajo quedan las jornadas recientes para entrar de un clic.
-2. **`/jornada/{id}`** — el centro del día: la lectura del metro de agua, el listado de
-   trabajo con sus casillas, y cada ronda con sus piscinas y un contador de avance
-   (`3 de 5`). Las piscinas ya registradas se marcan en verde con un visto.
+2. **`/jornada/{id}`** — el centro del día, en **dos tarjetas**:
+   - **La jornada**: las lecturas de cada metro de agua, el listado de trabajo con sus
+     casillas, y los materiales y químicos sacados de almacén.
+   - **Piscinas**: cada ronda con sus piscinas y un contador de avance (`3 de 5 piscinas`).
+     Las que ya tienen registro se marcan en verde con un visto.
 3. **`/jornada/{id}/medicion/{ronda}/{piscina}`** — una pantalla por piscina: las 7 lecturas,
-   los 9 químicos con su unidad, el retrolavado y la observación. El botón principal es
-   **«Guardar y seguir con {la siguiente piscina}»**, para no volver al menú entre piscina y
-   piscina.
+   los 9 químicos con su unidad, el **nivel del agua** (alto, normal o bajo), el retrolavado y
+   la observación. El botón principal es **«Guardar y seguir con {la siguiente piscina}»**, para
+   no volver al menú entre piscina y piscina.
 
 Dejar un campo en blanco significa **no medido**, que no es lo mismo que cero. Un químico en
 blanco significa que no se aplicó.
 
 La ronda se crea sola la primera vez que se guarda una piscina de esa ronda.
+
+
+### Los metros de agua
+
+Cada hotel define cuántos metros tiene y cómo se llama cada uno, desde su pantalla de edición.
+Al registrar la jornada aparece un campo por metro activo, con su nombre.
+
+El servidor **ignora** cualquier lectura que llegue de un metro que no sea de ese hotel o que
+esté inactivo, aunque venga en la petición. Un metro que ya tiene lecturas no se elimina: se
+desactiva.
 
 ### La ventana de corrección
 
@@ -423,11 +435,13 @@ Sale directo de los dos formatos en papel que llenan los empleados.
 |---|---|
 | `hoteles` | El cliente |
 | `rondas_programadas` | La lista de rondas de cada hotel: nombre, hora y orden |
+| `metros_agua` | Los metros de agua de cada hotel, con nombre y orden |
+| `lecturas_metro` | La lectura de cada metro en cada jornada |
 | `piscinas` | Las piscinas de cada hotel (POOL VIP, BIG POOL, SPA HOT…), editables |
 | `productos` | Los 9 químicos con su unidad: galones, onzas, libras o tabletas |
-| `jornadas` | La hoja del día: fecha, lectura del metro de agua, quién firma |
+| `jornadas` | La hoja del día: fecha, materiales sacados, quién firma |
 | `rondas` | La ronda que se hizo ese día, con la hora real y la observación |
-| `mediciones` | Las 7 lecturas por piscina y ronda, más el retrolavado |
+| `mediciones` | Las 7 lecturas por piscina y ronda, el nivel del agua y el retrolavado |
 | `dosis` | Cuánto se aplicó de cada producto |
 | `tareas` | El listado de trabajo diario: una lista corrida, el `orden` marca la secuencia del turno |
 | `tareas_realizadas` | Qué se marcó ese día |

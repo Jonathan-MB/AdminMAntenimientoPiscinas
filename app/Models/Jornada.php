@@ -14,16 +14,15 @@ class Jornada extends Model
 
     protected $fillable = [
         'fecha',
-        'lectura_metro_agua',
+        'materiales_sacados',
         'entregada',
         'hotel_id',
         'usuario_id',
     ];
 
     protected $casts = [
-        'fecha'              => 'date',
-        'lectura_metro_agua' => 'decimal:2',
-        'entregada'          => 'boolean',
+        'fecha'     => 'date',
+        'entregada' => 'boolean',
     ];
 
 
@@ -48,6 +47,12 @@ class Jornada extends Model
     public function tareasRealizadas(): HasMany
     {
         return $this->hasMany(TareaRealizada::class, 'jornada_id');
+    }
+
+
+    public function lecturasMetro(): HasMany
+    {
+        return $this->hasMany(LecturaMetro::class, 'jornada_id');
     }
 
 

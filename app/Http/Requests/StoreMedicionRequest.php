@@ -27,6 +27,7 @@ class StoreMedicionRequest extends FormRequest
             'dureza_calcio'   => ['nullable', 'numeric', 'min:0', 'max:99999'],
             'acido_cianurico' => ['nullable', 'numeric', 'min:0', 'max:99999'],
             'retrolavado'     => ['sometimes', 'boolean'],
+            'nivel_agua'      => ['required', 'in:alto,normal,bajo'],
             'observacion'     => ['nullable', 'string', 'max:255'],
 
             //  Cantidades por producto: la llave es el id del producto
@@ -48,6 +49,7 @@ class StoreMedicionRequest extends FormRequest
             'dosis.*.numeric'      => 'Las cantidades de químico deben ser números',
             'dosis.*.min'          => 'Las cantidades de químico no pueden ser negativas',
             'llavesDosis.*.exists' => 'Uno de los químicos enviados no existe',
+            'nivel_agua.in'        => 'El nivel del agua debe ser alto, normal o bajo',
         ];
     }
 
@@ -64,6 +66,7 @@ class StoreMedicionRequest extends FormRequest
             'dureza_calcio'   => $this->vacioANulo($this->durezaCalcio),
             'acido_cianurico' => $this->vacioANulo($this->acidoCianurico),
             'retrolavado'     => $this->boolean('retrolavado'),
+            'nivel_agua'      => $this->nivelAgua ?: 'normal',
 
             //  Las llaves del arreglo de dosis se validan como valores aparte
             'llavesDosis'     => array_keys($this->input('dosis') ?? []),

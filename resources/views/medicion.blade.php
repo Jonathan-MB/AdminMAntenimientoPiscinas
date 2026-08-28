@@ -92,6 +92,16 @@
         <h2 class="titulo-seccion">Filtro y observaciones</h2>
 
         <div class="tarjeta-otros">
+
+            <div class="elemento-formulario">
+                <label class="titulo-elemento" for="nivelAgua">Nivel del agua</label>
+                <select class="campo-formulario" id="nivelAgua" name="nivelAgua" @disabled(! $editable)>
+                    @foreach (['normal' => 'Normal', 'alto' => 'Alto', 'bajo' => 'Bajo'] as $valor => $texto)
+                        <option value="{{ $valor }}" @selected(old('nivelAgua', $medicion?->nivel_agua ?? 'normal') === $valor)>{{ $texto }}</option>
+                    @endforeach
+                </select>
+            </div>
+
             <label class="interruptor">
                 <input type="checkbox" name="retrolavado" value="1"
                        @checked(old('retrolavado', $medicion?->retrolavado))

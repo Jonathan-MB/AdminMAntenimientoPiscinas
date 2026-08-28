@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Dosis;
 use App\Models\Hotel;
 use App\Models\Jornada;
+use App\Models\LecturaMetro;
 use App\Models\Medicion;
 use App\Models\Producto;
 use App\Models\Ronda;
@@ -19,7 +20,7 @@ class JornadaDemoSeeder extends Seeder
     //  NO se llama desde DatabaseSeeder: se corre a mano y se puede borrar.
     public function run(): void
     {
-        $hotel = Hotel::with('piscinas', 'rondasProgramadas')->first();
+        $hotel = Hotel::with('piscinas', 'rondasProgramadas', 'metrosAgua')->first();
 
         if (! $hotel) {
             $this->command->error('No hay hoteles. Corre primero HotelSeeder.');
@@ -58,10 +59,18 @@ class JornadaDemoSeeder extends Seeder
 
             $jornada = Jornada::create([
                 'fecha'              => $fecha,
-                'lectura_metro_agua' => 145000 + $atras * 37.5,
+                'materiales_sacados' => 'Ácido muriático, tabletas de cloro',
                 'hotel_id'           => $hotel->id,
                 'usuario_id'         => $usuario->id,
             ]);
+
+            foreach ($hotel->metrosAgua as $metro) {
+                LecturaMetro::create([
+                    'lectura'       => 145000 + $atras * 37.5,
+                    'jornada_id'    => $jornada->id,
+                    'metro_agua_id' => $metro->id,
+                ]);
+            }
 
             foreach ($hotel->rondasProgramadas as $programada) {
                 $ronda = Ronda::create([
@@ -81,6 +90,7 @@ class JornadaDemoSeeder extends Seeder
                         'dureza_calcio'   => mt_rand(180, 400),
                         'acido_cianurico' => mt_rand(20, 60),
                         'retrolavado'     => mt_rand(0, 6) === 0,
+                        'nivel_agua'      => ['normal', 'normal', 'normal', 'alto', 'bajo'][mt_rand(0, 4)],
                         'ronda_id'        => $ronda->id,
                         'piscina_id'      => $piscina->id,
                     ]);

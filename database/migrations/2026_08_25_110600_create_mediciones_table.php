@@ -22,6 +22,9 @@ return new class extends Migration
             //  back Wash del formato: es una accion, no una cantidad
             $table->boolean('retrolavado')->default(false);
 
+            //  Nivel del agua de la piscina: alto, normal o bajo
+            $table->string('nivel_agua',10)->default('normal');
+
             $table->string('observacion',255)->nullable();
 
             $table->foreignId('ronda_id')->constrained('rondas')->restrictOnDelete();

@@ -38,7 +38,7 @@ class HotelController extends Controller
             $consulta->orderBy('orden')->orderBy('nombre');
         };
 
-        $hotel->load(['piscinas' => $porOrden, 'rondasProgramadas' => $porOrden]);
+        $hotel->load(['piscinas' => $porOrden, 'rondasProgramadas' => $porOrden, 'metrosAgua' => $porOrden]);
 
         return view('hotel', compact('hotel'));
     }

@@ -25,88 +25,114 @@
         </div>
     @endunless
 
-    {{-- --------------------METRO DE AGUA------------------- --}}
+    <div class="reja-jornada">
 
-    <div class="tarjeta-metro">
-        <div class="elemento-formulario">
-            <label class="titulo-elemento" for="lecturaMetroAgua">Lectura del metro de agua</label>
-            <input class="campo-formulario campo-metro" type="number" step="0.01" min="0"
-                   id="lecturaMetroAgua" value="{{ $jornada->lectura_metro_agua }}"
-                   @disabled(! $editable)>
-        </div>
+        {{-- --------------------TARJETA 1: LA JORNADA------------------- --}}
 
-        @if ($editable)
-            <button class="boton-secundario" type="button" id="botonGuardarMetro">Guardar</button>
-        @endif
-    </div>
+        <section class="tarjeta-grande">
 
-    {{-- --------------------RONDAS------------------- --}}
+            <h2 class="titulo-tarjeta">La jornada</h2>
 
-    <h2 class="titulo-seccion">Rondas</h2>
+            <h3 class="titulo-bloque">Lecturas del metro de agua</h3>
 
-    <p class="nota-formulario nota-suelta">
-        Toca una piscina para registrar sus pruebas. Las que ya tienen registro quedan en verde.
-    </p>
-
-    @forelse ($jornada->hotel->rondasProgramadas as $programada)
-        @php
-            $piscinasHechas = $hechas[$programada->id] ?? [];
-            $total = $jornada->hotel->piscinas->count();
-        @endphp
-
-        <div class="bloque-ronda">
-            <div class="cabecera-ronda">
-                <div>
-                    <h3 class="nombre-ronda">{{ $programada->nombre }}</h3>
-                    <span class="hora-ronda">{{ \Illuminate\Support\Str::substr($programada->hora, 0, 5) }}</span>
+            @forelse ($jornada->hotel->metrosAgua as $metro)
+                <div class="elemento-formulario">
+                    <label class="titulo-elemento" for="metro{{ $metro->id }}">{{ $metro->nombre }}</label>
+                    <input class="campo-formulario campo-metro" type="number" step="0.01" min="0"
+                           id="metro{{ $metro->id }}" data-metro="{{ $metro->id }}"
+                           value="{{ $lecturas[$metro->id] ?? '' }}"
+                           @disabled(! $editable)>
                 </div>
+            @empty
+                <p class="texto-vacio">Este hotel no tiene metros de agua configurados. Pide a un administrador que los agregue.</p>
+            @endforelse
 
-                <span class="avance {{ count($piscinasHechas) === $total && $total > 0 ? 'avance-completo' : '' }}"
-                      title="Piscinas con registro en esta ronda">
-                    {{ count($piscinasHechas) }} de {{ $total }} piscinas
-                </span>
-            </div>
+            <h3 class="titulo-bloque">Listado de trabajo</h3>
 
-            <div class="lista-piscinas">
-                @foreach ($jornada->hotel->piscinas as $piscina)
-                    @php $hecha = in_array($piscina->id, $piscinasHechas); @endphp
+            <p class="nota-formulario nota-suelta">Marca cada tarea a medida que la completes. Se guarda sola.</p>
 
-                    <a class="tarjeta-piscina {{ $hecha ? 'piscina-hecha' : '' }}"
-                       href="{{ route('registro.medicion', ['jornada' => $jornada, 'rondaProgramada' => $programada, 'piscina' => $piscina]) }}">
-                        <span class="marca-estado">{{ $hecha ? '✓' : '' }}</span>
-                        <span class="nombre-piscina">{{ $piscina->nombre }}</span>
-                    </a>
+            <div class="bloque-tareas">
+                @foreach ($tareas as $tarea)
+                    <label class="linea-tarea">
+                        <input type="checkbox" class="casilla-tarea"
+                               data-tarea="{{ $tarea->id }}"
+                               @checked(in_array($tarea->id, $marcadas))
+                               @disabled(! $editable)>
+                        <span>{{ $tarea->descripcion }}</span>
+                    </label>
                 @endforeach
             </div>
-        </div>
-    @empty
-        <p class="texto-vacio">Este hotel no tiene rondas configuradas. Pide a un administrador que las agregue.</p>
-    @endforelse
 
-    {{-- --------------------LISTADO DE TRABAJO------------------- --}}
+            <h3 class="titulo-bloque">Materiales y químicos sacados</h3>
 
-    <h2 class="titulo-seccion">Listado de trabajo</h2>
+            <p class="nota-formulario nota-suelta">Anota qué sacaste de almacén durante la jornada.</p>
 
-    <p class="nota-formulario nota-suelta">
-        Marca cada tarea a medida que la completes. Se guarda sola.
-    </p>
+            <div class="elemento-formulario">
+                <textarea class="campo-formulario" id="materialesSacados" rows="4" maxlength="2000"
+                          placeholder="2 galones de ácido muriático, 1 caja de tabletas…"
+                          @disabled(! $editable)>{{ $jornada->materiales_sacados }}</textarea>
+            </div>
 
-    <div class="bloque-tareas">
-        @foreach ($tareas as $tarea)
-            <label class="linea-tarea">
-                <input type="checkbox" class="casilla-tarea"
-                       data-tarea="{{ $tarea->id }}"
-                       @checked(in_array($tarea->id, $marcadas))
-                       @disabled(! $editable)>
-                <span>{{ $tarea->descripcion }}</span>
-            </label>
-        @endforeach
+            @if ($editable)
+                <button class="boton-primario boton-ancho boton-grande" type="button" id="botonGuardarJornada">
+                    Guardar la jornada
+                </button>
+            @endif
+
+        </section>
+
+        {{-- --------------------TARJETA 2: LAS PISCINAS------------------- --}}
+
+        <section class="tarjeta-grande">
+
+            <h2 class="titulo-tarjeta">Piscinas</h2>
+
+            <p class="nota-formulario nota-suelta">
+                Toca una piscina para registrar sus pruebas. Las que ya tienen registro quedan en verde.
+            </p>
+
+            @forelse ($jornada->hotel->rondasProgramadas as $programada)
+                @php
+                    $piscinasHechas = $hechas[$programada->id] ?? [];
+                    $total = $jornada->hotel->piscinas->count();
+                @endphp
+
+                <div class="bloque-ronda">
+                    <div class="cabecera-ronda">
+                        <div>
+                            <h3 class="nombre-ronda">{{ $programada->nombre }}</h3>
+                            <span class="hora-ronda">{{ \Illuminate\Support\Str::substr($programada->hora, 0, 5) }}</span>
+                        </div>
+
+                        <span class="avance {{ count($piscinasHechas) === $total && $total > 0 ? 'avance-completo' : '' }}"
+                              title="Piscinas con registro en esta ronda">
+                            {{ count($piscinasHechas) }} de {{ $total }} piscinas
+                        </span>
+                    </div>
+
+                    <div class="lista-piscinas">
+                        @foreach ($jornada->hotel->piscinas as $piscina)
+                            @php $hecha = in_array($piscina->id, $piscinasHechas); @endphp
+
+                            <a class="tarjeta-piscina {{ $hecha ? 'piscina-hecha' : '' }}"
+                               href="{{ route('registro.medicion', ['jornada' => $jornada, 'rondaProgramada' => $programada, 'piscina' => $piscina]) }}">
+                                <span class="marca-estado">{{ $hecha ? '✓' : '' }}</span>
+                                <span class="nombre-piscina">{{ $piscina->nombre }}</span>
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
+            @empty
+                <p class="texto-vacio">Este hotel no tiene rondas configuradas. Pide a un administrador que las agregue.</p>
+            @endforelse
+
+        </section>
+
     </div>
 
 </div>
 
 <script>
-    const jornadaId = {{ $jornada->id }};
     const rutaJornada = '{{ url('/jornada/' . $jornada->id) }}';
 </script>
 

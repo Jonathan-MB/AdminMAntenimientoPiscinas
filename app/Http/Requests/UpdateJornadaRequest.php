@@ -19,8 +19,16 @@ class UpdateJornadaRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'lectura_metro_agua' => ['sometimes', 'nullable', 'numeric', 'min:0', 'max:9999999999'],
+            'materiales_sacados' => ['sometimes', 'nullable', 'string', 'max:2000'],
             'entregada'          => ['sometimes', 'boolean'],
+
+            //  Una lectura por metro: la llave es el id del metro
+            'lecturas'           => ['sometimes', 'nullable', 'array'],
+            'lecturas.*'         => ['nullable', 'numeric', 'min:0', 'max:9999999999'],
+
+            //  Sin esto, un id inventado revienta contra la llave foranea
+            'llavesLecturas'     => ['sometimes', 'nullable', 'array'],
+            'llavesLecturas.*'   => ['integer', 'exists:metros_agua,id'],
         ];
     }
 
@@ -28,8 +36,10 @@ class UpdateJornadaRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'lectura_metro_agua.numeric' => 'La lectura del metro de agua debe ser un número',
-            'lectura_metro_agua.min'     => 'La lectura del metro de agua no puede ser negativa',
+            'lecturas.*.numeric'        => 'La lectura del metro de agua debe ser un número',
+            'lecturas.*.min'            => 'La lectura del metro de agua no puede ser negativa',
+            'llavesLecturas.*.exists'   => 'Uno de los metros de agua enviados no existe',
+            'materiales_sacados.max'    => 'El texto de materiales sacados es demasiado largo',
         ];
     }
 
@@ -38,8 +48,12 @@ class UpdateJornadaRequest extends FormRequest
     {
         $data = [];
 
-        if ($this->has('lecturaMetroAgua')) {
-            $data['lectura_metro_agua'] = $this->lecturaMetroAgua === '' ? null : $this->lecturaMetroAgua;
+        if ($this->has('materialesSacados')) {
+            $data['materiales_sacados'] = $this->materialesSacados === '' ? null : $this->materialesSacados;
+        }
+
+        if ($this->has('lecturas')) {
+            $data['llavesLecturas'] = array_keys($this->input('lecturas') ?? []);
         }
 
         $this->merge($data);

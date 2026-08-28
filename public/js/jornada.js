@@ -7,20 +7,28 @@ function cabeceras() {
 }
 
 
-// ============ LECTURA DEL METRO DE AGUA ============
+// ============ LA TARJETA DE LA JORNADA ============
 
-const botonGuardarMetro = document.getElementById('botonGuardarMetro');
+const botonGuardarJornada = document.getElementById('botonGuardarJornada');
 
-if (botonGuardarMetro) {
-    botonGuardarMetro.addEventListener('click', async function () {
-        botonGuardarMetro.disabled = true;
+if (botonGuardarJornada) {
+    botonGuardarJornada.addEventListener('click', async function () {
+        //  Una lectura por metro, indexada por el id del metro
+        const lecturas = {};
+
+        document.querySelectorAll('[data-metro]').forEach(function (campo) {
+            lecturas[campo.dataset.metro] = campo.value;
+        });
+
+        botonGuardarJornada.disabled = true;
 
         try {
             const res = await fetch(rutaJornada, {
                 method: 'PATCH',
                 headers: cabeceras(),
                 body: JSON.stringify({
-                    lecturaMetroAgua: document.getElementById('lecturaMetroAgua').value
+                    materialesSacados: document.getElementById('materialesSacados').value,
+                    lecturas: lecturas
                 })
             });
 
@@ -30,7 +38,7 @@ if (botonGuardarMetro) {
             alert('Error de conexión al guardar');
         }
 
-        botonGuardarMetro.disabled = false;
+        botonGuardarJornada.disabled = false;
     });
 }
 

@@ -4,6 +4,7 @@ use App\Http\Controllers\AccesoController;
 use App\Http\Controllers\DiarioController;
 use App\Http\Controllers\HotelController;
 use App\Http\Controllers\MedicionController;
+use App\Http\Controllers\MetroAguaController;
 use App\Http\Controllers\PanelController;
 use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\PiscinaController;
@@ -73,6 +74,10 @@ Route::middleware('auth')->group(function () {
         Route::post('/hoteles/{hotel}/piscinas', [PiscinaController::class, 'store'])->name('piscinas.store');
         Route::patch('/piscinas/{piscina}', [PiscinaController::class, 'update'])->name('piscinas.update');
         Route::delete('/piscinas/{piscina}', [PiscinaController::class, 'destroy'])->name('piscinas.destroy');
+
+        Route::post('/hoteles/{hotel}/metros', [MetroAguaController::class, 'store'])->name('metros.store');
+        Route::patch('/metros/{metroAgua}', [MetroAguaController::class, 'update'])->name('metros.update');
+        Route::delete('/metros/{metroAgua}', [MetroAguaController::class, 'destroy'])->name('metros.destroy');
 
         Route::post('/hoteles/{hotel}/rondas', [RondaProgramadaController::class, 'store'])->name('rondas.store');
         Route::patch('/rondas/{rondaProgramada}', [RondaProgramadaController::class, 'update'])->name('rondas.update');

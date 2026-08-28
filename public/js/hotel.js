@@ -35,6 +35,7 @@ function conectarPopup(idFondo, idAbrir, idCerrar, idFoco) {
 
 const popupRonda = conectarPopup('fondoPopupRonda', 'botonAbrirRonda', 'botonCerrarRonda', 'nombreRonda');
 const popupPiscina = conectarPopup('fondoPopupPiscina', 'botonAbrirPiscina', 'botonCerrarPiscina', 'nombrePiscina');
+const popupMetro = conectarPopup('fondoPopupMetro', 'botonAbrirMetro', 'botonCerrarMetro', 'nombreMetro');
 
 
 // ============ DATOS DEL HOTEL ============
@@ -192,6 +193,112 @@ document.querySelectorAll('.boton-eliminar-ronda').forEach(function (boton) {
 });
 
 
+// ============ METROS DE AGUA ============
+
+document.querySelectorAll('.boton-guardar-metro').forEach(function (boton) {
+    boton.addEventListener('click', async function () {
+        const fila = document.querySelector('tr[data-metro="' + boton.dataset.id + '"]');
+
+        const cuerpo = {
+            nombre: fila.querySelector('.campo-nombre').value.trim(),
+            orden:  Number(fila.querySelector('.campo-orden').value),
+        };
+
+        if (cuerpo.nombre === '') {
+            alert('El nombre del metro no puede quedar vacío');
+            return;
+        }
+
+        boton.disabled = true;
+
+        try {
+            const res = await fetch(rutaMetros + '/' + boton.dataset.id, {
+                method: 'PATCH',
+                headers: cabeceras(),
+                body: JSON.stringify(cuerpo)
+            });
+
+            const datos = await res.json();
+            alert(datos.message);
+
+            if (res.ok) {
+                location.reload();
+                return;
+            }
+        } catch (error) {
+            alert('Error de conexión al guardar');
+        }
+
+        boton.disabled = false;
+    });
+});
+
+
+document.querySelectorAll('.boton-alternar-metro').forEach(function (boton) {
+    boton.addEventListener('click', async function () {
+        const activo = boton.dataset.activo === '1';
+
+        boton.disabled = true;
+
+        try {
+            const res = await fetch(rutaMetros + '/' + boton.dataset.id, {
+                method: 'PATCH',
+                headers: cabeceras(),
+                body: JSON.stringify({ activo: ! activo })
+            });
+
+            const datos = await res.json();
+
+            if (! res.ok) {
+                alert(datos.message || 'No se pudo cambiar');
+                boton.disabled = false;
+                return;
+            }
+
+            location.reload();
+        } catch (error) {
+            alert('Error de conexión');
+            boton.disabled = false;
+        }
+    });
+});
+
+
+document.querySelectorAll('.boton-eliminar-metro').forEach(function (boton) {
+    boton.addEventListener('click', async function () {
+        if (! confirm('¿Eliminar el metro ' + boton.dataset.nombre + '?')) {
+            return;
+        }
+
+        boton.disabled = true;
+
+        try {
+            const res = await fetch(rutaMetros + '/' + boton.dataset.id, {
+                method: 'DELETE',
+                headers: cabeceras()
+            });
+
+            const datos = await res.json();
+
+            if (! res.ok) {
+                alert(datos.message || 'No se pudo eliminar');
+                boton.disabled = false;
+                return;
+            }
+
+            const fila = document.querySelector('tr[data-metro="' + boton.dataset.id + '"]');
+
+            if (fila) {
+                fila.remove();
+            }
+        } catch (error) {
+            alert('Error de conexión al eliminar');
+            boton.disabled = false;
+        }
+    });
+});
+
+
 // ============ PISCINAS ============
 
 document.querySelectorAll('.boton-alternar-piscina').forEach(function (boton) {
@@ -267,5 +374,9 @@ if (document.querySelector('.mensaje-error')) {
 
     if (document.getElementById('nombrePiscina').value !== '') {
         popupPiscina.classList.add('popup-visible');
+    }
+
+    if (document.getElementById('nombreMetro').value !== '') {
+        popupMetro.classList.add('popup-visible');
     }
 }
