@@ -65,7 +65,7 @@ class RegistroController extends Controller
             $hechas[$ronda->ronda_programada_id] = $ronda->mediciones->pluck('piscina_id')->all();
         }
 
-        $tareas  = Tarea::where('activa', true)->orderBy('orden')->get()->groupBy('bloque');
+        $tareas  = Tarea::where('activa', true)->orderBy('orden')->get();
         $marcadas = $jornada->tareasRealizadas->where('hecha', true)->pluck('tarea_id')->all();
 
         $editable = $jornada->puedeEditarla($usuario);

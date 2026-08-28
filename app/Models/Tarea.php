@@ -11,8 +11,6 @@ class Tarea extends Model
     use HasFactory;
 
     protected $fillable = [
-        'bloque',
-        'hora',
         'descripcion',
         'orden',
         'activa',

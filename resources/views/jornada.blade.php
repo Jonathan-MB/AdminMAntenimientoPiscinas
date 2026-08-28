@@ -91,21 +91,17 @@
         Marca cada tarea a medida que la completes. Se guarda sola.
     </p>
 
-    @foreach ($tareas as $bloque => $lista)
-        <div class="bloque-tareas">
-            <h3 class="nombre-bloque">{{ $bloque }}</h3>
-
-            @foreach ($lista as $tarea)
-                <label class="linea-tarea">
-                    <input type="checkbox" class="casilla-tarea"
-                           data-tarea="{{ $tarea->id }}"
-                           @checked(in_array($tarea->id, $marcadas))
-                           @disabled(! $editable)>
-                    <span>{{ $tarea->descripcion }}</span>
-                </label>
-            @endforeach
-        </div>
-    @endforeach
+    <div class="bloque-tareas">
+        @foreach ($tareas as $tarea)
+            <label class="linea-tarea">
+                <input type="checkbox" class="casilla-tarea"
+                       data-tarea="{{ $tarea->id }}"
+                       @checked(in_array($tarea->id, $marcadas))
+                       @disabled(! $editable)>
+                <span>{{ $tarea->descripcion }}</span>
+            </label>
+        @endforeach
+    </div>
 
 </div>
 

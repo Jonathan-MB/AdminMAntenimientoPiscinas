@@ -147,7 +147,8 @@ database/
                        tareas_realizadas
   seeders/             RolSeeder, UsuarioMasterSeeder, ProductoSeeder,
                        TareaSeeder, HotelSeeder,
-                       JornadaDemoSeeder (datos de ejemplo, no se llama solo)
+                       JornadaDemoSeeder y UsuarioPruebaSeeder
+                       (solo para desarrollo, no se llaman solos)
 public/
   css/                 general.css + una hoja por vista
   js/                  un archivo por vista
@@ -320,10 +321,17 @@ naranja permanente con el nombre suplantado y el botón **Volver a mi cuenta**.
 
 ### Cuentas de prueba
 
-Para revisar las vistas de cada rol durante el desarrollo hay cuentas con dominio `.test`:
-`admin1`, `colab1` y `hotelaruba`, todas con la misma contraseña de pruebas.
+Para revisar las vistas de cada rol durante el desarrollo:
 
-**Bórralas antes de producción.** No son rutas trampa ni puertas traseras: son usuarios
+```bash
+php artisan db:seed --class=UsuarioPruebaSeeder
+```
+
+Crea `admin1`, `colab1` y `hotelaruba` con dominio `.test` y la contraseña de
+`PRUEBAS_PASSWORD`, o `pruebas2026` si no está en el `.env`. **No se llama desde
+`DatabaseSeeder` y no corre en producción.**
+
+**Bórralas antes de publicar.** No son rutas trampa ni puertas traseras: son usuarios
 normales, sujetos a las mismas reglas que cualquier otro.
 
 ---
@@ -421,7 +429,7 @@ Sale directo de los dos formatos en papel que llenan los empleados.
 | `rondas` | La ronda que se hizo ese día, con la hora real y la observación |
 | `mediciones` | Las 7 lecturas por piscina y ronda, más el retrolavado |
 | `dosis` | Cuánto se aplicó de cada producto |
-| `tareas` | El listado de trabajo diario, estándar para toda la operación |
+| `tareas` | El listado de trabajo diario: una lista corrida, el `orden` marca la secuencia del turno |
 | `tareas_realizadas` | Qué se marcó ese día |
 
 Las **7 lecturas** son las del formato: `cl_libre`, `cl_total`, `cl_combinado`, `ph`,

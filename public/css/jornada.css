@@ -166,17 +166,6 @@
     margin-bottom: 10px;
 }
 
-.nombre-bloque {
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    color: #00519e;
-    padding-bottom: 10px;
-    margin-bottom: 10px;
-    border-bottom: 1px solid #eef2f6;
-}
-
 .linea-tarea {
     display: flex;
     align-items: flex-start;
@@ -185,6 +174,10 @@
     color: #1a1a1a;
     padding: 8px 0;
     cursor: pointer;
+}
+
+.linea-tarea + .linea-tarea {
+    border-top: 1px solid #eef2f6;
 }
 
 .linea-tarea input {
