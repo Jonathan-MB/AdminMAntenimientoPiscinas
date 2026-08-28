@@ -62,6 +62,30 @@ if (formulario && estado) {
     }
 
 
+    //  Cambiar un valor que ya estaba guardado se pregunta. Llenar un campo
+    //  que llego vacio, no: eso es primera captura y preguntar molestaria.
+    function confirmarCambio(campo) {
+        const original = campo.dataset.original;
+
+        if (original === undefined || original === '') {
+            return true;
+        }
+
+        if (String(campo.value) === String(original)) {
+            return true;
+        }
+
+        const etiqueta = campo.dataset.etiqueta || 'este valor';
+        const nuevo = campo.value === '' ? '(vacío)' : campo.value;
+
+        return confirm(
+            '¿Seguro que quieres cambiar ' + etiqueta + '?\n\n' +
+            'Estaba en ' + original + ' y quedaría en ' + nuevo + '.' + '\n' +
+            'El cambio queda registrado y el administrador lo verá.'
+        );
+    }
+
+
     //  change salta al salir del campo en los de texto y numero, y de
     //  inmediato en los select y las casillas
     formulario.querySelectorAll('input, select, textarea').forEach(function (campo) {
@@ -69,7 +93,20 @@ if (formulario && estado) {
             return;
         }
 
-        campo.addEventListener('change', guardar);
+        campo.addEventListener('change', function () {
+            if (! confirmarCambio(campo)) {
+                //  Se deja como estaba y no se guarda
+                campo.value = campo.dataset.original;
+                return;
+            }
+
+            //  A partir de aqui, este es el valor guardado
+            if (campo.dataset.original !== undefined) {
+                campo.dataset.original = campo.value;
+            }
+
+            guardar();
+        });
     });
 
 

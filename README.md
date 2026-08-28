@@ -381,6 +381,32 @@ Detalles que importan:
   `<noscript>` y el controlador responde con redirección en vez de JSON cuando la petición no
   pide JSON.
 
+
+### Control de cambios
+
+Corregir un valor **ya guardado** deja rastro. Corregirlo es legítimo; que nadie se entere, no.
+
+**Qué cuenta como corrección:** solo si el campo **ya tenía un valor** y se modificó. Llenar un
+campo vacío por primera vez es captura, no corrección. Sin esa regla el aviso saltaría en cada
+tecla y la marca amarilla saldría en todas las jornadas, con lo que no significaría nada.
+
+Las cuatro piezas, que solo sirven juntas:
+
+1. **El aviso.** Al cambiar un campo que llegó con valor, el navegador pregunta: «Estaba en 7.20
+   y quedaría en 7.85. El cambio queda registrado y el administrador lo verá.» Si se cancela, el
+   campo vuelve a su valor y no se guarda nada.
+2. **El registro.** El servidor compara lo que había contra lo que quedó y anota en `cambios` el
+   campo, ambos valores, la hora y quién. El aviso es del navegador y se puede saltar; **el
+   registro es del servidor y no**.
+3. **La marca.** En el panel, la jornada corregida sale con borde ámbar y una etiqueta que dice
+   cuántas correcciones tiene.
+4. **La comparación.** Esa etiqueta lleva a `/jornada/{id}/cambios`, que lista cada corrección
+   con el valor anterior tachado en rojo, el nuevo en verde, la hora y el autor.
+
+Quitar un químico que estaba puesto también se anota, como «→ sin valor».
+
+Solo `master` y `administrador` ven las correcciones; un `colaborador` recibe `403`.
+
 ### Los metros de agua
 
 Cada hotel define cuántos metros tiene y cómo se llama cada uno, desde su pantalla de edición.
@@ -466,6 +492,7 @@ Sale directo de los dos formatos en papel que llenan los empleados.
 | `dosis` | Cuánto se aplicó de cada producto |
 | `tareas` | El listado de trabajo diario: una lista corrida, el `orden` marca la secuencia del turno |
 | `tareas_realizadas` | Qué se marcó ese día |
+| `cambios` | Qué se corrigió después de haber guardado, con el valor anterior y el nuevo |
 
 Las **7 lecturas** son las del formato: `cl_libre`, `cl_total`, `cl_combinado`, `ph`,
 `alcalinidad`, `dureza_calcio` y `acido_cianurico`.

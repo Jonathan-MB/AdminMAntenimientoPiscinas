@@ -54,7 +54,8 @@ class PanelController extends Controller
                 'rondas' => function ($c) {
                     $c->withCount('mediciones');
                 },
-            ]);
+            ])
+            ->withCount('cambios');
 
         if ($hotelId) {
             $consulta->where('hotel_id', $hotelId);

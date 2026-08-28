@@ -1,0 +1,107 @@
+/* ----------Cabecera-------------- */
+
+.enlace-volver {
+    display: inline-block;
+    font-size: 13px;
+    color: #5f6062;
+    text-decoration: none;
+    margin-bottom: 14px;
+    transition: 0.4s;
+}
+
+.enlace-volver:hover {
+    color: #00519e;
+}
+
+.subtitulo-cambios {
+    font-size: 14px;
+    color: #5f6062;
+    margin-top: -14px;
+    margin-bottom: 18px;
+}
+
+
+/* ----------Una correccion-------------- */
+
+.tarjeta-cambio {
+    background-color: #ffffff;
+    border: 1px solid #e3e7ed;
+    border-left: 4px solid #c07a00;
+    border-radius: 4px;
+    padding: 14px 18px 16px;
+    margin-bottom: 10px;
+}
+
+.cabecera-cambio {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+    border-bottom: 1px solid #eef2f6;
+}
+
+.donde-cambio {
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.cuando-cambio {
+    font-size: 12px;
+    color: #5f6062;
+}
+
+.cuerpo-cambio {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.campo-cambio {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #5f6062;
+}
+
+.comparacion {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.valor-antes {
+    font-size: 17px;
+    color: #b3261e;
+    text-decoration: line-through;
+}
+
+.flecha-cambio {
+    font-size: 15px;
+    color: #5f6062;
+}
+
+.valor-despues {
+    font-size: 19px;
+    font-weight: 600;
+    color: #1b7a4b;
+}
+
+
+/* ----------Movil-------------- */
+
+@media (max-width: 480px) {
+
+    .cuerpo-cambio {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+}

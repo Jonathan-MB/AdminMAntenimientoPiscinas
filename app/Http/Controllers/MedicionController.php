@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreMedicionRequest;
+use App\Models\Cambio;
 use App\Models\Dosis;
 use App\Models\Jornada;
 use App\Models\Medicion;
@@ -72,7 +73,9 @@ class MedicionController extends Controller
         $dosis = $datos['dosis'] ?? [];
         unset($datos['dosis'], $datos['llavesDosis']);
 
-        DB::transaction(function () use ($jornada, $rondaProgramada, $piscina, $datos, $dosis) {
+        $donde = $piscina->nombre . ' · ' . $rondaProgramada->nombre;
+
+        DB::transaction(function () use ($jornada, $rondaProgramada, $piscina, $datos, $dosis, $donde) {
 
             //  La ronda se crea la primera vez que se guarda una piscina
             $ronda = Ronda::firstOrCreate(
@@ -80,25 +83,37 @@ class MedicionController extends Controller
                 ['hora' => $rondaProgramada->hora]
             );
 
-            $medicion = Medicion::updateOrCreate(
-                ['ronda_id' => $ronda->id, 'piscina_id' => $piscina->id],
-                $datos
-            );
+            $medicion = Medicion::firstOrNew(['ronda_id' => $ronda->id, 'piscina_id' => $piscina->id]);
+
+            //  Lo que habia antes, para poder comparar
+            $antes = $medicion->exists ? $medicion->getOriginal() : [];
+            $dosisAntes = $medicion->exists
+                ? $medicion->dosis()->with('producto')->get()->pluck('cantidad', 'producto.nombre')->all()
+                : [];
+
+            $medicion->fill($datos);
+            $medicion->save();
 
             //  Se rehacen las dosis: lo que llega en blanco es "no se aplicó"
             $medicion->dosis()->delete();
+
+            $dosisDespues = [];
 
             foreach ($dosis as $productoId => $cantidad) {
                 if ($cantidad === null || $cantidad === '' || (float) $cantidad <= 0) {
                     continue;
                 }
 
-                Dosis::create([
+                $nueva = Dosis::create([
                     'cantidad'    => $cantidad,
                     'medicion_id' => $medicion->id,
                     'producto_id' => $productoId,
                 ]);
+
+                $dosisDespues[$nueva->producto->nombre] = $nueva->cantidad;
             }
+
+            $this->anotarCambios($jornada, $donde, $antes, $medicion->getAttributes(), $dosisAntes, $dosisDespues);
         });
 
         //  El guardado automatico pide JSON; el formulario sin JavaScript, no
@@ -111,6 +126,59 @@ class MedicionController extends Controller
 
         return redirect()->route('registro.jornada', $jornada)
             ->with('mensajeCreado', $piscina->nombre . ' guardada');
+    }
+
+
+
+    //  Anota que cambio, solo si el campo YA tenia valor. Llenar un campo
+    //  vacio por primera vez no es una correccion.
+    private function anotarCambios($jornada, string $donde, array $antes, array $despues, array $dosisAntes, array $dosisDespues): void
+    {
+        $etiquetas = [
+            'cl_libre'        => 'Cloro libre',
+            'cl_total'        => 'Cloro total',
+            'cl_combinado'    => 'Combinado',
+            'ph'              => 'pH',
+            'alcalinidad'     => 'Alcalinidad',
+            'dureza_calcio'   => 'Dureza de calcio',
+            'acido_cianurico' => 'Ácido cianúrico',
+            'nivel_agua'      => 'Nivel del agua',
+            'retrolavado'     => 'Retrolavado',
+            'observacion'     => 'Observación',
+        ];
+
+        foreach ($etiquetas as $campo => $etiqueta) {
+            $this->anotarUno($jornada, $donde, $etiqueta, $antes[$campo] ?? null, $despues[$campo] ?? null);
+        }
+
+        //  Los quimicos: se comparan por nombre de producto
+        foreach (array_unique(array_merge(array_keys($dosisAntes), array_keys($dosisDespues))) as $producto) {
+            $this->anotarUno($jornada, $donde, $producto, $dosisAntes[$producto] ?? null, $dosisDespues[$producto] ?? null);
+        }
+    }
+
+
+
+    private function anotarUno($jornada, string $donde, string $campo, $antes, $despues): void
+    {
+        //  Sin valor previo no hay correccion que anotar
+        if ($antes === null || $antes === '') {
+            return;
+        }
+
+        //  Se comparan como texto: 7.40 y "7.40" son el mismo valor
+        if ((string) $antes === (string) $despues) {
+            return;
+        }
+
+        Cambio::create([
+            'donde'          => $donde,
+            'campo'          => $campo,
+            'valor_anterior' => (string) $antes,
+            'valor_nuevo'    => $despues === null || $despues === '' ? null : (string) $despues,
+            'jornada_id'     => $jornada->id,
+            'usuario_id'     => Auth::id(),
+        ]);
     }
 
 

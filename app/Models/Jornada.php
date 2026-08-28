@@ -56,6 +56,12 @@ class Jornada extends Model
     }
 
 
+    public function cambios(): HasMany
+    {
+        return $this->hasMany(Cambio::class, 'jornada_id');
+    }
+
+
     //  La fecha se compara contra hoy en hora de Aruba, no la del servidor
     public function esDeHoy(): bool
     {

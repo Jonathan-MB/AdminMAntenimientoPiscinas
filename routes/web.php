@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccesoController;
+use App\Http\Controllers\CambioController;
 use App\Http\Controllers\DiarioController;
 use App\Http\Controllers\HotelController;
 use App\Http\Controllers\MedicionController;
@@ -59,6 +60,8 @@ Route::middleware('auth')->group(function () {
 
     //  Administracion: solo master y administrador
     Route::middleware('rol:master,administrador')->group(function () {
+
+        Route::get('/jornada/{jornada}/cambios', [CambioController::class, 'index'])->name('cambios.index');
 
         Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');
         Route::post('/usuarios', [UsuarioController::class, 'store'])->name('usuarios.store');

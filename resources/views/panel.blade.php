@@ -90,7 +90,7 @@
                 $completa = $esperado > 0 && $hechas >= $esperado;
             @endphp
 
-            <div class="fila-historial">
+            <div class="fila-historial {{ $jornada->cambios_count > 0 ? 'fila-corregida' : '' }}">
 
                 <div class="fila-fecha">
                     <strong>{{ $jornada->fecha->format('d/m') }}</strong>
@@ -101,6 +101,14 @@
                     <span class="fila-titulo">{{ $jornada->hotel->nombre }}</span>
                     <span class="fila-nota">Registró {{ $jornada->usuario->nombre_usuario }}</span>
                 </div>
+
+                @if ($jornada->cambios_count > 0)
+                    <a class="fila-marca marca-corregida"
+                       href="{{ route('cambios.index', $jornada) }}"
+                       title="Se corrigieron valores después de guardarlos. Toca para ver qué cambió.">
+                        {{ $jornada->cambios_count }} {{ $jornada->cambios_count === 1 ? 'corrección' : 'correcciones' }}
+                    </a>
+                @endif
 
                 <span class="fila-marca {{ $completa ? 'marca-verde' : '' }}"
                       title="{{ $jornada->hotel->piscinas_count }} piscinas × {{ $jornada->hotel->rondas_programadas_count }} rondas">

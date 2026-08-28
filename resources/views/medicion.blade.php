@@ -68,6 +68,8 @@
                     <input class="campo-formulario campo-numero" type="number" step="{{ $lectura[3] }}" min="0"
                            id="{{ $lectura[0] }}" name="{{ $lectura[0] }}" inputmode="decimal"
                            value="{{ old($lectura[0], $medicion?->{$lectura[2]}) }}"
+                           data-original="{{ $medicion?->{$lectura[2]} }}"
+                           data-etiqueta="{{ $lectura[1] }}"
                            @disabled(! $editable)>
                 </div>
             @endforeach
@@ -89,6 +91,8 @@
                     <input class="campo-formulario campo-numero" type="number" step="0.01" min="0"
                            id="producto{{ $producto->id }}" name="dosis[{{ $producto->id }}]" inputmode="decimal"
                            value="{{ old('dosis.' . $producto->id, $cantidades[$producto->id] ?? '') }}"
+                           data-original="{{ $cantidades[$producto->id] ?? '' }}"
+                           data-etiqueta="{{ $producto->nombre }}"
                            @disabled(! $editable)>
                 </div>
             @endforeach
