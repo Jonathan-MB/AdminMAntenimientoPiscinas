@@ -338,6 +338,7 @@ piscina con mediciones registradas no se puede eliminar: se desactiva».
 | Acentos por consola de MySQL | phpMyAdmin, o `--default-character-set=utf8mb4`. La `é` debe ser `C3A9` en `HEX()`. |
 | `bootstrap/cache/` versionado | Va en `.gitignore`. Las cachés se generan en el servidor. |
 | Código muerto de una idea descartada | Si se abandona, se borra completa. |
+| Desactivar en vez de borrar «por si acaso» | Mientras el proyecto no esté en producción, lo que sobra se borra. Desactivar es para proteger historia real, no datos de prueba: deja filas muertas que nadie va a mirar. |
 | Rutas trampa para «probar» | Nunca. Una ruta que salta la autenticación se olvida y viaja a producción. Para ver otras vistas: usuarios de prueba con dominio `.test`, o la suplantación del `master`, que es una función real y auditada. |
 
 ---
