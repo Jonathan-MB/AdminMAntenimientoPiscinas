@@ -28,7 +28,7 @@ los hoteles ven esta pantalla.
 | Reparaciones: fotos del ticket | Funcionando |
 | Reparaciones: contadores y aviso en vivo | Funcionando |
 | Impresión de la revisión de un día | Funcionando |
-| Reportes al hotel | Pendiente |
+| Paginación del panel | Funcionando |
 
 ---
 
@@ -1042,6 +1042,12 @@ php artisan route:list             # rutas declaradas
 
 ### Funcionalidad que falta
 
+**Nada de lo pedido está pendiente.** Todo lo de la lista de cambios quedó hecho o decidido, y la
+lista de decisiones está abajo para que no se vuelva a proponer lo descartado.
+
+Lo que falte va a salir del uso real: cuando el equipo lleve unas semanas registrando jornadas
+aparecerán cosas que hoy no se pueden adivinar. Anótalas ahí y se resuelven con datos delante, no
+antes.
 
 ### Decidido que no se hace
 
@@ -1073,11 +1079,15 @@ php artisan route:list             # rutas declaradas
 
 ### Antes de producción
 
-- **Las cuentas de prueba y las jornadas de demo no hay que borrarlas del servidor**: nunca llegan.
-  `JornadaDemoSeeder` y `UsuarioPruebaSeeder` **se niegan a correr** con `APP_ENV=production`, y
-  `php artisan db:seed` no los llama. Viven solo en la base local.
-- **Corregir el `.ai` maestro**: los PNG ya dicen «POOL TECHNOLOGY», pero la parte editable
-  del `.ai` sigue con la errata. El reemplazo está en
-  `Libro de marca/logos/descriptor-pool-technology.svg`.
-- Confirmar `APP_TIMEZONE=America/Aruba` en el `.env` del servidor.
-- Generar las cachés por SSH en el servidor, nunca subir `bootstrap/cache/`.
+Los pasos del servidor están en **[docs/DESPLIEGUE.md](docs/DESPLIEGUE.md)**. Aquí solo lo que hay
+que resolver **fuera** del despliegue:
+
+- **Corregir el `.ai` maestro.** Los PNG ya dicen «POOL TECHNOLOGY», pero la parte editable del
+  `.ai` sigue con la errata, así que vuelve en cuanto alguien exporte de él. El reemplazo, en
+  curvas, está en `Libro de marca/logos/descriptor-pool-technology.svg`.
+- **Los datos del hotel**: dirección, teléfono y persona de contacto. Salen en el membrete de la
+  hoja impresa que recibe el cliente y hoy están vacíos. Se llenan desde la pantalla del hotel.
+
+Las cuentas de prueba y las jornadas de demo **no hay que borrarlas del servidor**: nunca llegan.
+`JornadaDemoSeeder` y `UsuarioPruebaSeeder` se niegan a correr con `APP_ENV=production`, y
+`php artisan db:seed` no los llama. Viven solo en la base local.
