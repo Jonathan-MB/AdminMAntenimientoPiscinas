@@ -25,7 +25,7 @@ los hoteles ven esta pantalla.
 | Ver como otro usuario (soporte) | Funcionando |
 | Roles de jefe y reparación | Funcionando |
 | Reparaciones: tickets, estados e historial | Funcionando |
-| Reparaciones: fotos del ticket | Pendiente |
+| Reparaciones: fotos del ticket | Funcionando |
 | Reparaciones: contadores y aviso en vivo | Pendiente |
 | Rangos de referencia de los parámetros | Pendiente |
 | Reportes al hotel | Pendiente |
@@ -161,7 +161,7 @@ app/
                        RondaProgramadaController, DiarioController,
                        RegistroController, MedicionController, CambioController,
                        SuplantacionController, PerfilController,
-                       TicketController
+                       TicketController, FotoTicketController
   Http/Middleware/     VerificarRol      (alias 'rol', se usa 'rol:master,administrador')
   Http/Requests/       IniciarSesion, StoreUsuario, UpdateUsuario,
                        StoreHotel, UpdateHotel, StorePiscina, UpdatePiscina,
@@ -169,17 +169,17 @@ app/
                        StoreMetroAgua, UpdateMetroAgua,
                        AbrirJornada, UpdateJornada, StoreMedicion,
                        UpdatePerfil, CambiarPassword,
-                       StoreTicket, MoverTicket
+                       StoreTicket, MoverTicket, StoreFotoTicket
   Models/              Rol, Usuario, Hotel, Piscina, RondaProgramada,
                        MetroAgua, LecturaMetro, Producto, Jornada, Ronda,
                        Medicion, Dosis, Tarea, TareaRealizada, Cambio,
-                       Ticket, MovimientoTicket
+                       Ticket, MovimientoTicket, FotoTicket
 database/
   migrations/          sessions, cache, jobs, roles, usuarios, rol_usuario,
                        hoteles, piscinas, rondas_programadas, metros_agua,
                        productos, tareas, jornadas, lecturas_metro, rondas,
                        mediciones, dosis, tareas_realizadas, cambios,
-                       tickets, movimientos_ticket
+                       tickets, movimientos_ticket, fotos_ticket
   seeders/             RolSeeder, UsuarioMasterSeeder, ProductoSeeder,
                        TareaSeeder, HotelSeeder,
                        JornadaDemoSeeder y UsuarioPruebaSeeder
@@ -271,6 +271,12 @@ Cuidados:
 - **Nunca subas el `.env`.** Está en `.gitignore` y ahí se queda.
 - **Todos los nombres de archivo en `public/` van en minúscula.** Windows perdona las
   mayúsculas; Linux no.
+- **`storage/` tiene que ser escribible.** Ahí van las fotos de los tickets. No hace falta
+  `php artisan storage:link`: las fotos se sirven por una ruta, no desde `public/`.
+- **Revisa `upload_max_filesize` y `post_max_size` en el servidor.** Seis fotos de 5 MB son
+  30 MB en una sola petición. Si `post_max_size` es menor, PHP descarta el formulario entero
+  antes de que Laravel lo vea y el usuario recibe un error de sesión caducada, no uno de
+  tamaño. En desarrollo ambos están en 40 MB.
 - Las migraciones se corren en el servidor.
 
 ---
@@ -536,6 +542,32 @@ Solo `jefe` y `master`. Se comprueba **en el controlador**, no solo escondiendo 
 `TicketController::destroy` devuelve 403 a cualquier otro, así que el reparador tampoco lo
 consigue mandando la petición a mano.
 
+### Las fotos
+
+Hasta **6 por ticket**, de **5 MB** cada una, en JPG, PNG o WEBP. Se suben desde la pantalla del
+ticket y se ven en grande al tocarlas.
+
+**No viven en `public/`.** Se guardan en `storage/app/private/tickets/{id}/` con un nombre UUID,
+y se sirven por la ruta `reparaciones/foto/{foto}`, que está dentro del mismo grupo con
+`rol:master,jefe,reparacion`. Dos motivos:
+
+- No hace falta `php artisan storage:link` al desplegar. Es el paso que más se olvida y el que
+  rompe las imágenes en silencio.
+- Son fotos de instalaciones de hoteles clientes. En `public/` cualquiera con la dirección las
+  vería sin iniciar sesión; así, quien no tenga el rol recibe **403** como en el resto del módulo.
+
+El costo es que las imágenes pasan por PHP en vez de servirlas Apache directo. Con seis fotos por
+ticket no se nota.
+
+**No hay miniaturas ni se redimensiona**: este servidor no tiene la extensión **GD**. Por eso el
+límite de peso es firme y el navegador recorta la miniatura con `object-fit`. Tampoco se acepta
+**HEIC**, el formato por defecto de los iPhone: se guardaría bien pero ningún navegador lo
+dibuja, así que es mejor rechazarlo con un mensaje que explique cómo cambiarlo.
+
+Borra la foto quien la subió, el `jefe` o el `master`. Al eliminar un ticket, la base borra las
+filas en cascada pero **los archivos se borran a mano** en `TicketController::destroy`: si no,
+quedarían ocupando el servidor para siempre.
+
 ### El historial de cobrados
 
 Pantalla aparte, con filtro por hotel y por rango de fechas. Filtra por `updated_at`, que en un
@@ -638,8 +670,6 @@ php artisan route:list             # rutas declaradas
 
 ### Funcionalidad que falta
 
-- **Las fotos del ticket.** Varias por ticket. Son la primera subida de archivos del proyecto,
-  así que hay que decidir dónde viven en el servidor antes de escribir el código.
 - **Los contadores por estado y el aviso en vivo** en la pantalla de entrada de `jefe` y
   `reparacion`. Hoy un usuario que solo tenga esos roles **cae en el panel de jornadas por
   descarte**, porque el panel manda al panel de jornadas a quien no sea `colaborador` ni `hotel`.

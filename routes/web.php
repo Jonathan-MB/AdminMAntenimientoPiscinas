@@ -12,6 +12,7 @@ use App\Http\Controllers\PiscinaController;
 use App\Http\Controllers\RegistroController;
 use App\Http\Controllers\RondaProgramadaController;
 use App\Http\Controllers\SuplantacionController;
+use App\Http\Controllers\FotoTicketController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UsuarioController;
 use Illuminate\Support\Facades\Route;
@@ -53,6 +54,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/reparaciones/{ticket}', [TicketController::class, 'show'])->name('reparaciones.show');
         Route::patch('/reparaciones/{ticket}', [TicketController::class, 'update'])->name('reparaciones.update');
         Route::delete('/reparaciones/{ticket}', [TicketController::class, 'destroy'])->name('reparaciones.destroy');
+
+        Route::post('/reparaciones/{ticket}/fotos', [FotoTicketController::class, 'store'])->name('fotos.store');
+        Route::get('/reparaciones/foto/{foto}', [FotoTicketController::class, 'ver'])->name('fotos.ver');
+        Route::delete('/reparaciones/foto/{foto}', [FotoTicketController::class, 'destroy'])->name('fotos.destroy');
 
     });
 

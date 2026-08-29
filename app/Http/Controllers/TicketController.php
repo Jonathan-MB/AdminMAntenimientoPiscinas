@@ -11,6 +11,7 @@ use App\Models\Ticket;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class TicketController extends Controller
 {
@@ -18,6 +19,7 @@ class TicketController extends Controller
     public function index(Request $request)
     {
         $tickets = Ticket::with('hotel', 'usuario')
+            ->withCount('fotos')
             ->whereIn('estado', Ticket::estadosAbiertos())
             ->orderBy('created_at')
             ->get()
@@ -55,7 +57,7 @@ class TicketController extends Controller
 
     public function show(Request $request, Ticket $ticket)
     {
-        $ticket->load(['hotel', 'usuario', 'movimientos' => function ($consulta) {
+        $ticket->load(['hotel', 'usuario', 'fotos', 'movimientos' => function ($consulta) {
             $consulta->with('usuario')->orderByDesc('created_at')->orderByDesc('id');
         }]);
 
@@ -107,6 +109,10 @@ class TicketController extends Controller
                 'message' => 'Solo el jefe puede eliminar tickets'
             ], 403);
         }
+
+        //  La base borra las filas en cascada, pero los archivos hay que
+        //  quitarlos a mano o quedan ocupando el servidor para siempre
+        Storage::disk('local')->deleteDirectory('tickets/' . $ticket->id);
 
         $ticket->delete();
 

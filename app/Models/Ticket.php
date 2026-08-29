@@ -63,6 +63,12 @@ class Ticket extends Model
     }
 
 
+    public function fotos(): HasMany
+    {
+        return $this->hasMany(FotoTicket::class, 'ticket_id');
+    }
+
+
     public function getEtiquetaEstadoAttribute(): string
     {
         return self::estados()[$this->estado] ?? $this->estado;

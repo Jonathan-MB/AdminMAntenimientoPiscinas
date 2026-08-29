@@ -42,6 +42,9 @@
 
                         <span class="pie-ticket">
                             {{ $ticket->created_at->format('d/m/Y') }} · {{ $ticket->usuario->nombre_usuario }}
+                            @if ($ticket->fotos_count > 0)
+                                · {{ $ticket->fotos_count }} {{ $ticket->fotos_count === 1 ? 'foto' : 'fotos' }}
+                            @endif
                         </span>
 
                         <div class="acciones-ticket">
