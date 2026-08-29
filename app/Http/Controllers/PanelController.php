@@ -84,12 +84,14 @@ class PanelController extends Controller
             $consulta->whereDate('fecha', '<=', $hasta);
         }
 
-        $total = (clone $consulta)->count();
-
+        //  withQueryString: los enlaces de pagina se llevan los filtros puestos.
+        //  Sin eso, pasar a la pagina 2 devolveria las jornadas de todos.
         $jornadas = $consulta->orderByDesc('fecha')
             ->orderByDesc('id')
-            ->limit(30)
-            ->get();
+            ->paginate(30)
+            ->withQueryString();
+
+        $total = $jornadas->total();
 
         $hoteles = Hotel::orderBy('nombre')->get();
 

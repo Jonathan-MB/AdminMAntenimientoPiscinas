@@ -1062,3 +1062,92 @@ body {
     }
 
 }
+
+
+/* ----------Paginacion-------------- */
+
+.paginacion {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 22px;
+}
+
+.numeros-pagina {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.pagina {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    min-height: 40px;
+    font-size: 14px;
+    color: #00519e;
+    background-color: #ffffff;
+    border: 1px solid #c3ceda;
+    border-radius: 3px;
+    padding: 0 12px;
+    text-decoration: none;
+    transition: 0.4s;
+}
+
+.pagina:hover {
+    border-color: #00519e;
+    background-color: #eaf0f6;
+}
+
+.pagina-actual {
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #00519e;
+    border-color: #00519e;
+}
+
+.pagina-actual:hover {
+    background-color: #00519e;
+}
+
+.pagina-apagada {
+    color: #5f6062;
+    opacity: 0.45;
+}
+
+.pagina-apagada:hover {
+    border-color: #c3ceda;
+    background-color: #ffffff;
+}
+
+.salto-pagina {
+    color: #5f6062;
+    padding: 0 2px;
+}
+
+
+/* ----------Paginacion en el telefono-------------- */
+
+@media (max-width: 480px) {
+
+    .pagina {
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    /*  En pantalla estrecha manda poder avanzar, no el numero exacto  */
+    .numeros-pagina {
+        order: -1;
+        width: 100%;
+        justify-content: center;
+        margin-bottom: 4px;
+    }
+
+    .paginacion > .pagina {
+        flex: 1;
+    }
+
+}

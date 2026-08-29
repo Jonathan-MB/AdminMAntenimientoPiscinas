@@ -295,7 +295,7 @@ public/
   img/                 logo, isotipo y derivados
 resources/views/
   partials/            head, head-impresion, header, header-limpio, mensaje,
-                       footer, aviso-reparaciones
+                       footer, aviso-reparaciones, paginacion
   login, panel, usuarios, hoteles, hotel, diario,
   registro, jornada, medicion, cambios, perfil,
   reparaciones, ticket, historial-reparaciones, impresion-dia,
@@ -443,8 +443,25 @@ cuatro se combinan entre sí. El filtro va por GET, así que la URL se puede com
 La lista de empleados solo muestra a quienes **de verdad han registrado alguna jornada**, no a
 todos los usuarios.
 
-Se muestran hasta 30 resultados. Si el filtro devuelve más, el conteo lo dice para que se acote
-en vez de creer que eso es todo.
+### Paginación
+
+El panel pagina de **30 en 30**. Los enlaces de página llevan `withQueryString()`, así que
+**se van con los filtros puestos**: sin eso, pasar a la página 2 con un empleado filtrado
+devolvería las jornadas de todos, que es la forma clásica de que una paginación mienta.
+
+`partials/paginacion` dibuja los enlaces a mano en vez de usar `->links()` de Laravel, porque las
+vistas que trae el framework están escritas para Tailwind o Bootstrap y aquí el CSS es plano.
+Muestra la primera página, la última, y una ventana de dos a cada lado de la actual.
+
+Pedir una página que ya no existe —se llega volviendo atrás después de acotar el filtro— no deja
+la pantalla muda: dice **«Esa página ya no tiene resultados»** con un enlace a la primera que
+conserva el filtro.
+
+En el teléfono los números pasan a su propia fila arriba y «Anterior» y «Siguiente» ocupan media
+pantalla cada uno, con 44 px de alto.
+
+El conteo dice cuántas hay en total y cuáles se están viendo: «70 jornadas. Viendo de la 31 a la
+60, página 2 de 3».
 
 **Ojo con lo que significa «empleado»:** filtra por `jornadas.usuario_id`, que es **quien abrió
 la jornada**, no quien tomó cada medición. Si dos colaboradores se reparten el mismo día, todo
@@ -1022,8 +1039,6 @@ php artisan route:list             # rutas declaradas
 
 ### Funcionalidad que falta
 
-- **Paginación del panel.** Muestra hasta 30 jornadas y avisa si hay más. Con meses de operación
-  va a hacer falta paginar.
 
 ### Decidido que no se hace
 

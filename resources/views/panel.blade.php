@@ -67,10 +67,13 @@
         <p class="conteo-resultados">
             @if ($total === 0)
                 Ninguna jornada coincide con el filtro.
-            @elseif ($total > $jornadas->count())
-                Mostrando las {{ $jornadas->count() }} más recientes de {{ $total }}. Acota el filtro para ver otras.
             @else
                 {{ $total }} {{ $total === 1 ? 'jornada' : 'jornadas' }}.
+
+                @if ($jornadas->hasPages() && $jornadas->firstItem())
+                    Viendo de la {{ $jornadas->firstItem() }} a la {{ $jornadas->lastItem() }},
+                    página {{ $jornadas->currentPage() }} de {{ $jornadas->lastPage() }}.
+                @endif
             @endif
         </p>
 
@@ -128,6 +131,8 @@
             </div>
         @endforeach
 
+        @include('partials.paginacion', ['paginador' => $jornadas])
+
         @if ($total === 0)
             <p class="caja-vacia">
                 @if ($hotelId || $empleadoId || $desde || $hasta)
@@ -135,6 +140,13 @@
                 @else
                     Todavía no hay jornadas registradas.
                 @endif
+            </p>
+        @elseif ($jornadas->isEmpty())
+            {{-- Se pidio una pagina mas alla de la ultima: pasa al volver atras
+                 despues de acotar el filtro --}}
+            <p class="caja-vacia">
+                Esa página ya no tiene resultados.
+                <a href="{{ $jornadas->url(1) }}">Volver a la primera</a>.
             </p>
         @endif
 
