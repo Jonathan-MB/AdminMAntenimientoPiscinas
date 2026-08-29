@@ -725,6 +725,30 @@ así que los pares quedan alineados aunque una etiqueta ocupe el doble.
 La unidad estaba en azul agua sobre blanco, que casi no se ve al sol. Pasa a gris y se distingue
 de la etiqueta por el grosor, no por el color. La casilla de retrolavado sube de 18 a 26 px.
 
+### Las pantallas de administración
+
+Mismo criterio, y ahí estaba el control más pequeño de toda la aplicación: la casilla de
+**«Hotel activo» medía 13 × 13 px**. Ahora mide 26 en el teléfono, y su fila 48 de alto.
+
+| Control | Antes | Ahora |
+|---|---|---|
+| Casilla «Hotel activo» | 13 × 13 | 26 × 26 (móvil), 22 (PC) |
+| Casillas de rol al crear usuario | 16 × 16 | 26 × 26 (móvil), 22 (PC) |
+| Campos en línea de rondas y metros | 33 px alto, letra 14 | 44 px, letra 16 |
+| Enlace del hotel en la lista | 21 px alto | 44 px |
+
+Los campos en línea suben a **16 px de letra en el móvil** por un motivo concreto: por debajo de
+16, **el iPhone hace zoom a la página entera al enfocar el campo**, y hay que volver a alejarla a
+mano. No es estética, es que la pantalla se descoloca al escribir.
+
+### Los roles se muestran con tilde
+
+El identificador del rol es `reparacion`, sin tilde, porque se compara en código. Pero la pantalla
+mostraba ese mismo identificador con un `text-transform: capitalize`, así que se leía
+**«Reparacion»**. Ahora `Rol::etiquetas()` da el texto que lee una persona —«Reparación»— y el
+identificador se queda como está. Se usa en la lista de usuarios, en el perfil, en las casillas de
+rol y en la franja de «ver como».
+
 ---
 
 ## Zona horaria

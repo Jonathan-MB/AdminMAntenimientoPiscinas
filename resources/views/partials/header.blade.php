@@ -7,7 +7,7 @@
         <span>
             Estás viendo la aplicación como
             <strong>{{ auth()->user()->nombre_usuario }}</strong>
-            ({{ implode(', ', auth()->user()->nombresDeRoles()) }})
+            ({{ implode(', ', auth()->user()->etiquetasDeRoles()) }})
         </span>
 
         <form method="POST" action="{{ route('suplantacion.terminar') }}">

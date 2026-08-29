@@ -27,6 +27,33 @@ class Rol extends Model
     ];
 
 
+    //  El identificador va sin tilde porque se compara en codigo; lo que lee
+    //  una persona si la lleva.
+    public static function etiquetas(): array
+    {
+        return [
+            self::MASTER        => 'Master',
+            self::ADMINISTRADOR => 'Administrador',
+            self::COLABORADOR   => 'Colaborador',
+            self::HOTEL         => 'Hotel',
+            self::JEFE          => 'Jefe',
+            self::REPARACION    => 'Reparación',
+        ];
+    }
+
+
+    public static function etiquetaDe(string $nombre): string
+    {
+        return self::etiquetas()[$nombre] ?? ucfirst($nombre);
+    }
+
+
+    public function getEtiquetaAttribute(): string
+    {
+        return self::etiquetaDe($this->nombre);
+    }
+
+
     public function usuarios(): BelongsToMany
     {
         return $this->belongsToMany(Usuario::class, 'rol_usuario', 'rol_id', 'usuario_id');

@@ -1,6 +1,10 @@
 /* ----------Tabla de hoteles-------------- */
 
+/*  Es el enlace principal de cada fila: se toca con el dedo, no con el raton  */
 .enlace-hotel {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
     font-weight: 600;
     color: #00519e;
     text-decoration: none;
@@ -22,4 +26,15 @@
     margin: 2px 4px 2px 0;
     font-size: 12px;
     white-space: nowrap;
+}
+
+
+/* ----------Movil-------------- */
+
+@media (max-width: 480px) {
+
+    .enlace-hotel {
+        min-height: 44px;
+    }
+
 }

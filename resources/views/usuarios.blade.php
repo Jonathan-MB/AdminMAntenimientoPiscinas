@@ -35,8 +35,8 @@
                         <td data-titulo="Usuario">{{ $usuario->nombre_usuario }}</td>
                         <td data-titulo="Correo">{{ $usuario->correo }}</td>
                         <td data-titulo="Roles">
-                            @foreach ($usuario->nombresDeRoles() as $nombreRol)
-                                <span class="etiqueta-rol etiqueta-{{ $nombreRol }}">{{ $nombreRol }}</span>
+                            @foreach ($usuario->roles->sortBy('id') as $rol)
+                                <span class="etiqueta-rol etiqueta-{{ $rol->nombre }}">{{ $rol->etiqueta }}</span>
                             @endforeach
                         </td>
                         <td data-titulo="Hotel">{{ $usuario->hotel?->nombre ?: '—' }}</td>
@@ -107,7 +107,7 @@
                                 <input type="checkbox" name="roles[]" value="{{ $rol->id }}"
                                        data-rol="{{ $rol->nombre }}"
                                        @checked(in_array($rol->id, old('roles', [])))>
-                                <span>{{ $rol->nombre }}</span>
+                                <span>{{ $rol->etiqueta }}</span>
                             </label>
                         @endforeach
                     </div>

@@ -30,7 +30,7 @@
 
             <div class="dato-fijo">
                 <span class="titulo-elemento">{{ count($usuario->nombresDeRoles()) === 1 ? 'Rol' : 'Roles' }}</span>
-                <strong>{{ implode(', ', $usuario->nombresDeRoles()) }}</strong>
+                <strong>{{ implode(', ', $usuario->etiquetasDeRoles()) }}</strong>
             </div>
 
             @if ($usuario->hotel)

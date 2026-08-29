@@ -53,9 +53,18 @@
 .interruptor {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 14px;
+    gap: 10px;
+    min-height: 44px;
+    font-size: 15px;
     color: #1a1a1a;
+    cursor: pointer;
+}
+
+.interruptor input {
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    accent-color: #00519e;
     cursor: pointer;
 }
 
@@ -75,6 +84,15 @@
 
     .linea-estado .boton-primario {
         width: 100%;
+    }
+
+    .interruptor {
+        min-height: 48px;
+    }
+
+    .interruptor input {
+        width: 26px;
+        height: 26px;
     }
 
 }
@@ -104,8 +122,9 @@
 
 .campo-tabla {
     width: 100%;
-    padding: 6px 9px;
-    font-size: 14px;
+    min-height: 40px;
+    padding: 8px 10px;
+    font-size: 15px;
     font-family: inherit;
     color: #1a1a1a;
     background-color: #ffffff;
@@ -156,6 +175,12 @@
     .campo-orden,
     .campo-hora {
         width: 100%;
+    }
+
+    /*  Por debajo de 16 px el iPhone hace zoom al enfocar el campo  */
+    .campo-tabla {
+        min-height: 44px;
+        font-size: 16px;
     }
 
 }

@@ -66,9 +66,19 @@ class Usuario extends Authenticatable
     }
 
 
-    //  Los nombres de sus roles, en orden, para mostrarlos
+    //  Los nombres de sus roles, en orden. Son identificadores: para pantalla
+    //  se pasan por Rol::etiquetaDe().
     public function nombresDeRoles(): array
     {
         return $this->roles->sortBy('id')->pluck('nombre')->all();
+    }
+
+
+    public function etiquetasDeRoles(): array
+    {
+        return $this->roles->sortBy('id')
+            ->map(function ($rol) {
+                return $rol->etiqueta;
+            })->all();
     }
 }
