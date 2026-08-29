@@ -96,6 +96,20 @@
     padding: 18px 20px 4px;
 }
 
+/*  Cada celda estira y el campo se pega abajo: asi una etiqueta que se
+    parte en dos lineas no deja el campo de al lado a otra altura  */
+.rejilla-lecturas .elemento-formulario,
+.rejilla-quimicos .elemento-formulario {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.rejilla-lecturas .campo-numero,
+.rejilla-quimicos .campo-numero {
+    margin-top: auto;
+}
+
 .campo-numero {
     font-size: 19px;
     font-weight: 600;
@@ -103,11 +117,13 @@
     padding: 12px 10px;
 }
 
+/*  El azul agua sobre blanco casi no se ve al sol; la unidad va en gris
+    y se distingue de la etiqueta por el grosor, no por el color  */
 .unidad {
     font-weight: normal;
     letter-spacing: 0;
     text-transform: none;
-    color: #91d4f2;
+    color: #5f6062;
 }
 
 
@@ -134,8 +150,10 @@
 }
 
 .interruptor input {
-    width: 18px;
-    height: 18px;
+    width: 22px;
+    height: 22px;
+    flex-shrink: 0;
+    accent-color: #00519e;
     cursor: pointer;
 }
 
@@ -197,7 +215,18 @@
     }
 
     .campo-numero {
-        font-size: 17px;
+        font-size: 18px;
+        padding: 13px 8px;
+    }
+
+    .interruptor {
+        min-height: 48px;
+        padding-bottom: 12px;
+    }
+
+    .interruptor input {
+        width: 26px;
+        height: 26px;
     }
 
     .linea-guardar {

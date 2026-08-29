@@ -692,6 +692,41 @@ químicos.
 
 ---
 
+## Tamaños para el teléfono
+
+La jornada se llena **de pie, junto a la piscina, con las manos mojadas**. Eso fija los tamaños,
+no el gusto: en pantallas de hasta 480 px nada que haya que tocar baja de **44 px de alto**, y
+las etiquetas en versalitas suben de 12 a 13 px con menos espaciado, porque a 12 px con el sol
+de frente no se leen.
+
+### La lista de trabajo
+
+Son 20 tareas y se marcan a lo largo del turno, así que el riesgo real es **saltarse una**.
+
+- La casilla mide **30 px** en el teléfono y 24 en el escritorio; la fila entera es tocable y
+  mide 56 px de alto.
+- Lo que **falta** va en ámbar con una banda a la izquierda: salta a la vista al bajar.
+- Lo **hecho** se apaga en gris, con la casilla en gris oscuro y el texto tachado.
+- Debajo hay un contador de **hechas / por marcar** con una barra de avance. En el teléfono va
+  **fijo abajo**, siempre visible aunque se baje hasta las piscinas, y el contenedor lleva un
+  hueco al final para que no tape la última línea. Cuando no falta ninguna, el número y la barra
+  pasan a verde.
+
+El contador **se calcula de las casillas**, no de un número guardado aparte, y se recalcula
+también cuando el guardado falla y la casilla vuelve atrás. Así no puede quedar diciendo algo
+distinto de lo que se ve.
+
+### La pantalla de la piscina
+
+Los nombres largos de producto («Bicarbonato de sodio libras») parten en dos líneas y dejaban el
+campo de al lado a otra altura. Ahora cada celda de la rejilla estira y el campo se pega abajo,
+así que los pares quedan alineados aunque una etiqueta ocupe el doble.
+
+La unidad estaba en azul agua sobre blanco, que casi no se ve al sol. Pasa a gris y se distingue
+de la etiqueta por el grosor, no por el color. La casilla de retrolavado sube de 18 a 26 px.
+
+---
+
 ## Zona horaria
 
 La operación es en **Aruba**. Toda la aplicación corre en `America/Aruba` (**AST, UTC−4, sin

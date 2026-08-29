@@ -1032,3 +1032,27 @@ body {
     }
 
 }
+
+
+/* ----------Legibilidad y tamano de toque en el telefono-------------- */
+
+@media (max-width: 480px) {
+
+    /*  Las etiquetas en versalitas se leen mal a 12 px con el sol de frente  */
+    .titulo-elemento {
+        font-size: 13px;
+        letter-spacing: 0.4px;
+    }
+
+    /*  Nada que haya que tocar baja de 44 px de alto  */
+    .boton-primario,
+    .boton-secundario,
+    .boton-eliminar {
+        min-height: 44px;
+    }
+
+    .boton-chico {
+        min-height: 40px;
+    }
+
+}

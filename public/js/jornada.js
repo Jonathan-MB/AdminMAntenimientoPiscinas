@@ -94,6 +94,37 @@ if (estado) {
 
 // ============ LISTADO DE TRABAJO ============
 
+const marcadorTareas = document.getElementById('marcadorTareas');
+const cuentaHechas = document.getElementById('cuentaHechas');
+const cuentaFaltan = document.getElementById('cuentaFaltan');
+const avanceTareas = document.getElementById('avanceTareas');
+
+
+//  El contador se calcula de las casillas, no de un numero guardado aparte:
+//  asi no puede quedar desfasado de lo que se ve.
+function contarTareas() {
+    const casillas = document.querySelectorAll('.casilla-tarea');
+    const total = casillas.length;
+    let hechas = 0;
+
+    casillas.forEach(function (casilla) {
+        const linea = casilla.closest('.linea-tarea');
+
+        if (casilla.checked) {
+            hechas++;
+        }
+
+        linea.classList.toggle('tarea-hecha', casilla.checked);
+        linea.classList.toggle('tarea-falta', ! casilla.checked);
+    });
+
+    cuentaHechas.textContent = hechas;
+    cuentaFaltan.textContent = total - hechas;
+    avanceTareas.style.width = total ? (hechas / total * 100) + '%' : '0';
+    marcadorTareas.classList.toggle('marcador-completo', total > 0 && hechas === total);
+}
+
+
 document.querySelectorAll('.casilla-tarea').forEach(function (casilla) {
     if (casilla.disabled) {
         return;
@@ -102,6 +133,7 @@ document.querySelectorAll('.casilla-tarea').forEach(function (casilla) {
     casilla.addEventListener('change', async function () {
         const marcada = casilla.checked;
         casilla.disabled = true;
+        contarTareas();
 
         try {
             const res = await fetch(rutaJornada + '/tarea/' + casilla.dataset.tarea, {
@@ -115,12 +147,19 @@ document.querySelectorAll('.casilla-tarea').forEach(function (casilla) {
                 alert(datos.message || 'No se pudo guardar la tarea');
                 //  Dejar la casilla como estaba
                 casilla.checked = ! marcada;
+                contarTareas();
             }
         } catch (error) {
             alert('Error de conexión');
             casilla.checked = ! marcada;
+            contarTareas();
         }
 
         casilla.disabled = false;
     });
 });
+
+
+if (marcadorTareas) {
+    contarTareas();
+}

@@ -57,14 +57,34 @@
 
             <p class="nota-formulario nota-suelta">Marca cada tarea a medida que la completes. Se guarda sola.</p>
 
+            {{-- --------------------CONTADOR DEL LISTADO------------------- --}}
+
+            <div class="marcador-tareas" id="marcadorTareas" data-total="{{ $tareas->count() }}">
+
+                <div class="marcador-cifras">
+                    <span class="marcador-dato marcador-hechas">
+                        <strong id="cuentaHechas">0</strong> hechas
+                    </span>
+
+                    <span class="marcador-dato marcador-faltan" id="bloqueFaltan">
+                        <strong id="cuentaFaltan">0</strong> por marcar
+                    </span>
+                </div>
+
+                <div class="barra-avance">
+                    <span class="barra-avance-relleno" id="avanceTareas"></span>
+                </div>
+
+            </div>
+
             <div class="bloque-tareas">
                 @foreach ($tareas as $tarea)
-                    <label class="linea-tarea">
+                    <label class="linea-tarea @if (in_array($tarea->id, $marcadas)) tarea-hecha @else tarea-falta @endif">
                         <input type="checkbox" class="casilla-tarea"
                                data-tarea="{{ $tarea->id }}"
                                @checked(in_array($tarea->id, $marcadas))
                                @disabled(! $editable)>
-                        <span>{{ $tarea->descripcion }}</span>
+                        <span class="texto-tarea">{{ $tarea->descripcion }}</span>
                     </label>
                 @endforeach
             </div>
