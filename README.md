@@ -914,6 +914,9 @@ no el gusto: en pantallas de hasta 480 px nada que haya que tocar baja de **44 p
 las etiquetas en versalitas suben de 12 a 13 px con menos espaciado, porque a 12 px con el sol
 de frente no se leen.
 
+Eso incluye **la barra superior**: los enlaces del menú, el nombre de usuario y el botón de salir
+estaban en 31 px. Se midieron emulando un Pixel 9 (412 px), no a ojo.
+
 ### La lista de trabajo
 
 Son 20 tareas y se marcan a lo largo del turno, así que el riesgo real es **saltarse una**.

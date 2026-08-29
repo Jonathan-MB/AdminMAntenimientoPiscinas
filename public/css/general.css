@@ -1061,6 +1061,16 @@ body {
         min-height: 40px;
     }
 
+    /*  La barra superior tambien se toca con el dedo: los enlaces y el boton
+        de salir estaban en 31 px  */
+    .enlace-menu,
+    .boton-salir,
+    .sesion-usuario {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+    }
+
 }
 
 
