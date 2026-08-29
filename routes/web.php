@@ -46,9 +46,10 @@ Route::middleware(['auth', 'password.temporal'])->group(function () {
         ->middleware('rol:master')
         ->name('suplantacion.iniciar');
 
-    //  Diario del hotel: el propio hotel y quien trabaja sus piscinas. El jefe
-    //  y el reparador no entran: la quimica del agua de un cliente no es lo suyo.
-    Route::middleware('rol:master,administrador,colaborador,hotel')->group(function () {
+    //  Diario del hotel: el propio hotel y la oficina. El colaborador no entra:
+    //  ahi veria el trabajo de todos, y lo suyo lo tiene en /registro. El jefe y
+    //  el reparador tampoco: la quimica del agua de un cliente no es lo suyo.
+    Route::middleware('rol:master,administrador,hotel')->group(function () {
 
         Route::get('/diario/{hotel}', [DiarioController::class, 'index'])->name('diario.index');
         Route::get('/diario/{hotel}/dia/{fecha}', [DiarioController::class, 'dia'])->name('diario.dia');

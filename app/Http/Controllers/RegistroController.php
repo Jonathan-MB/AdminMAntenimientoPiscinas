@@ -17,13 +17,23 @@ class RegistroController extends Controller
 {
     public function index(Request $request)
     {
+        $usuario = Auth::user();
         $hoteles = Hotel::where('activo', true)->orderBy('nombre')->get();
 
-        //  Las ultimas jornadas, para retomar sin buscar
-        $recientes = Jornada::with('hotel')
-            ->orderByDesc('fecha')
-            ->limit(8)
-            ->get();
+        //  Las ultimas jornadas, para retomar sin buscar. Un colaborador solo
+        //  ve las suyas: las que abrio o en las que midio alguna piscina.
+        $consulta = Jornada::with('hotel')->orderByDesc('fecha');
+
+        if (! $usuario->esMaster() && ! $usuario->esAdministrador()) {
+            $consulta->where(function ($q) use ($usuario) {
+                $q->where('usuario_id', $usuario->id)
+                    ->orWhereHas('rondas.mediciones', function ($m) use ($usuario) {
+                        $m->where('usuario_id', $usuario->id);
+                    });
+            });
+        }
+
+        $recientes = $consulta->limit(8)->get();
 
         return view('registro', compact('hoteles', 'recientes'));
     }
@@ -47,6 +57,10 @@ class RegistroController extends Controller
     public function show(Request $request, Jornada $jornada)
     {
         $usuario = Auth::user();
+
+        if (! $jornada->puedeVerla($usuario)) {
+            abort(403, 'Esa jornada no es tuya. Solo puedes consultar las que registraste.');
+        }
         $jornada->load([
             'hotel.piscinas' => function ($consulta) {
                 $consulta->where('activa', true)->orderBy('orden')->orderBy('nombre');

@@ -67,6 +67,36 @@ class Jornada extends Model
     }
 
 
+    //  Trabajo con esta jornada: la abrio, o registro alguna medicion en ella
+    public function participo(Usuario $usuario): bool
+    {
+        if ($this->usuario_id === $usuario->id) {
+            return true;
+        }
+
+        return Medicion::whereIn('ronda_id', $this->rondas()->select('id'))
+            ->where('usuario_id', $usuario->id)
+            ->exists();
+    }
+
+
+    //  Un colaborador solo ve lo suyo. La de hoy es la excepcion: dos pueden
+    //  repartirse el dia, y el segundo tiene que poder entrar a la que abrio
+    //  el primero.
+    public function puedeVerla(Usuario $usuario): bool
+    {
+        if ($usuario->esMaster() || $usuario->esAdministrador()) {
+            return true;
+        }
+
+        if ($this->esDeHoy()) {
+            return true;
+        }
+
+        return $this->participo($usuario);
+    }
+
+
     //  El colaborador solo corrige lo del mismo dia. Pasada la medianoche,
     //  la correccion la hace un administrador.
     public function puedeEditarla(Usuario $usuario): bool

@@ -14,7 +14,9 @@
             <p class="subtitulo-jornada">{{ $jornada->fecha->format('d/m/Y') }}</p>
         </div>
 
-        <a class="boton-secundario" href="{{ route('diario.index', ['hotel' => $jornada->hotel, 'fecha' => $jornada->fecha->format('Y-m-d')]) }}">Ver el diario</a>
+        @if (auth()->user()->tieneRol(\App\Models\Rol::MASTER, \App\Models\Rol::ADMINISTRADOR, \App\Models\Rol::HOTEL))
+            <a class="boton-secundario" href="{{ route('diario.index', ['hotel' => $jornada->hotel, 'fecha' => $jornada->fecha->format('Y-m-d')]) }}">Ver el diario</a>
+        @endif
     </div>
 
     @include('partials.mensaje')

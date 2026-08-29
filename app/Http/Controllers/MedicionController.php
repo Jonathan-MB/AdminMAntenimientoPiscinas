@@ -22,6 +22,10 @@ class MedicionController extends Controller
     {
         $this->verificarPertenencia($jornada, $rondaProgramada, $piscina);
 
+        if (! $jornada->puedeVerla(Auth::user())) {
+            abort(403, 'Esa jornada no es tuya. Solo puedes consultar las que registraste.');
+        }
+
         $editable  = $jornada->puedeEditarla(Auth::user());
         $productos = Producto::where('activo', true)->orderBy('orden')->get();
 
@@ -58,6 +62,10 @@ class MedicionController extends Controller
     public function store(StoreMedicionRequest $request, Jornada $jornada, RondaProgramada $rondaProgramada, Piscina $piscina)
     {
         $this->verificarPertenencia($jornada, $rondaProgramada, $piscina);
+
+        if (! $jornada->puedeVerla(Auth::user())) {
+            abort(403, 'Esa jornada no es tuya. Solo puedes registrar en las tuyas.');
+        }
 
         if (! $jornada->puedeEditarla(Auth::user())) {
             $aviso = 'Esta jornada ya no se puede editar. Pide a un administrador que la corrija.';

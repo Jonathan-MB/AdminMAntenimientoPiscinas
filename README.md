@@ -625,6 +625,34 @@ El diario, su JSON y la hoja impresa siguen la misma regla.
 Las 150 mediciones que ya existían se atribuyeron a quien abrió su jornada, que es lo único que se
 sabía de esas filas.
 
+### Cada colaborador ve solo lo suyo
+
+Un colaborador ya no ve el trabajo de los demás. En `/registro` su lista de jornadas recientes
+trae **solo aquellas en las que participó**, y abrir por URL una jornada ajena responde **403**,
+igual que abrir una de sus piscinas.
+
+**Participar** es haberla abierto **o** haber registrado alguna medición en ella. Por eso hizo
+falta primero que cada medición guardara su autor: sin eso, el segundo colaborador del día
+desaparecía del registro.
+
+**La jornada de hoy es la excepción y tiene que serlo.** Cualquier colaborador puede entrar en la
+de hoy de cualquier hotel, porque a alguien lo pueden mandar a ayudar a media mañana y necesita
+entrar a la que abrió su compañero. Al día siguiente esa jornada ya solo la ven los dos que
+trabajaron en ella.
+
+`Jornada::puedeVerla()` tiene esa regla en un solo sitio, y la usan las tres pantallas: la jornada,
+la piscina y el guardado.
+
+**El diario dejó de ser accesible para el colaborador.** Es la vista del hotel y de la oficina, y
+ahí vería el trabajo de todos; lo suyo lo tiene en `/registro`. El botón «Ver el diario» de la
+pantalla de jornada solo sale para quien puede entrar.
+
+| | `/registro` | `/jornada` ajena y pasada | `/diario` |
+|---|---|---|---|
+| `master`, `administrador` | Todo | 200 | 200 |
+| `colaborador` | Solo lo suyo | **403** | **403** |
+| `hotel` | 403 | 403 | 200, solo el suyo |
+
 ### La ventana de corrección
 
 El `colaborador` solo puede editar la jornada **del día en curso**. Pasada la medianoche en
