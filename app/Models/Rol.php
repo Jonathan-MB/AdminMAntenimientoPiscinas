@@ -18,6 +18,8 @@ class Rol extends Model
     public const ADMINISTRADOR = 'administrador';
     public const COLABORADOR   = 'colaborador';
     public const HOTEL         = 'hotel';
+    public const JEFE          = 'jefe';
+    public const REPARACION    = 'reparacion';
 
     protected $fillable = [
         'nombre',

@@ -14,6 +14,8 @@ class RolSeeder extends Seeder
             Rol::ADMINISTRADOR => 'Crea usuarios y asigna roles. No puede eliminar administradores.',
             Rol::COLABORADOR   => 'Ingresa la informacion de mantenimiento.',
             Rol::HOTEL         => 'Consulta su informacion y la de sus piscinas. Solo lectura.',
+            Rol::JEFE          => 'Ve las reparaciones, crea tickets y es el unico que puede borrarlos.',
+            Rol::REPARACION    => 'Ve las reparaciones y crea tickets.',
         ];
 
         foreach ($roles as $nombre => $descripcion) {

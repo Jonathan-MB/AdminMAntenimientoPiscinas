@@ -23,6 +23,8 @@ los hoteles ven esta pantalla.
 | Perfil propio y cambio de contraseña | Funcionando |
 | Filtros del panel (hotel, empleado, fechas) | Funcionando |
 | Ver como otro usuario (soporte) | Funcionando |
+| Roles de jefe y reparación | Funcionando |
+| Módulo de reparaciones | Pendiente |
 | Rangos de referencia de los parámetros | Pendiente |
 | Reportes al hotel | Pendiente |
 
@@ -89,6 +91,14 @@ pantalla.
 | **administrador** | Crear usuarios y asignar roles. **No puede eliminar a otro administrador.** |
 | **colaborador** | Ingresar la información de mantenimiento. |
 | **hotel** | Ver su información y la de sus piscinas. Solo lectura. |
+| **jefe** | Ve las reparaciones, crea tickets y es el único que puede borrarlos. |
+| **reparacion** | Ve las reparaciones y crea tickets. |
+
+El `master` ve todo, incluida la sección de reparaciones. Como es un rol **exclusivo**, no puede
+ser además `jefe`: si se le excluyera de ese módulo, quedaría fuera de su propio sistema.
+
+**Los nombres de rol son identificadores, no textos de pantalla**, así que van sin tildes:
+`reparacion`, no «reparación». Los títulos y botones que sí lee una persona las llevan.
 
 ### Los permisos se suman, las protecciones no
 
@@ -572,6 +582,11 @@ php artisan route:list             # rutas declaradas
 
 ### Funcionalidad que falta
 
+- **El módulo de reparaciones.** Lo primero que tiene que resolver: hoy un usuario con rol
+  `jefe` o `reparacion` y nada más **cae en el panel de jornadas por descarte**, porque el panel
+  no filtra por rol y ellos no son ni `colaborador` ni `hotel`. Se deja así a propósito mientras
+  el módulo no exista —si no, no tendrían dónde entrar— pero su aterrizaje debe ser la sección
+  de reparaciones con sus contadores por estado.
 - **Reportes al hotel**: el equivalente impreso o en PDF del formato que hoy se entrega en papel.
 - **Editar usuarios desde la pantalla.** `UsuarioController::update` existe y está probado, pero
   no hay botón: hoy solo se pueden crear y eliminar.

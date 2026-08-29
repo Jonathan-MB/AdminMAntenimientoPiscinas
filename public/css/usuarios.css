@@ -61,3 +61,16 @@
 .etiqueta-rol {
     margin: 1px 3px 1px 0;
 }
+
+
+/* ----------Etiquetas de los roles de reparaciones-------------- */
+
+.etiqueta-jefe {
+    background-color: #332b67;
+    color: #ffffff;
+}
+
+.etiqueta-reparacion {
+    background-color: #c07a00;
+    color: #ffffff;
+}
