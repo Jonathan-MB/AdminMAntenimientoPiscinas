@@ -152,4 +152,30 @@ class TicketController extends Controller
 
         return view('historial-reparaciones', compact('tickets', 'hoteles', 'total', 'hotelId', 'desde', 'hasta'));
     }
+
+
+    //  Lo que consulta el sondeo cada 15 segundos. El sello cambia si entra un
+    //  ticket, si alguno se mueve o si se borra: con eso basta para avisar.
+    public function resumen(Request $request)
+    {
+        $abiertos = Ticket::whereIn('estado', Ticket::estadosAbiertos())
+            ->orderBy('id')
+            ->get(['id', 'estado']);
+
+        $conteos = [];
+
+        foreach (Ticket::estadosAbiertos() as $estado) {
+            $conteos[$estado] = $abiertos->where('estado', $estado)->count();
+        }
+
+        $huella = $abiertos->map(function ($ticket) {
+            return $ticket->id . ':' . $ticket->estado;
+        })->implode(',');
+
+        return response()->json([
+            'conteos'  => $conteos,
+            'abiertos' => $abiertos->count(),
+            'sello'    => md5($huella),
+        ], 200)->header('Cache-Control', 'no-store, no-cache, must-revalidate');
+    }
 }

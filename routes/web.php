@@ -51,6 +51,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/reparaciones', [TicketController::class, 'index'])->name('reparaciones.index');
         Route::post('/reparaciones', [TicketController::class, 'store'])->name('reparaciones.store');
         Route::get('/reparaciones/historial', [TicketController::class, 'historial'])->name('reparaciones.historial');
+        Route::get('/reparaciones/resumen', [TicketController::class, 'resumen'])->name('reparaciones.resumen');
         Route::get('/reparaciones/{ticket}', [TicketController::class, 'show'])->name('reparaciones.show');
         Route::patch('/reparaciones/{ticket}', [TicketController::class, 'update'])->name('reparaciones.update');
         Route::delete('/reparaciones/{ticket}', [TicketController::class, 'destroy'])->name('reparaciones.destroy');

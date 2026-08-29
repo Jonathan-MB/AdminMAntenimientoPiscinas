@@ -1,3 +1,4 @@
+@include('partials.aviso-reparaciones')
 
 </body>
 

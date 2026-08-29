@@ -26,7 +26,7 @@ los hoteles ven esta pantalla.
 | Roles de jefe y reparación | Funcionando |
 | Reparaciones: tickets, estados e historial | Funcionando |
 | Reparaciones: fotos del ticket | Funcionando |
-| Reparaciones: contadores y aviso en vivo | Pendiente |
+| Reparaciones: contadores y aviso en vivo | Funcionando |
 | Rangos de referencia de los parámetros | Pendiente |
 | Reportes al hotel | Pendiente |
 
@@ -189,7 +189,8 @@ public/
   js/                  un archivo por vista
   img/                 logo, isotipo y derivados
 resources/views/
-  partials/            head, header, header-limpio, mensaje, footer
+  partials/            head, header, header-limpio, mensaje, footer,
+                       aviso-reparaciones
   login, panel, usuarios, hoteles, hotel, diario,
   registro, jornada, medicion, cambios, perfil,
   reparaciones, ticket, historial-reparaciones
@@ -290,10 +291,15 @@ a lo que va a hacer.
 |---|---|
 | `colaborador` | `/registro` — elegir hotel y fecha, con sus jornadas recientes debajo |
 | `hotel` | `/diario/{su hotel}` — el calendario de sus piscinas |
+| `jefe` y `reparacion` | `/reparaciones` — el tablero de tickets abiertos |
 | `master` y `administrador` | `/panel` — las últimas 12 jornadas de todos los hoteles, con su avance |
 
 `PanelController` redirige según el rol. Un usuario `hotel` sin hotel asignado sí ve el panel,
 pero con un aviso de que pida su asignación.
+
+Con varios roles manda el más amplio. El orden es a propósito: `colaborador` va **antes** que
+`jefe` y `reparacion`, porque quien además captura jornadas entra a capturarlas —es lo que hace
+todos los días y a una hora concreta—, y llega a las reparaciones con un clic en la barra.
 
 
 ### Filtros del panel
@@ -568,6 +574,33 @@ Borra la foto quien la subió, el `jefe` o el `master`. Al eliminar un ticket, l
 filas en cascada pero **los archivos se borran a mano** en `TicketController::destroy`: si no,
 quedarían ocupando el servidor para siempre.
 
+### El contador y el aviso en vivo
+
+En la barra superior, pegado al enlace de **Reparaciones**, va el número de tickets **sin
+cobrar**. Sale en todas las pantallas de `master`, `jefe` y `reparacion`, no solo en el tablero:
+el número se calcula en un *view composer* de `AppServiceProvider`, para que la vista no consulte
+la base.
+
+Cada **15 segundos** la página le pregunta a `reparaciones/resumen` cómo va la cosa. Si algo
+cambió, aparece un aviso abajo diciendo qué pasó —«Entró un ticket nuevo», «Un ticket pasó a
+"Reparado y por cobrar"»— y el contador late para que se note.
+
+El resumen devuelve un **sello**: el `md5` de la lista de tickets abiertos con su estado. Cambia
+si entra uno, si alguno se mueve de columna o si se borra, y **no** cambia por cosas que no
+importan para el aviso, como agregarle una foto. La respuesta va con `Cache-Control: no-store`;
+si no, el navegador serviría la misma copia una y otra vez y el aviso nunca saldría.
+
+**No es tiempo real y no pretende serlo.** No hay WebSockets porque el hosting es compartido y no
+admite un proceso escuchando todo el día; y una conexión abierta por empleado le ocuparía a
+Apache un trabajador entero. Preguntar cada 15 segundos cuesta cuatro consultas por minuto y por
+persona conectada, que para este tamaño de equipo no se siente.
+
+Con la pestaña de fondo el sondeo se detiene, y al volver a ella se pregunta enseguida. Si la
+sesión caduca, deja de preguntar en vez de insistir contra el login.
+
+**El aviso no recarga la pantalla solo.** Trae un botón «Ver el tablero». Recargar por su cuenta
+le borraría a alguien lo que estuviera escribiendo en el formulario de un ticket.
+
 ### El historial de cobrados
 
 Pantalla aparte, con filtro por hotel y por rango de fechas. Filtra por `updated_at`, que en un
@@ -670,10 +703,6 @@ php artisan route:list             # rutas declaradas
 
 ### Funcionalidad que falta
 
-- **Los contadores por estado y el aviso en vivo** en la pantalla de entrada de `jefe` y
-  `reparacion`. Hoy un usuario que solo tenga esos roles **cae en el panel de jornadas por
-  descarte**, porque el panel manda al panel de jornadas a quien no sea `colaborador` ni `hotel`.
-  Su aterrizaje debe ser el tablero de reparaciones.
 - **Reportes al hotel**: el equivalente impreso o en PDF del formato que hoy se entrega en papel.
 - **Editar usuarios desde la pantalla.** `UsuarioController::update` existe y está probado, pero
   no hay botón: hoy solo se pueden crear y eliminar.

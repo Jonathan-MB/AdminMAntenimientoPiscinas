@@ -36,6 +36,12 @@ class PanelController extends Controller
 
                 return redirect()->route('diario.index', $usuario->hotel_id);
             }
+
+            //  Va de ultimo a proposito: quien ademas captura jornadas entra a
+            //  capturarlas. Quien solo repara, entra al tablero.
+            if ($usuario->tieneRol(Rol::JEFE, Rol::REPARACION)) {
+                return redirect()->route('reparaciones.index');
+            }
         }
 
         //  Master y administrador: las jornadas de todos los hoteles, filtrables

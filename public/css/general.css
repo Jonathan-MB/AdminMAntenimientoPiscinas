@@ -901,3 +901,134 @@ body {
     background-color: #003a78;
     border-bottom-color: transparent;
 }
+
+
+/* ----------Marca de reparaciones abiertas-------------- */
+
+.marca-abiertos {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    color: #00519e;
+    background-color: #ffffff;
+    border-radius: 20px;
+    min-width: 20px;
+    padding: 1px 7px;
+    margin-left: 6px;
+    text-align: center;
+}
+
+.marca-vacia {
+    opacity: 0.45;
+}
+
+.marca-latiendo {
+    animation: latido 0.9s ease-in-out 2;
+}
+
+@keyframes latido {
+    0%   { transform: scale(1); }
+    40%  { transform: scale(1.35); }
+    100% { transform: scale(1); }
+}
+
+
+/* ----------Aviso de reparaciones-------------- */
+
+.aviso-reparaciones {
+    display: none;
+    position: fixed;
+    left: 50%;
+    bottom: 22px;
+    transform: translateX(-50%);
+    align-items: center;
+    gap: 16px;
+    width: calc(100% - 32px);
+    max-width: 520px;
+    background-color: #00519e;
+    border-left: 5px solid #91d4f2;
+    border-radius: 4px;
+    box-shadow: 0 6px 22px rgba(26, 26, 26, 0.28);
+    padding: 14px 16px;
+    z-index: 70;
+}
+
+.aviso-visible {
+    display: flex;
+    animation: entra-aviso 0.4s ease-out;
+}
+
+@keyframes entra-aviso {
+    from { opacity: 0; transform: translate(-50%, 18px); }
+    to   { opacity: 1; transform: translate(-50%, 0); }
+}
+
+.texto-aviso {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 600;
+    color: #ffffff;
+}
+
+.botones-aviso {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.boton-aviso {
+    font-size: 13px;
+    font-weight: 600;
+    color: #00519e;
+    background-color: #ffffff;
+    border-radius: 3px;
+    padding: 7px 13px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: 0.4s;
+}
+
+.boton-aviso:hover {
+    background-color: #d9e6f2;
+}
+
+.cerrar-aviso {
+    font-size: 20px;
+    line-height: 1;
+    color: #ffffff;
+    background-color: transparent;
+    border: 0;
+    padding: 0 4px;
+    cursor: pointer;
+    transition: 0.4s;
+}
+
+.cerrar-aviso:hover {
+    color: #91d4f2;
+}
+
+
+/* ----------Aviso en movil-------------- */
+
+@media (max-width: 480px) {
+
+    .aviso-reparaciones {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+        bottom: 14px;
+        width: calc(100% - 24px);
+    }
+
+    .botones-aviso {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .boton-aviso {
+        flex: 1;
+        text-align: center;
+    }
+
+}
