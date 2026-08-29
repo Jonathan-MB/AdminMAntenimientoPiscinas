@@ -57,10 +57,35 @@ class DiarioController extends Controller
             'fecha'  => $dia->format('Y-m-d'),
             'titulo' => $this->titularFecha($dia),
             'vacio'  => false,
-            'lecturaMetroAgua' => $jornada->lectura_metro_agua,
+            'metros'           => $this->metrosEnArreglo($jornada),
             'colaborador'      => $jornada->usuario->nombre_usuario,
             'rondas'           => $this->rondasEnArreglo($jornada),
         ], 200);
+    }
+
+
+
+    //  La hoja de un dia, para imprimir. La ve el hotel y el personal de AQUALIVE.
+    public function imprimir(Request $request, Hotel $hotel, string $fecha)
+    {
+        $this->verificarAcceso($hotel);
+
+        $dia     = Carbon::createFromFormat('Y-m-d', $fecha)->startOfDay();
+        $jornada = $this->traerJornada($hotel, $dia);
+
+        if (! $jornada) {
+            abort(404, 'No hay registro de ese día');
+        }
+
+        $jornada->load(['lecturasMetro.metroAgua', 'tareasRealizadas.tarea', 'rondas.mediciones.piscina']);
+
+        return view('impresion-dia', [
+            'hotel'    => $hotel,
+            'jornada'  => $jornada,
+            'dia'      => $dia,
+            'titulo'   => $this->titularFecha($dia),
+            'impresa'  => Carbon::now(),
+        ]);
     }
 
 
@@ -143,6 +168,7 @@ class DiarioController extends Controller
     {
         return Jornada::with([
                 'usuario',
+                'lecturasMetro.metroAgua',
                 'rondas.rondaProgramada',
                 'rondas.mediciones.piscina',
                 'rondas.mediciones.dosis.producto',
@@ -190,6 +216,22 @@ class DiarioController extends Controller
                                 })->values(),
                             ];
                         })->values(),
+                ];
+            })->values()->all();
+    }
+
+
+
+    private function metrosEnArreglo(Jornada $jornada): array
+    {
+        return $jornada->lecturasMetro
+            ->sortBy(function ($lectura) {
+                return $lectura->metroAgua->orden;
+            })
+            ->map(function ($lectura) {
+                return [
+                    'nombre'  => $lectura->metroAgua->nombre,
+                    'lectura' => $lectura->lectura,
                 ];
             })->values()->all();
     }

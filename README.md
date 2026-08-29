@@ -27,6 +27,7 @@ los hoteles ven esta pantalla.
 | Reparaciones: tickets, estados e historial | Funcionando |
 | Reparaciones: fotos del ticket | Funcionando |
 | Reparaciones: contadores y aviso en vivo | Funcionando |
+| Impresión de la revisión de un día | Funcionando |
 | Rangos de referencia de los parámetros | Pendiente |
 | Reportes al hotel | Pendiente |
 
@@ -189,11 +190,11 @@ public/
   js/                  un archivo por vista
   img/                 logo, isotipo y derivados
 resources/views/
-  partials/            head, header, header-limpio, mensaje, footer,
-                       aviso-reparaciones
+  partials/            head, head-impresion, header, header-limpio, mensaje,
+                       footer, aviso-reparaciones
   login, panel, usuarios, hoteles, hotel, diario,
   registro, jornada, medicion, cambios, perfil,
-  reparaciones, ticket, historial-reparaciones
+  reparaciones, ticket, historial-reparaciones, impresion-dia
 Libro de marca/        Manual de marca, logos y paleta (copia para uso externo)
 docs/                  Convenciones de código
 ```
@@ -496,6 +497,12 @@ El servidor **ignora** cualquier lectura que llegue de un metro que no sea de es
 esté inactivo, aunque venga en la petición. Un metro que ya tiene lecturas no se elimina: se
 desactiva.
 
+Cuando los metros pasaron de uno a varios, la columna `jornadas.lectura_metro_agua` desapareció
+pero el diario y su JSON la seguían pidiendo. Eloquent devuelve `null` para una columna que no
+existe **sin avisar**, así que el hotel llevaba desde entonces viendo «—» en el metro de agua y
+nada fallaba. Apareció al construir la impresión, que muestra los mismos datos. Ya lee las
+lecturas de verdad, en las dos pantallas.
+
 ### La ventana de corrección
 
 El `colaborador` solo puede editar la jornada **del día en curso**. Pasada la medianoche en
@@ -640,6 +647,44 @@ ticket cobrado es la fecha en que se cobró. Muestra hasta 50 y dice cuántos ha
 
 ---
 
+## Imprimir la revisión de un día
+
+Desde el diario, el botón **«Imprimir el día»** abre `diario/{hotel}/dia/{fecha}/imprimir` en una
+pestaña nueva: la hoja del día con membrete, lista para papel o PDF. Si el día no tiene registro
+el botón queda apagado, y la ruta responde **404**: no se imprime una hoja en blanco con membrete.
+
+Entran `hotel` (solo el suyo), `colaborador`, `administrador` y `master`. El `jefe` y el
+`reparacion` **no**: la química del agua de un cliente no es lo suyo. Esa restricción se aplicó a
+todo el diario, no solo a la impresión — antes cualquier usuario con sesión veía el diario de
+cualquier hotel salvo el rol `hotel`.
+
+### Es una vista aparte, no la pantalla con `@media print`
+
+La hoja **no carga `general.css`**. Tiene su propio `partials/head-impresion` y su propia
+`impresion.css`. La alternativa era envolver todo el diseño de pantalla en `@media screen` y
+escribir encima las reglas de impresión, y sale peor: cada retoque de una pantalla obliga a
+comprobar que no rompió el papel, y basta olvidar un `@media` para que un fondo de color se cuele
+en la impresión. Aquí lo que se imprime está en un archivo que solo sirve para eso.
+
+### Que se vea igual en color y en blanco y negro
+
+Ningún dato depende del color para entenderse. El retrolavado dice **«Sí»** o **«No»**, no es un
+punto verde; el nivel del agua dice «Alto», «Normal» o «Bajo». El color solo acompaña: la raya del
+membrete y el título en azul de marca, que en blanco y negro salen grises y no estorban.
+
+Tampoco hay fondos de color rellenando filas. Además de gastar tóner, obligan a `print-color-adjust:
+exact` para que el navegador no los descarte, y aun así cada impresora los interpreta distinto.
+Las separaciones se hacen con líneas.
+
+### El corte de página
+
+Cada ronda es un bloque con `page-break-inside: avoid`, así no se parte por la mitad. Si una ronda
+no cabe entera, la cabecera de su tabla se repite en la página siguiente (`display: table-header-group`),
+para que las columnas no queden sin rótulo. Las filas de medición tampoco se parten de su línea de
+químicos.
+
+---
+
 ## Zona horaria
 
 La operación es en **Aruba**. Toda la aplicación corre en `America/Aruba` (**AST, UTC−4, sin
@@ -735,7 +780,6 @@ php artisan route:list             # rutas declaradas
 
 ### Funcionalidad que falta
 
-- **Reportes al hotel**: el equivalente impreso o en PDF del formato que hoy se entrega en papel.
 - **Editar usuarios desde la pantalla.** `UsuarioController::update` existe y está probado, pero
   no hay botón: hoy solo se pueden crear y eliminar.
 - **Editar y reordenar piscinas.** Las rondas sí se editan en línea; las piscinas solo se crean,

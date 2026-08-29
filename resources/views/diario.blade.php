@@ -74,7 +74,15 @@
                     {{ ucfirst($dias[$seleccionado->dayOfWeek]) }} {{ $seleccionado->day }} de {{ $meses[$seleccionado->month - 1] }} de {{ $seleccionado->year }}
                 </h2>
 
-                <div class="cargando" id="cargando">Cargando…</div>
+                <div class="acciones-dia">
+                    <a class="boton-imprimir @if (! $jornada) boton-apagado @endif"
+                       id="botonImprimirDia"
+                       href="{{ route('diario.imprimir', ['hotel' => $hotel, 'fecha' => $seleccionado->format('Y-m-d')]) }}"
+                       target="_blank" rel="noopener"
+                       title="Abre la hoja del día lista para imprimir">Imprimir el día</a>
+
+                    <div class="cargando" id="cargando">Cargando…</div>
+                </div>
             </div>
 
             <div id="contenidoDia">
@@ -84,8 +92,14 @@
                 @else
                     <div class="resumen-jornada">
                         <div class="dato-resumen">
-                            <span class="titulo-elemento">Metro de agua</span>
-                            <strong>{{ $jornada->lectura_metro_agua ?? '—' }}</strong>
+                            <span class="titulo-elemento">Metros de agua</span>
+                            <strong>
+                                @forelse ($jornada->lecturasMetro->sortBy(fn ($l) => $l->metroAgua->orden) as $lectura)
+                                    {{ $lectura->metroAgua->nombre }}: {{ $lectura->lectura }}@if (! $loop->last) · @endif
+                                @empty
+                                    —
+                                @endforelse
+                            </strong>
                         </div>
 
                         <div class="dato-resumen">
@@ -167,6 +181,7 @@
 <script>
     const hotelId = {{ $hotel->id }};
     const rutaDia = '{{ url('/diario/' . $hotel->id . '/dia') }}';
+    const botonImprimirDia = document.getElementById('botonImprimirDia');
 </script>
 
 <script src="@recurso('js/diario.js')"></script>

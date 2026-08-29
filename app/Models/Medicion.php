@@ -46,6 +46,16 @@ class Medicion extends Model
     ];
 
 
+    public static function niveles(): array
+    {
+        return [
+            self::NIVEL_NORMAL => 'Normal',
+            self::NIVEL_ALTO   => 'Alto',
+            self::NIVEL_BAJO   => 'Bajo',
+        ];
+    }
+
+
     public function ronda(): BelongsTo
     {
         return $this->belongsTo(Ronda::class, 'ronda_id');

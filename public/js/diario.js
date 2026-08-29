@@ -19,8 +19,21 @@ function valor(dato) {
 }
 
 
+function textoMetros(metros) {
+    if (! metros || ! metros.length) {
+        return '—';
+    }
+
+    return metros.map(function (metro) {
+        return limpiar(metro.nombre) + ': ' + valor(metro.lectura);
+    }).join(' · ');
+}
+
+
 function dibujarDia(datos) {
     tituloDia.textContent = datos.titulo.charAt(0).toUpperCase() + datos.titulo.slice(1);
+
+    apuntarImpresion(datos.fecha, datos.vacio);
 
     if (datos.vacio) {
         contenidoDia.innerHTML = '<p class="sin-registro">No hay registro de este día.</p>';
@@ -28,7 +41,7 @@ function dibujarDia(datos) {
     }
 
     let html = '<div class="resumen-jornada">'
-        + '<div class="dato-resumen"><span class="titulo-elemento">Metro de agua</span><strong>' + valor(datos.lecturaMetroAgua) + '</strong></div>'
+        + '<div class="dato-resumen"><span class="titulo-elemento">Metros de agua</span><strong>' + textoMetros(datos.metros) + '</strong></div>'
         + '<div class="dato-resumen"><span class="titulo-elemento">Registró</span><strong>' + limpiar(datos.colaborador) + '</strong></div>'
         + '<div class="dato-resumen"><span class="titulo-elemento">Rondas</span><strong>' + datos.rondas.length + '</strong></div>'
         + '</div>';
@@ -86,6 +99,13 @@ function dibujarDia(datos) {
     });
 
     contenidoDia.innerHTML = html;
+}
+
+
+//  Sin registro no hay nada que imprimir: el enlace queda apagado
+function apuntarImpresion(fecha, vacio) {
+    botonImprimirDia.href = rutaDia + '/' + fecha + '/imprimir';
+    botonImprimirDia.classList.toggle('boton-apagado', vacio);
 }
 
 

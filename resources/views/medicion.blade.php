@@ -107,7 +107,7 @@
             <div class="elemento-formulario">
                 <label class="titulo-elemento" for="nivelAgua">Nivel del agua</label>
                 <select class="campo-formulario" id="nivelAgua" name="nivelAgua" @disabled(! $editable)>
-                    @foreach (['normal' => 'Normal', 'alto' => 'Alto', 'bajo' => 'Bajo'] as $valor => $texto)
+                    @foreach (\App\Models\Medicion::niveles() as $valor => $texto)
                         <option value="{{ $valor }}" @selected(old('nivelAgua', $medicion?->nivel_agua ?? 'normal') === $valor)>{{ $texto }}</option>
                     @endforeach
                 </select>

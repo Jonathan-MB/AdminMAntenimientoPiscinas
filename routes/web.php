@@ -41,9 +41,15 @@ Route::middleware('auth')->group(function () {
         ->middleware('rol:master')
         ->name('suplantacion.iniciar');
 
-    //  Diario del hotel: lo ve el propio hotel, y tambien el personal de AQUALIVE
-    Route::get('/diario/{hotel}', [DiarioController::class, 'index'])->name('diario.index');
-    Route::get('/diario/{hotel}/dia/{fecha}', [DiarioController::class, 'dia'])->name('diario.dia');
+    //  Diario del hotel: el propio hotel y quien trabaja sus piscinas. El jefe
+    //  y el reparador no entran: la quimica del agua de un cliente no es lo suyo.
+    Route::middleware('rol:master,administrador,colaborador,hotel')->group(function () {
+
+        Route::get('/diario/{hotel}', [DiarioController::class, 'index'])->name('diario.index');
+        Route::get('/diario/{hotel}/dia/{fecha}', [DiarioController::class, 'dia'])->name('diario.dia');
+        Route::get('/diario/{hotel}/dia/{fecha}/imprimir', [DiarioController::class, 'imprimir'])->name('diario.imprimir');
+
+    });
 
     //  Reparaciones: jefe, reparacion y el master, que ve todo
     Route::middleware('rol:master,jefe,reparacion')->group(function () {
