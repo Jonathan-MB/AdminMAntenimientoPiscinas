@@ -3,7 +3,7 @@
 .enlace-volver {
     display: inline-block;
     font-size: 13px;
-    color: #5f6062;
+    color: #4a4b4d;
     text-decoration: none;
     margin-bottom: 14px;
     transition: 0.4s;
@@ -260,9 +260,10 @@
     flex-shrink: 0;
 }
 
+/*  Va sobre el fondo azul, no dentro de una tarjeta: necesita mas contraste  */
 .conteo-resultados {
     font-size: 13px;
-    color: #5f6062;
+    color: #4a4b4d;
     margin-bottom: 14px;
 }
 

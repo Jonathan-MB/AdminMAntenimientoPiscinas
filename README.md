@@ -339,6 +339,21 @@ ICC que el propio archivo trae dentro (Coated FOGRA27). No son valores estimados
 Proporción esperada por pantalla: ~70 % neutros, ~20 % azul corporativo, el resto gris y un
 acento mínimo de azul agua.
 
+### El fondo de la aplicación
+
+`#b1d1fc`, elegido por AQUALIVE el 29 de agosto de 2026. Es más saturado que el gris azulado con
+el que arrancó el proyecto, y hace que las tarjetas blancas destaquen más.
+
+Tiene una consecuencia medida: el gris de marca `#5F6062` sobre ese azul da **4,0 : 1**, por
+debajo del mínimo legible de 4,5. Dentro de las tarjetas blancas no pasa nada, pero el texto
+pequeño que va **directamente sobre el fondo** —el conteo de resultados, las notas sueltas, los
+enlaces de volver, la hora de la ronda— usa `#4A4B4D`, que da **5,6 : 1**. Es el mismo gris un
+tono más oscuro, no un color nuevo.
+
+Si algún día se cambia el fondo, hay que volver a medir eso: el criterio es que **ningún texto
+sobre el fondo baje de 4,5 : 1**. Se comprobó pantalla por pantalla con las reglas aplicadas, no
+a ojo.
+
 El manual completo está en `Libro de marca/manual-de-marca-aqualive.html` (se abre con doble clic).
 
 ### La errata del descriptor: corregida en los PNG, pendiente en el `.ai`

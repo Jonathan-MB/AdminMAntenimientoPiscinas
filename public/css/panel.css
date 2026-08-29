@@ -34,7 +34,10 @@
 
 /* ----------Encabezado: la columna de avance sin fondo-------------- */
 
+/*  Sin fondo propio queda sobre el azul de la pagina: hereda el gris mas
+    oscuro del encabezado en vez del suyo  */
 .encabezado-historial .fila-marca {
+    color: inherit;
     background-color: transparent;
     padding: 0;
     text-align: right;
@@ -48,9 +51,10 @@
 
 /* ----------Conteo-------------- */
 
+/*  Va sobre el fondo azul, no dentro de una tarjeta: necesita mas contraste  */
 .conteo-resultados {
     font-size: 13px;
-    color: #5f6062;
+    color: #4a4b4d;
     margin-bottom: 14px;
 }
 

@@ -23,7 +23,7 @@ body {
     font-family: 'Segoe UI', Arial, Helvetica, sans-serif;
     font-size: 15px;
     line-height: 1.5;
-    background-color: #d7e1ee;
+    background-color: #b1d1fc;
     color: #1a1a1a;
 }
 
@@ -532,7 +532,7 @@ body {
 
 .nota-formulario {
     font-size: 12px;
-    color: #5f6062;
+    color: #4a4b4d;
     margin-top: 12px;
 }
 
@@ -670,7 +670,7 @@ body {
     font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: #5f6062;
+    color: #4a4b4d;
 }
 
 .encabezado-historial .fila-fecha {
@@ -872,7 +872,7 @@ body {
 
 .estado-guardado {
     font-size: 12px;
-    color: #5f6062;
+    color: #4a4b4d;
     white-space: nowrap;
     transition: 0.4s;
 }
