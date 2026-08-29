@@ -945,8 +945,16 @@ php artisan route:list             # rutas declaradas
 
 ### Funcionalidad que falta
 
-- **Editar y reordenar piscinas.** Las rondas sí se editan en línea; las piscinas solo se crean,
-  activan y eliminan. Es una inconsistencia.
+- **Renombrar y reordenar piscinas.** `PiscinaController::update` acepta `nombre` y `orden`, pero
+  la pantalla solo activa, desactiva y elimina; el `PATCH` que manda es únicamente el de activar.
+  Y una piscina con mediciones **no se puede eliminar**, así que hoy **un nombre mal escrito se
+  queda para siempre**, y sale en todos los informes que ve el hotel. Las rondas y los metros sí
+  se editan en línea desde su tabla: las piscinas son la excepción, y no por diseño.
+- **El diario muestra menos que la hoja impresa.** Los materiales sacados y los trabajos del día se
+  registran y se imprimen, pero el diario del hotel no los muestra. El hotel ve menos en pantalla
+  que en el papel que recibe.
+- **El hotel no ve las reparaciones de su propio hotel.** No se ha pedido; queda anotado porque es
+  información suya y el tablero ya existe.
 - **Paginación del panel.** Muestra hasta 30 jornadas y avisa si hay más. Con meses de operación
   va a hacer falta paginar.
 - **Autor por medición.** Hoy la jornada guarda un solo `usuario_id`, el de quien la abrió. Si dos
@@ -954,6 +962,11 @@ php artisan route:list             # rutas declaradas
 
 ### Decidido que no se hace
 
+- **`jornadas.entregada`.** Se quitó el 29 de agosto de 2026. Venía del formato en papel, que se
+  «entrega» al final del turno, pero **nunca se escribió ni se leyó** desde ninguna pantalla:
+  estaban la columna, el `$fillable`, el cast y la regla de validación, y nada más. Si algún día
+  el turno se cierra de verdad, se vuelve a agregar junto con lo que signifique cerrarlo —una
+  firma, una hora, un bloqueo—, no como una casilla suelta.
 - **Recuperar la contraseña por correo.** Se empezó y **se descartó** el 29 de agosto de 2026.
   Con un equipo de seis o siete personas y un administrador localizable, el único caso que el
   correo cubre —recuperar un domingo por la noche— es raro, y a cambio mete piezas que fallan en

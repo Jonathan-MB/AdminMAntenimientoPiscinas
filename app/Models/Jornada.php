@@ -15,14 +15,12 @@ class Jornada extends Model
     protected $fillable = [
         'fecha',
         'materiales_sacados',
-        'entregada',
         'hotel_id',
         'usuario_id',
     ];
 
     protected $casts = [
-        'fecha'     => 'date',
-        'entregada' => 'boolean',
+        'fecha' => 'date',
     ];
 
 

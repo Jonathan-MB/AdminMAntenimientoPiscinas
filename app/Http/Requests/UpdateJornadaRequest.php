@@ -20,7 +20,6 @@ class UpdateJornadaRequest extends FormRequest
     {
         return [
             'materiales_sacados' => ['sometimes', 'nullable', 'string', 'max:2000'],
-            'entregada'          => ['sometimes', 'boolean'],
 
             //  Una lectura por metro: la llave es el id del metro
             'lecturas'           => ['sometimes', 'nullable', 'array'],
