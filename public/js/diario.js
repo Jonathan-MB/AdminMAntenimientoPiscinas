@@ -30,6 +30,34 @@ function textoMetros(metros) {
 }
 
 
+//  Lo que cierra la jornada: lo que se saco de almacen y la lista de trabajos
+function dibujarCierre(datos) {
+    let html = '<div class="bloque-cierre">'
+        + '<span class="etiqueta-bloque">Materiales y químicos sacados</span>'
+        + '<p class="texto-cierre">' + (datos.materiales ? limpiar(datos.materiales) : 'No se anotó nada.') + '</p>';
+
+    const tareas = datos.tareas || [];
+
+    if (tareas.length) {
+        const hechas = tareas.filter(function (t) { return t.hecha; }).length;
+
+        html += '<span class="etiqueta-bloque">Trabajos del día'
+            + '<span class="cuenta-trabajos">' + hechas + ' de ' + tareas.length + '</span>'
+            + '</span><ul class="lista-trabajos">';
+
+        tareas.forEach(function (tarea) {
+            html += '<li class="trabajo' + (tarea.hecha ? ' trabajo-hecho' : '') + '">'
+                + '<span class="casilla-diario">' + (tarea.hecha ? '✓' : '') + '</span>'
+                + limpiar(tarea.descripcion) + '</li>';
+        });
+
+        html += '</ul>';
+    }
+
+    return html + '</div>';
+}
+
+
 function dibujarDia(datos) {
     tituloDia.textContent = datos.titulo.charAt(0).toUpperCase() + datos.titulo.slice(1);
 
@@ -97,6 +125,8 @@ function dibujarDia(datos) {
 
         html += '</div>';
     });
+
+    html += dibujarCierre(datos);
 
     contenidoDia.innerHTML = html;
 }

@@ -168,6 +168,34 @@
                             @endif
                         </div>
                     @endforeach
+
+                    {{-- --------------------CIERRE DE LA JORNADA------------------- --}}
+
+                    <div class="bloque-cierre">
+
+                        <span class="etiqueta-bloque">Materiales y químicos sacados</span>
+
+                        <p class="texto-cierre">{{ $jornada->materiales_sacados ?: 'No se anotó nada.' }}</p>
+
+                        @if ($tareas->count())
+                            @php $hechasDia = $tareas->where('hecha', true)->count(); @endphp
+
+                            <span class="etiqueta-bloque">
+                                Trabajos del día
+                                <span class="cuenta-trabajos">{{ $hechasDia }} de {{ $tareas->count() }}</span>
+                            </span>
+
+                            <ul class="lista-trabajos">
+                                @foreach ($tareas as $tarea)
+                                    <li class="trabajo @if ($tarea['hecha']) trabajo-hecho @endif">
+                                        <span class="casilla-diario">{{ $tarea['hecha'] ? '✓' : '' }}</span>
+                                        {{ $tarea['descripcion'] }}
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @endif
+
+                    </div>
                 @endif
 
             </div>

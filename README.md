@@ -631,6 +631,20 @@ El bloqueo no es solo visual: los campos se deshabilitan **y** el servidor respo
 **Quién lo ve:** el personal de AQUALIVE puede abrir el de cualquier hotel. Un usuario con rol
 `hotel` **solo puede abrir el suyo**; cualquier otro devuelve 403, tanto la vista como el JSON.
 
+### La lista de trabajos se muestra entera, no solo lo que alguien tocó
+
+`tareas_realizadas` **solo guarda fila de las tareas que alguien marcó o desmarcó**. Una que nadie
+miró no tiene registro, así que si se listara la tabla tal cual, el hotel vería 14 tareas de 20 y
+no podría distinguir «no la hizo» de «no estaba en la lista».
+
+`DiarioController::tareasDelDia` arma la lista sumando las **tareas activas de hoy** y las que
+**tengan registro en esa jornada** —por si alguna se desactivó después—, y marca cada una según su
+fila, o como no hecha si no la tiene. El diario y la hoja impresa usan la misma lista, así que
+dicen lo mismo.
+
+Junto a ella va el conteo **«11 de 20»**, y lo hecho se distingue de lo pendiente por el color del
+texto y la casilla, no solo por la marca.
+
 ### Datos de ejemplo
 
 Mientras el formulario del colaborador no exista, no hay forma de capturar jornadas. Para ver
@@ -961,9 +975,6 @@ php artisan route:list             # rutas declaradas
 
 ### Funcionalidad que falta
 
-- **El diario muestra menos que la hoja impresa.** Los materiales sacados y los trabajos del día se
-  registran y se imprimen, pero el diario del hotel no los muestra. El hotel ve menos en pantalla
-  que en el papel que recibe.
 - **El hotel no ve las reparaciones de su propio hotel.** No se ha pedido; queda anotado porque es
   información suya y el tablero ya existe.
 - **Paginación del panel.** Muestra hasta 30 jornadas y avisa si hay más. Con meses de operación

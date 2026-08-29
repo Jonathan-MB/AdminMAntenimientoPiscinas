@@ -160,17 +160,22 @@
 
     {{-- --------------------LISTA DE TAREAS------------------- --}}
 
-    @if ($jornada->tareasRealizadas->count())
+    @if ($tareas->count())
+
+        @php $hechas = $tareas->where('hecha', true)->count(); @endphp
 
         <section class="bloque">
 
-            <h2 class="titulo-bloque-hoja">Trabajos del día</h2>
+            <h2 class="titulo-bloque-hoja">
+                Trabajos del día
+                <span class="cuenta-hoja">{{ $hechas }} de {{ $tareas->count() }}</span>
+            </h2>
 
             <ul class="lista-tareas-hoja">
-                @foreach ($jornada->tareasRealizadas->sortBy(fn ($t) => $t->tarea->orden) as $realizada)
+                @foreach ($tareas as $tarea)
                     <li class="tarea-hoja">
-                        <span class="casilla @if ($realizada->hecha) casilla-marcada @endif">{{ $realizada->hecha ? '✓' : '' }}</span>
-                        {{ $realizada->tarea->descripcion }}
+                        <span class="casilla @if ($tarea['hecha']) casilla-marcada @endif">{{ $tarea['hecha'] ? '✓' : '' }}</span>
+                        {{ $tarea['descripcion'] }}
                     </li>
                 @endforeach
             </ul>

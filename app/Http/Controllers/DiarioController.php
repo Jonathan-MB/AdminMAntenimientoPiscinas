@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Hotel;
 use App\Models\Jornada;
 use App\Models\Rol;
+use App\Models\Tarea;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -32,7 +33,9 @@ class DiarioController extends Controller
         $calendario = $this->armarCalendario($mes, $dias);
         $jornada  = $this->traerJornada($hotel, $seleccionado);
 
-        return view('diario', compact('hotel', 'mes', 'calendario', 'seleccionado', 'jornada', 'dias'));
+        $tareas = $jornada ? $this->tareasDelDia($jornada) : collect();
+
+        return view('diario', compact('hotel', 'mes', 'calendario', 'seleccionado', 'jornada', 'dias', 'tareas'));
     }
 
 
@@ -58,6 +61,8 @@ class DiarioController extends Controller
             'titulo' => $this->titularFecha($dia),
             'vacio'  => false,
             'metros'           => $this->metrosEnArreglo($jornada),
+            'materiales'       => $jornada->materiales_sacados,
+            'tareas'           => $this->tareasDelDia($jornada),
             'colaborador'      => $jornada->usuario->nombre_usuario,
             'rondas'           => $this->rondasEnArreglo($jornada),
         ], 200);
@@ -82,6 +87,7 @@ class DiarioController extends Controller
         return view('impresion-dia', [
             'hotel'    => $hotel,
             'jornada'  => $jornada,
+            'tareas'   => $this->tareasDelDia($jornada),
             'dia'      => $dia,
             'titulo'   => $this->titularFecha($dia),
             'impresa'  => Carbon::now(),
@@ -169,6 +175,7 @@ class DiarioController extends Controller
         return Jornada::with([
                 'usuario',
                 'lecturasMetro.metroAgua',
+                'tareasRealizadas',
                 'rondas.rondaProgramada',
                 'rondas.mediciones.piscina',
                 'rondas.mediciones.dosis.producto',
@@ -218,6 +225,29 @@ class DiarioController extends Controller
                         })->values(),
                 ];
             })->values()->all();
+    }
+
+
+
+    //  Las tareas que se ofrecieron ese dia. En la base solo hay fila de las que
+    //  alguien toco, asi que una que nadie miro no existiria y el hotel no podria
+    //  distinguir "no la hizo" de "no estaba en la lista". Se suman las activas
+    //  de hoy y las que tengan registro en esa jornada, por si alguna se desactivo
+    //  despues.
+    private function tareasDelDia(Jornada $jornada)
+    {
+        $realizadas = $jornada->tareasRealizadas->keyBy('tarea_id');
+
+        return Tarea::where('activa', true)
+            ->orWhereIn('id', $realizadas->keys())
+            ->orderBy('orden')
+            ->get()
+            ->map(function ($tarea) use ($realizadas) {
+                return [
+                    'descripcion' => $tarea->descripcion,
+                    'hecha'       => (bool) ($realizadas[$tarea->id]->hecha ?? false),
+                ];
+            });
     }
 
 

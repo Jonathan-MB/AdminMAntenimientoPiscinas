@@ -469,3 +469,93 @@
     }
 
 }
+
+
+/* ----------Cierre de la jornada-------------- */
+
+.bloque-cierre {
+    background-color: #ffffff;
+    border: 1px solid #e3e7ed;
+    border-radius: 4px;
+    padding: 16px 18px 18px;
+    margin-top: 16px;
+}
+
+.texto-cierre {
+    font-size: 14px;
+    color: #1a1a1a;
+    white-space: pre-line;
+    margin: 0 0 4px;
+}
+
+.cuenta-trabajos {
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+    color: #5f6062;
+    margin-left: 8px;
+}
+
+.lista-trabajos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px 18px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.trabajo {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    font-size: 14px;
+    color: #5f6062;
+    line-height: 1.35;
+}
+
+/*  Lo hecho en negro, lo que quedo pendiente en gris: se lee de un vistazo  */
+.trabajo-hecho {
+    color: #1a1a1a;
+}
+
+.casilla-diario {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 17px;
+    height: 17px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1;
+    color: #1b7a4b;
+    border: 1px solid #c3ceda;
+    border-radius: 2px;
+}
+
+.trabajo-hecho .casilla-diario {
+    border-color: #1b7a4b;
+}
+
+
+/* ----------Cierre en movil-------------- */
+
+@media (max-width: 480px) {
+
+    .lista-trabajos {
+        grid-template-columns: 1fr;
+    }
+
+    .trabajo {
+        font-size: 15px;
+        padding: 3px 0;
+    }
+
+    .casilla-diario {
+        width: 20px;
+        height: 20px;
+    }
+
+}
