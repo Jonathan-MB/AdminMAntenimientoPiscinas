@@ -533,6 +533,7 @@
     .estado-ok { background: #e6f4ec; color: #1b7a4b; }
     .estado-pendiente { background: #fdf1dc; color: #8a5800; }
     .estado-critico { background: #fbe9e8; color: #b3261e; }
+    .estado-curso { background: #e7eef7; color: #00519e; }
 
     /* ---------- Listas de reglas ---------- */
     .reglas {
@@ -613,7 +614,7 @@
         <div class="ficha">
             <span>Origen: <b>LOGO FINAL VECTORIAL vertical.ai</b></span>
             <span>Perfil: <b>Coated FOGRA27</b></span>
-            <span>Versión: <b>1.2 — 28 ago 2026</b></span>
+            <span>Versión: <b>1.3 — 28 ago 2026</b></span>
         </div>
     </header>
 
@@ -800,10 +801,22 @@
                         <td>Error</td>
                         <td class="mono">#B3261E</td>
                         <td class="mono">#FBE9E8</td>
-                        <td>error, parámetros fuera de rango</td>
+                        <td>error de validación, ticket «por hacer»</td>
+                    </tr>
+                    <tr>
+                        <td>En curso</td>
+                        <td class="mono">#00519E</td>
+                        <td class="mono">#E7EEF7</td>
+                        <td>ticket «reparado y por cobrar»</td>
                     </tr>
                 </tbody>
             </table>
+        </div>
+
+        <div class="aviso">
+            <b>Qué puede afirmar un color, y qué no</b>
+            <p>Estos colores describen el <b>estado de un trámite</b>: si un mensaje salió bien, si un ticket está por hacer o ya se cobró. Son hechos que el propio sistema conoce.</p>
+            <p><b>Nunca se usan para calificar una medición del agua.</b> El aplicativo muestra el pH, el cloro y el resto de los parámetros tal cual, sin marcarlos en verde o en rojo, y esa decisión se tomó a propósito el 28 de agosto de 2026. Quien interpreta una medición es el técnico de AQUALIVE, que además conoce la piscina. Una pastilla roja de «fuera de rango» en un papel que ve un hotel cliente es una afirmación técnica con consecuencias, y no la puede firmar un umbral puesto por quien programa.</p>
         </div>
     </section>
 
@@ -884,7 +897,7 @@
 
         <div class="especimen">
             <div class="especimen-etiqueta">Cuerpo — IBM Plex Sans Regular · pila: 'Segoe UI', Arial</div>
-            <p class="esp-cuerpo">El nivel de cloro libre en la piscina principal del hotel se registró en 1.4 ppm durante la ronda de la mañana, por debajo del rango operativo definido para piscinas de uso hotelero.</p>
+            <p class="esp-cuerpo">El nivel de cloro libre en la piscina principal del hotel se registró en 1.4 ppm durante la ronda de la mañana, junto con el resto de las pruebas químicas de la jornada.</p>
         </div>
 
         <div class="especimen">
@@ -925,43 +938,44 @@
                 <div class="maqueta-usuario">Jonathan Marín</div>
             </div>
             <div class="maqueta-cuerpo">
-                <h3 class="maqueta-titulo">Piscinas del hotel</h3>
+                <h3 class="maqueta-titulo">Reparaciones</h3>
 
-                <div class="maqueta-mensaje">Registro de mantenimiento guardado correctamente</div>
+                <div class="maqueta-mensaje">Ticket creado correctamente</div>
 
                 <div class="maqueta-botones">
-                    <button class="boton-primario" type="button">Registrar mantenimiento</button>
-                    <button class="boton-secundario" type="button">Exportar</button>
+                    <button class="boton-primario" type="button">Crear ticket</button>
+                    <button class="boton-secundario" type="button">Historial</button>
                 </div>
 
                 <div style="overflow-x:auto;">
                     <table class="maqueta-tabla">
                         <thead>
                             <tr>
-                                <th style="text-align:left;">Piscina</th>
-                                <th style="text-align:left;">pH</th>
-                                <th style="text-align:left;">Cloro</th>
+                                <th style="text-align:left;">Reparación</th>
+                                <th style="text-align:left;">Hotel</th>
                                 <th style="text-align:left;">Estado</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td>Principal · Terraza</td>
-                                <td>7.42</td>
-                                <td>1.40 ppm</td>
-                                <td><span class="estado estado-ok">En rango</span></td>
+                                <td>Bomba del spa hace ruido</td>
+                                <td>Aruba Hotel Enterprises N.V.</td>
+                                <td><span class="estado estado-critico">Por hacer</span></td>
                             </tr>
                             <tr>
-                                <td>Infantil · Jardín</td>
-                                <td>7.81</td>
-                                <td>0.90 ppm</td>
-                                <td><span class="estado estado-pendiente">Revisar</span></td>
+                                <td>Fuga en la ducha</td>
+                                <td>Aruba Hotel Enterprises N.V.</td>
+                                <td><span class="estado estado-pendiente">Por facturar</span></td>
                             </tr>
                             <tr>
-                                <td>Jacuzzi · Spa</td>
-                                <td>8.10</td>
-                                <td>0.30 ppm</td>
-                                <td><span class="estado estado-critico">Fuera de rango</span></td>
+                                <td>Escalera del spa suelta</td>
+                                <td>Aruba Hotel Enterprises N.V.</td>
+                                <td><span class="estado estado-curso">Reparado y por cobrar</span></td>
+                            </tr>
+                            <tr>
+                                <td>Luz de la piscina fundida</td>
+                                <td>Aruba Hotel Enterprises N.V.</td>
+                                <td><span class="estado estado-ok">Cobrado</span></td>
                             </tr>
                         </tbody>
                     </table>

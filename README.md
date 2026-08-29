@@ -28,7 +28,6 @@ los hoteles ven esta pantalla.
 | Reparaciones: fotos del ticket | Funcionando |
 | Reparaciones: contadores y aviso en vivo | Funcionando |
 | Impresión de la revisión de un día | Funcionando |
-| Rangos de referencia de los parámetros | Pendiente |
 | Reportes al hotel | Pendiente |
 
 ---
@@ -539,11 +538,19 @@ Crea unos 15 días de registros inventados, saltando algunos para que el calenda
 días con y sin datos. **No se llama desde `DatabaseSeeder`**: se corre a mano y se puede
 borrar cuando ya no haga falta.
 
-### Los parámetros no se juzgan todavía
+### La aplicación no juzga los parámetros, y es a propósito
 
-El diario muestra los valores tal cual, sin marcar si están dentro o fuera de rango. Los
-rangos aceptables los define AQUALIVE y todavía no están cargados; poner umbrales inventados
-frente a un hotel sería peor que no mostrarlos.
+El diario y la hoja impresa muestran los valores **tal cual**, sin marcar si están bien o mal.
+No falta cargar unos umbrales: **se decidió que no los va a haber** (28 de agosto de 2026).
+
+Quien lea esto dentro de un tiempo va a pensar que es un olvido y va a proponer añadirlos. No lo
+es. La aplicación registra lo que se midió; quien interpreta esa medición es el técnico de
+AQUALIVE, que además conoce la piscina. Una pastilla roja de «fuera de rango» en un papel que ve
+un hotel cliente es una afirmación técnica con consecuencias, y no la puede firmar un umbral
+puesto por el programador.
+
+Si algún día AQUALIVE define rangos propios y quiere que la aplicación los aplique, la
+conversación empieza por quién los firma, no por dónde va el color.
 
 ---
 
@@ -771,13 +778,6 @@ php artisan route:list             # rutas declaradas
 
 ## Pendientes
 
-### Bloqueado, esperando una decisión
-
-- **Rangos de referencia de los parámetros.** Hacen falta el mínimo y el máximo de cloro libre,
-  pH, alcalinidad, dureza de calcio y ácido cianúrico, y saber si el spa lleva rangos distintos
-  de la piscina. Sin eso el diario muestra números sin decir si están bien o mal. Es lo más
-  barato de implementar y lo que más valor le agrega a lo ya construido.
-
 ### Funcionalidad que falta
 
 - **Editar usuarios desde la pantalla.** `UsuarioController::update` existe y está probado, pero
@@ -790,6 +790,12 @@ php artisan route:list             # rutas declaradas
   va a hacer falta paginar.
 - **Autor por medición.** Hoy la jornada guarda un solo `usuario_id`, el de quien la abrió. Si dos
   colaboradores se reparten el día, todo queda atribuido a uno solo.
+
+### Decidido que no se hace
+
+- **Rangos de referencia de los parámetros del agua.** Se propuso y **se descartó** el 28 de
+  agosto de 2026. El aplicativo registra las mediciones y no las califica. El porqué está en
+  «La aplicación no juzga los parámetros, y es a propósito».
 
 ### Antes de producción
 
