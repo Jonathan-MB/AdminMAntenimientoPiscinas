@@ -643,9 +643,11 @@ trabajaron en ella.
 `Jornada::puedeVerla()` tiene esa regla en un solo sitio, y la usan las tres pantallas: la jornada,
 la piscina y el guardado.
 
-**El diario dejó de ser accesible para el colaborador.** Es la vista del hotel y de la oficina, y
-ahí vería el trabajo de todos; lo suyo lo tiene en `/registro`. El botón «Ver el diario» de la
-pantalla de jornada solo sale para quien puede entrar.
+**El diario dejó de ser accesible para el colaborador**, confirmado el 29 de agosto de 2026. Es la
+vista del hotel y de la oficina, y ahí vería el trabajo de todos los días y de todos sus
+compañeros; lo suyo lo tiene en `/registro`. Filtrar `/registro` y dejar el diario abierto habría
+sido cosmético. El botón «Ver el diario» de la pantalla de jornada solo sale para quien puede
+entrar.
 
 | | `/registro` | `/jornada` ajena y pasada | `/diario` |
 |---|---|---|---|
