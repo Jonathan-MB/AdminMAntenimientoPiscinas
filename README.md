@@ -155,23 +155,25 @@ campo aunque venga en la petición.
 ```
 app/
   Http/Controllers/    AccesoController, PanelController, UsuarioController,
-                       HotelController, PiscinaController,
+                       HotelController, PiscinaController, MetroAguaController,
                        RondaProgramadaController, DiarioController,
-                       RegistroController, MedicionController,
+                       RegistroController, MedicionController, CambioController,
                        SuplantacionController, PerfilController
   Http/Middleware/     VerificarRol      (alias 'rol', se usa 'rol:master,administrador')
   Http/Requests/       IniciarSesion, StoreUsuario, UpdateUsuario,
                        StoreHotel, UpdateHotel, StorePiscina, UpdatePiscina,
                        StoreRondaProgramada, UpdateRondaProgramada,
+                       StoreMetroAgua, UpdateMetroAgua,
                        AbrirJornada, UpdateJornada, StoreMedicion,
                        UpdatePerfil, CambiarPassword
-  Models/              Rol, Usuario, Hotel, Piscina, RondaProgramada, Producto,
-                       Jornada, Ronda, Medicion, Dosis, Tarea, TareaRealizada
+  Models/              Rol, Usuario, Hotel, Piscina, RondaProgramada,
+                       MetroAgua, LecturaMetro, Producto, Jornada, Ronda,
+                       Medicion, Dosis, Tarea, TareaRealizada, Cambio
 database/
-  migrations/          sessions, cache, jobs, roles, usuarios,
-                       hoteles, piscinas, rondas_programadas, productos,
-                       tareas, jornadas, rondas, mediciones, dosis,
-                       tareas_realizadas
+  migrations/          sessions, cache, jobs, roles, usuarios, rol_usuario,
+                       hoteles, piscinas, rondas_programadas, metros_agua,
+                       productos, tareas, jornadas, lecturas_metro, rondas,
+                       mediciones, dosis, tareas_realizadas, cambios
   seeders/             RolSeeder, UsuarioMasterSeeder, ProductoSeeder,
                        TareaSeeder, HotelSeeder,
                        JornadaDemoSeeder y UsuarioPruebaSeeder
@@ -183,7 +185,7 @@ public/
 resources/views/
   partials/            head, header, header-limpio, mensaje, footer
   login, panel, usuarios, hoteles, hotel, diario,
-  registro, jornada, medicion, perfil
+  registro, jornada, medicion, cambios, perfil
 Libro de marca/        Manual de marca, logos y paleta (copia para uso externo)
 docs/                  Convenciones de código
 ```
