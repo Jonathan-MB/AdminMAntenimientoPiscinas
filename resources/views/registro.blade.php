@@ -32,12 +32,20 @@
                     </select>
                 </div>
 
-                <div class="elemento-formulario">
-                    <label class="titulo-elemento" for="fecha">Fecha</label>
-                    <input class="campo-formulario campo-grande" type="date" id="fecha" name="fecha"
-                           value="{{ old('fecha', now()->toDateString()) }}"
-                           max="{{ now()->toDateString() }}" required>
-                </div>
+                @if (auth()->user()->tieneRol(\App\Models\Rol::MASTER, \App\Models\Rol::ADMINISTRADOR))
+                    <div class="elemento-formulario">
+                        <label class="titulo-elemento" for="fecha">Fecha</label>
+                        <input class="campo-formulario campo-grande" type="date" id="fecha" name="fecha"
+                               value="{{ old('fecha', now()->toDateString()) }}"
+                               max="{{ now()->toDateString() }}" required>
+                        <p class="nota-formulario">Solo tú puedes abrir un día pasado, para corregirlo.</p>
+                    </div>
+                @else
+                    <div class="elemento-formulario">
+                        <span class="titulo-elemento">Fecha</span>
+                        <p class="fecha-fija">{{ $hoyLargo }}</p>
+                    </div>
+                @endif
 
                 <p class="nota-formulario">La fecha y la hora van en el horario de Aruba.</p>
 

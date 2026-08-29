@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\AbrirJornadaRequest;
 use App\Http\Requests\UpdateJornadaRequest;
 use App\Models\Hotel;
+use Carbon\Carbon;
 use App\Models\Jornada;
 use App\Models\LecturaMetro;
 use App\Models\Rol;
@@ -35,7 +36,9 @@ class RegistroController extends Controller
 
         $recientes = $consulta->limit(8)->get();
 
-        return view('registro', compact('hoteles', 'recientes'));
+        $hoyLargo = $this->fechaLarga(Carbon::today());
+
+        return view('registro', compact('hoteles', 'recientes', 'hoyLargo'));
     }
 
 
@@ -189,5 +192,17 @@ class RegistroController extends Controller
         return response()->json([
             'message' => $hecha ? 'Tarea marcada' : 'Tarea desmarcada'
         ], 200);
+    }
+
+
+    //  "jueves 29 de agosto de 2026", en horario de Aruba
+    private function fechaLarga(Carbon $fecha): string
+    {
+        $dias  = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+        $meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio',
+                  'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+
+        return ucfirst($dias[$fecha->dayOfWeek]) . ' ' . $fecha->day . ' de '
+            . $meses[$fecha->month - 1] . ' de ' . $fecha->year;
     }
 }

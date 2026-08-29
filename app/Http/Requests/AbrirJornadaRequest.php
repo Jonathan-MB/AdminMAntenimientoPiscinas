@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Rol;
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
@@ -39,8 +40,18 @@ class AbrirJornadaRequest extends FormRequest
 
     protected  function prepareForValidation(): void
     {
-        $this->merge([
-            'hotel_id' => $this->hotelId,
-        ]);
+        $datos = ['hotel_id' => $this->hotelId];
+
+        //  El colaborador solo registra el dia de hoy. No es solo que la
+        //  pantalla no le muestre el campo: aunque lo mande a mano, se ignora.
+        //  Abrir una jornada de otro dia le crearia una que despues no puede
+        //  editar, porque la ventana de correccion es del mismo dia.
+        $usuario = Auth::user();
+
+        if ($usuario && ! $usuario->esMaster() && ! $usuario->esAdministrador()) {
+            $datos['fecha'] = Carbon::today()->toDateString();
+        }
+
+        $this->merge($datos);
     }
 }

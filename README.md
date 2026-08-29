@@ -675,6 +675,19 @@ entrar.
 | `colaborador` | Solo lo suyo | **403** | **403** |
 | `hotel` | 403 | 403 | 200, solo el suyo |
 
+### El colaborador no elige el día
+
+En `/registro` el colaborador **no ve un selector de fecha**: ve la de hoy escrita y ya. Y no es
+solo la pantalla: `AbrirJornadaRequest` **fuerza la fecha de hoy** para quien no sea `master` ni
+`administrador`, así que mandar otra a mano no sirve de nada.
+
+El motivo es que abrir una jornada de otro día le crearía una que **después no puede editar**: la
+ventana de corrección es del mismo día. Elegía el día, escribía, y se encontraba con una pantalla
+cerrada.
+
+El `master` y el `administrador` sí conservan el campo, porque su trabajo es corregir días
+pasados.
+
 ### La ventana de corrección
 
 El `colaborador` solo puede editar la jornada **del día en curso**. Pasada la medianoche en

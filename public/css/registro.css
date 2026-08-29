@@ -31,3 +31,16 @@
     }
 
 }
+
+
+/* ----------La fecha no se elige: es la de hoy-------------- */
+
+.fecha-fija {
+    font-size: 17px;
+    font-weight: 600;
+    color: #1a1a1a;
+    background-color: #eef2f6;
+    border-radius: 4px;
+    padding: 13px 14px;
+    margin: 0;
+}
