@@ -1,0 +1,105 @@
+# Qué se probó, y cómo repetirlo
+
+Barrido completo del **29 de agosto de 2026**, contra la base `control_piscinas_demo` con los datos
+del `DemoSeeder`: 3 hoteles, 38 jornadas, 312 mediciones, 9 tickets.
+
+Todo lo de aquí se probó **por HTTP contra el servidor real**, con sesión iniciada y token CSRF,
+no llamando a los controladores por dentro. Una prueba que no recorre el camino real no prueba
+nada: en este proyecto ya hubo un fallo —el «error de conexión»— que existía en el navegador y no
+aparecía en las pruebas porque estas usaban la URL completa y el navegador la corta.
+
+---
+
+## 1. Permisos: 22 rutas × 6 roles
+
+La tabla completa sale correcta. Lo que hay que mirar si algo cambia:
+
+| Ruta | master | admin | colaborador | hotel | jefe | reparación |
+|---|---|---|---|---|---|---|
+| `/panel` | 200 | 200 | → registro | → diario | → reparaciones | → reparaciones |
+| `/registro`, `/jornada/*` | 200 | 200 | 200 | 403 | 403 | 403 |
+| `/jornada/*/cambios` | 200 | 200 | **403** | 403 | 403 | 403 |
+| `/diario/*`, imprimir | 200 | 200 | **403** | solo el suyo | 403 | 403 |
+| `/hoteles`, `/usuarios` | 200 | 200 | 403 | 403 | 403 | 403 |
+| `/reparaciones/*` | 200 | **403** | 403 | 403 | 200 | 200 |
+| `/perfil` | 200 | 200 | 200 | 200 | 200 | 200 |
+
+Ninguna ruta devolvió 500.
+
+---
+
+## 2. La jornada del colaborador
+
+- Manda a mano `fecha=1999-01-01` → **se guarda la de hoy**. El campo no está en la pantalla y el
+  servidor tampoco lo acepta.
+- Guarda una medición, marca una tarea, guarda metro y materiales: **200** en los tres.
+- La medición **queda a nombre de quien la registró**.
+
+## 3. La corrección no roba la autoría
+
+Cuando otro usuario corrige una medición ya existente:
+
+- El autor de la medición **sigue siendo el primero**.
+- La corrección queda en `cambios` **a nombre de quien la hizo**, con el valor de antes y el de
+  después.
+- La jornada sale marcada en el panel y la pantalla de correcciones muestra hora y autor.
+
+## 4. Reparaciones, el ciclo entero
+
+Crear → por facturar → por cobrar → cobrado, comprobando en cada paso:
+
+- Nace en `por_hacer` y la creación queda en el historial con `estado_anterior` nulo.
+- Mover al mismo estado: **422**, sin ensuciar el historial.
+- Estado inventado: **422**.
+- Al llegar a `cobrado` **sale del tablero** y aparece en el historial.
+- El reparador **no puede borrar** (403); el jefe sí (200).
+- El historial guardó los 4 pasos.
+
+## 5. La contraseña provisional
+
+- El admin le pone clave a otro → queda marcada como provisional y **se registra quién se la puso**.
+- El usuario entra y **no puede ir a ninguna pantalla** hasta elegir la suya.
+- Repetir la que le dieron: rechazado.
+- Al elegir una propia se levanta la marca y navega normal.
+
+## 6. La impresión
+
+Los tres hoteles, cada uno con su forma (2, 3 y 1 rondas): logo, membrete con dirección y
+contacto, tablas, listado de trabajo y pie. El hotel solo imprime **el suyo** (403 en los otros) y
+un día sin registro devuelve **404** en vez de una hoja en blanco con membrete.
+
+## 7. Aislamiento y paginación
+
+- Un colaborador **no abre una jornada pasada ajena**: 403.
+- Sin filtro: 30 en la página 1 y el resto en la 2.
+- Con filtro por empleado: solo salen las suyas.
+
+> El caso «filtro **y** más de una página» se probó el mismo día con 70 jornadas de relleno: la
+> página 2 traía 13 filas, todas del empleado filtrado. Con los datos del `DemoSeeder` ningún
+> filtro pasa de 30, así que ahí no se puede repetir tal cual.
+
+## 8. El contador en vivo y el diario
+
+- `reparaciones/resumen` cuenta bien los abiertos, responde `no-store` y da **403** al colaborador.
+- El diario muestra materiales y trabajos del día, **y su JSON los lleva igual** — son dos caminos
+  distintos y hay que probar los dos.
+
+---
+
+## Tres avisos para quien repita esto
+
+Las tres veces que una prueba dio «mal» en este barrido, **el error estaba en la prueba**:
+
+1. **Coger la jornada por el `id` más alto.** El seeder las crea del día de hoy hacia atrás, así
+   que el `id` más alto es la **más vieja**. Se agarró una de otro colaborador y los 403 que
+   siguieron eran el aislamiento funcionando. Busca por fecha, no por `id`.
+
+2. **Esperar que al guardar cambie el autor.** Si la medición ya existía, guardar es *corregir*:
+   el autor no cambia a propósito. Lo que hay que comprobar es que la corrección quedó en
+   `cambios`.
+
+3. **Contar nombres de hotel en el HTML.** Aparecen en el desplegable de filtros aunque no haya ni
+   una fila. Cuenta dentro de la tabla, no en la página entera.
+
+Y una más, de otro día: **`curl -L` sigue la redirección al login**, así que un acceso rechazado
+devuelve 200 y parece que funcionó. Para comprobar permisos, sin `-L`.

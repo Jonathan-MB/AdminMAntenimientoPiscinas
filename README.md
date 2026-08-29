@@ -32,6 +32,16 @@ los hoteles ven esta pantalla.
 
 ---
 
+## Documentos
+
+- **[docs/DESPLIEGUE.md](docs/DESPLIEGUE.md)** — el procedimiento para subirlo a Hostinger, paso a
+  paso, y la versión corta para actualizar.
+- **[docs/PRUEBAS.md](docs/PRUEBAS.md)** — qué se probó, con qué resultado, y los errores de
+  método en los que es fácil caer al repetirlo.
+- **[docs/CONVENCIONES.md](docs/CONVENCIONES.md)** — cómo está escrito el código y por qué.
+
+---
+
 ## Requisitos
 
 - **PHP 8.2** o superior
