@@ -20,6 +20,13 @@ class JornadaDemoSeeder extends Seeder
     //  NO se llama desde DatabaseSeeder: se corre a mano y se puede borrar.
     public function run(): void
     {
+        //  Datos inventados: en produccion no entran ni por equivocacion
+        if (app()->environment('production')) {
+            $this->command->error('Este seeder no se corre en producción.');
+
+            return;
+        }
+
         $hotel = Hotel::with('piscinas', 'rondasProgramadas', 'metrosAgua')->first();
 
         if (! $hotel) {

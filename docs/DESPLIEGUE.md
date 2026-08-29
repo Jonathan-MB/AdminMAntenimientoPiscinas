@@ -1,0 +1,256 @@
+# Desplegar en Hostinger
+
+Procedimiento completo, en orden. Está escrito para hacerse una vez; al final hay una versión
+corta para las actualizaciones siguientes.
+
+Lo que no puede pasar: que el `.env`, la carpeta `vendor/` o las cachés viajen desde Windows.
+Todo eso se genera en el servidor.
+
+---
+
+## 1. Antes de tocar el servidor
+
+**Corrige el `.ai` del logo.** Los PNG ya dicen «POOL TECHNOLOGY», pero el archivo maestro sigue
+con la errata. El descriptor corregido en curvas está en
+`Libro de marca/logos/descriptor-pool-technology.svg`. Si esto sale a un hotel antes de
+corregirlo, la errata vuelve la próxima vez que alguien exporte del `.ai`.
+
+**Ten a mano los datos del hotel**: dirección, teléfono y persona de contacto. Salen en el
+membrete de la hoja impresa y hoy están vacíos.
+
+---
+
+## 2. La base de datos
+
+En el panel de Hostinger, **Bases de datos MySQL**:
+
+1. Crea una base y un usuario.
+2. Anota nombre de base, usuario y contraseña: van al `.env`.
+3. Anota también el **host**. En Hostinger casi siempre es `localhost`, no `127.0.0.1`.
+
+No importes nada: las tablas las crean las migraciones.
+
+---
+
+## 3. Subir el proyecto
+
+Hostinger sirve `public_html/` como raíz del dominio. **El proyecto no va ahí dentro**, porque
+entonces el `.env` y el código quedarían accesibles desde el navegador.
+
+La estructura queda así:
+
+```
+/home/uXXXXXXX/
+├── aqualive/            <- el proyecto, FUERA del docroot
+│   ├── app/  bootstrap/  config/  database/  resources/  routes/  storage/
+│   ├── artisan
+│   ├── composer.json
+│   └── .env             <- se crea aqui, en el servidor
+└── public_html/         <- el contenido de public/, no la carpeta
+    ├── index.php
+    ├── .htaccess
+    ├── favicon.ico
+    ├── css/  js/  img/
+```
+
+Sube por **SSH con git** (recomendado) o por el gestor de archivos:
+
+```bash
+cd ~
+git clone https://github.com/Jonathan-MB/AdminMAntenimientoPiscinas.git aqualive
+```
+
+Después mueve el contenido de `public/` a `public_html/` y borra la carpeta `public/` vacía:
+
+```bash
+cp -r ~/aqualive/public/. ~/public_html/
+rm -rf ~/aqualive/public
+```
+
+**No subas**: `vendor/`, `node_modules/`, `.env`, `bootstrap/cache/*.php`, ni la carpeta
+`Libro de marca/` (es documentación, no la necesita el servidor).
+
+---
+
+## 4. Apuntar el `index.php` a la carpeta del proyecto
+
+Como `public_html/` ya no está dentro del proyecto, hay que decirle dónde está. Edita
+`public_html/index.php` y cambia las **tres** rutas `__DIR__.'/../'`:
+
+```php
+// Antes
+require __DIR__.'/../vendor/autoload.php';
+$app = require_once __DIR__.'/../bootstrap/app.php';
+if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
+
+// Después
+require __DIR__.'/../aqualive/vendor/autoload.php';
+$app = require_once __DIR__.'/../aqualive/bootstrap/app.php';
+if (file_exists($maintenance = __DIR__.'/../aqualive/storage/framework/maintenance.php')) {
+```
+
+Es el único archivo del proyecto que se edita a mano en el servidor. Anótalo: si algún día
+vuelves a copiar `public/`, hay que rehacer este cambio.
+
+---
+
+## 5. El `.env` del servidor
+
+Se crea en `~/aqualive/.env`, copiando `.env.example` y cambiando lo que importa:
+
+```bash
+cd ~/aqualive
+cp .env.example .env
+nano .env
+```
+
+Lo que **tiene** que quedar distinto de como viene:
+
+| Variable | Valor | Por qué |
+|---|---|---|
+| `APP_ENV` | `production` | Bloquea los seeders de desarrollo |
+| `APP_DEBUG` | `false` | Con `true`, un error le enseña el código y la base a quien lo vea |
+| `APP_URL` | `https://tudominio.com` | De ahí salen los enlaces y las rutas del JavaScript |
+| `APP_TIMEZONE` | `America/Aruba` | Ya viene puesto. **Confírmalo**: una ronda de las 19:00 puede quedar en el día equivocado |
+| `DB_HOST` | `localhost` | En Hostinger, no `127.0.0.1` |
+| `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD` | Los del paso 2 | |
+| `MASTER_USUARIO` | El que vayas a usar | |
+| `MASTER_CORREO` | Un correo real | Por defecto trae uno `.test` |
+| `MASTER_PASSWORD` | Vacío | Déjalo vacío: el seeder genera una y la imprime **una sola vez**. Anótala en ese momento |
+| `LOG_LEVEL` | `error` | Con `debug` el log crece sin control |
+
+---
+
+## 6. Instalar y preparar
+
+```bash
+cd ~/aqualive
+
+composer install --no-dev --optimize-autoloader
+php artisan key:generate
+php artisan migrate --force
+php artisan db:seed --force
+```
+
+`--force` hace falta porque en producción Laravel pide confirmación y por SSH no siempre hay
+terminal interactiva.
+
+`db:seed` corre **solo** lo de producción: roles, usuario master, productos, tareas y el hotel
+con sus piscinas y rondas, transcritos del formato en papel. Los seeders de demo
+(`JornadaDemoSeeder`, `UsuarioPruebaSeeder`) **se niegan a correr** con `APP_ENV=production`.
+
+**Apunta la contraseña del master** que imprime el seeder. No vuelve a mostrarse.
+
+---
+
+## 7. Permisos y cachés
+
+```bash
+chmod -R 775 storage bootstrap/cache
+```
+
+`storage/` tiene que ser escribible: ahí van las **fotos de los tickets** y los logs.
+No hace falta `php artisan storage:link`: las fotos se sirven por una ruta, no desde `public/`.
+
+Las cachés se generan **aquí, nunca en Windows** — llevan rutas absolutas dentro:
+
+```bash
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+```
+
+### No corras `route:cache` en el XAMPP local
+
+Comprobado el 29 de agosto de 2026: con `route:cache` puesta y la aplicación colgando de
+`/controlMantenimientoPiscinas/public/`, la **raíz** devuelve **405 Method Not Allowed**. La
+tabla cacheada dice `GET|HEAD /`, pero el servidor responde `allow: HEAD`. El resto de rutas
+funciona; solo se cae la raíz.
+
+**No es un fallo de la aplicación, y en producción no pasa.** Es la combinación del emparejador
+compilado de rutas con el montaje en subcarpeta. Servida desde la raíz —que es como va a estar en
+Hostinger— la misma caché da **200** y el login carga entero. Se verificó con `php artisan serve`.
+
+Si alguna vez la corres en local por costumbre y la pantalla se cae, la salida es:
+
+```bash
+php artisan optimize:clear
+```
+
+---
+
+## 8. Revisar la configuración de PHP
+
+En el panel de Hostinger, **PHP configuration**:
+
+- **PHP 8.2 o superior.**
+- `upload_max_filesize` y `post_max_size` en **40M**. Seis fotos de 5 MB son 30 MB en una sola
+  petición; si `post_max_size` es menor, PHP descarta el formulario **antes** de que Laravel lo
+  vea y el empleado recibe un error de sesión caducada, no uno de tamaño.
+- Extensiones: `fileinfo` y `pdo_mysql`. `gd` no hace falta —no se redimensionan imágenes—, pero
+  si está disponible, activarla deja la puerta abierta a generar miniaturas más adelante.
+
+---
+
+## 9. Comprobar que quedó bien
+
+Con el navegador, en este orden:
+
+1. **`https://tudominio.com`** carga el login con el logo diciendo «POOL TECHNOLOGY».
+2. Entra con el master. **No** te va a pedir cambiarla: el seeder lo crea directo, sin la marca de
+   contraseña provisional. Si la generó él, cámbiala tú desde **tu nombre → Perfil**, porque quedó
+   escrita en la salida del comando.
+3. **Hoteles** → abre el hotel y llena dirección, teléfono y contacto.
+4. **Usuarios** → crea un colaborador de verdad. Anota la contraseña provisional: al entrar, la
+   aplicación le va a pedir que elija la suya.
+5. **Registro** → abre una jornada, mide una piscina, sube una **foto** en un ticket de
+   reparación. Si la foto falla, es el paso 8.
+6. **Imprimir el día** desde el diario: revisa que el membrete salga completo.
+7. Comprueba la hora: la que muestra la jornada debe ser la de Aruba, no la del servidor.
+
+Y una comprobación de seguridad que vale la pena hacer una vez:
+
+```
+https://tudominio.com/.env          -> debe dar 404
+https://tudominio.com/storage/logs  -> debe dar 404
+```
+
+Si alguna de las dos muestra algo, el proyecto quedó dentro de `public_html/` y hay que rehacer
+el paso 3.
+
+---
+
+## 10. Actualizaciones siguientes
+
+```bash
+cd ~/aqualive
+php artisan down
+
+git pull
+composer install --no-dev --optimize-autoloader
+php artisan migrate --force
+
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache
+
+php artisan up
+```
+
+Si el cambio tocó archivos de `public/` (CSS, JS, imágenes), cópialos otra vez:
+
+```bash
+cp -r ~/aqualive/public/. ~/public_html/
+rm -rf ~/aqualive/public
+```
+
+Y si `public/index.php` cambió, **rehaz el paso 4**.
+
+---
+
+## Lo que queda pendiente después de desplegar
+
+- **Recuperar la contraseña por correo** no existe: se descartó a propósito. Si alguien olvida la
+  suya, un administrador se la cambia desde **Usuarios** y queda registrado quién lo hizo.
+- **Copias de seguridad de la base.** Hostinger las hace, pero conviene bajar un volcado propio
+  cada tanto: el historial de las jornadas no se puede reconstruir.

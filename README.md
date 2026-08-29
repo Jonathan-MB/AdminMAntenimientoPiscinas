@@ -393,6 +393,9 @@ celda, en vez de desplazarse horizontalmente.
 
 ## Despliegue
 
+**El procedimiento completo y en orden está en [docs/DESPLIEGUE.md](docs/DESPLIEGUE.md).** Lo de
+aquí abajo son los cuidados, no los pasos.
+
 En producción (Hostinger, Linux) el contenido de `public/` va copiado en `public_html/`, y el
 resto del proyecto queda al lado, fuera del docroot.
 
@@ -1070,8 +1073,9 @@ php artisan route:list             # rutas declaradas
 
 ### Antes de producción
 
-- **Borrar las cuentas de prueba** `admin1`, `colab1`, `hotelaruba`, `jefe1` y `repa1`, y los datos de
-  `JornadaDemoSeeder`.
+- **Las cuentas de prueba y las jornadas de demo no hay que borrarlas del servidor**: nunca llegan.
+  `JornadaDemoSeeder` y `UsuarioPruebaSeeder` **se niegan a correr** con `APP_ENV=production`, y
+  `php artisan db:seed` no los llama. Viven solo en la base local.
 - **Corregir el `.ai` maestro**: los PNG ya dicen «POOL TECHNOLOGY», pero la parte editable
   del `.ai` sigue con la errata. El reemplazo está en
   `Libro de marca/logos/descriptor-pool-technology.svg`.
