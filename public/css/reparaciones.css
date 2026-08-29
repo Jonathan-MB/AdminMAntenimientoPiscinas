@@ -1,0 +1,305 @@
+/* ----------Cabecera-------------- */
+
+.enlace-volver {
+    display: inline-block;
+    font-size: 13px;
+    color: #5f6062;
+    text-decoration: none;
+    margin-bottom: 14px;
+    transition: 0.4s;
+}
+
+.enlace-volver:hover {
+    color: #00519e;
+}
+
+.botones-titulo {
+    display: flex;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+.subtitulo-ticket {
+    font-size: 15px;
+    color: #5f6062;
+    margin-top: 4px;
+}
+
+
+/* ----------Tablero por estado-------------- */
+
+.tablero {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    align-items: start;
+}
+
+.columna-estado {
+    background-color: #ffffff;
+    border: 1px solid #e3e7ed;
+    border-top: 4px solid #c3ceda;
+    border-radius: 4px;
+    padding: 16px 16px 18px;
+}
+
+.columna-por_hacer    { border-top-color: #b3261e; }
+.columna-por_facturar { border-top-color: #c07a00; }
+.columna-por_cobrar   { border-top-color: #00519e; }
+
+.cabecera-columna {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid #eef2f6;
+}
+
+.nombre-estado {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1a1a1a;
+}
+
+.cuenta-estado {
+    font-size: 13px;
+    font-weight: 600;
+    color: #5f6062;
+    background-color: #eaf0f6;
+    border-radius: 20px;
+    min-width: 26px;
+    padding: 2px 9px;
+    text-align: center;
+}
+
+.columna-vacia {
+    font-size: 13px;
+    color: #5f6062;
+    font-style: italic;
+    padding: 10px 0;
+}
+
+
+/* ----------Tarjeta de ticket-------------- */
+
+.tarjeta-ticket {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    background-color: #ffffff;
+    border: 1px solid #e3e7ed;
+    border-radius: 4px;
+    padding: 12px 14px 14px;
+    margin-bottom: 10px;
+    transition: 0.4s;
+}
+
+.tarjeta-ticket:hover {
+    border-color: #c3ceda;
+}
+
+.titulo-ticket {
+    font-size: 15px;
+    font-weight: 600;
+    color: #00519e;
+    text-decoration: none;
+    transition: 0.4s;
+}
+
+.titulo-ticket:hover {
+    text-decoration: underline;
+}
+
+.hotel-ticket {
+    font-size: 13px;
+    color: #1a1a1a;
+}
+
+.pie-ticket {
+    font-size: 12px;
+    color: #5f6062;
+}
+
+.acciones-ticket {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding-top: 12px;
+    margin-top: 8px;
+    border-top: 1px solid #eef2f6;
+}
+
+.campo-estado {
+    font-size: 14px;
+    padding: 7px 9px;
+}
+
+.acciones-ticket .boton-eliminar {
+    margin-top: 4px;
+}
+
+
+/* ----------Pastilla de estado-------------- */
+
+.pastilla-estado {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #ffffff;
+    border-radius: 2px;
+    padding: 3px 10px;
+    white-space: nowrap;
+}
+
+.pastilla-por_hacer    { background-color: #b3261e; }
+.pastilla-por_facturar { background-color: #c07a00; }
+.pastilla-por_cobrar   { background-color: #00519e; }
+.pastilla-cobrado      { background-color: #1b7a4b; }
+
+
+/* ----------Detalle del ticket-------------- */
+
+.tarjeta-detalle {
+    background-color: #ffffff;
+    border: 1px solid #e3e7ed;
+    border-radius: 4px;
+    padding: 16px 18px 18px;
+    margin-bottom: 26px;
+}
+
+.titulo-bloque {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #5f6062;
+    margin-bottom: 10px;
+}
+
+.texto-observacion {
+    font-size: 15px;
+    color: #1a1a1a;
+    white-space: pre-line;
+}
+
+
+/* ----------Historial de movimientos-------------- */
+
+.linea-movimiento {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    background-color: #ffffff;
+    border: 1px solid #e3e7ed;
+    border-left: 3px solid #91d4f2;
+    border-radius: 4px;
+    padding: 12px 16px;
+    margin-bottom: 8px;
+}
+
+.movimiento-estados {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    flex-wrap: wrap;
+}
+
+.flecha-movimiento {
+    font-size: 14px;
+    color: #5f6062;
+}
+
+.marca-creacion {
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #5f6062;
+}
+
+.movimiento-cuando {
+    font-size: 12px;
+    color: #5f6062;
+}
+
+
+/* ----------Filtros del historial-------------- */
+
+.barra-filtros {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 12px;
+    background-color: #ffffff;
+    border: 1px solid #e3e7ed;
+    border-radius: 4px;
+    padding: 16px 18px;
+    margin-bottom: 16px;
+}
+
+.elemento-filtro {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    flex: 1;
+    min-width: 165px;
+}
+
+.elemento-fecha {
+    flex: 0 1 155px;
+    min-width: 140px;
+}
+
+.botones-filtro {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.conteo-resultados {
+    font-size: 13px;
+    color: #5f6062;
+    margin-bottom: 14px;
+}
+
+
+/* ----------Movil-------------- */
+
+@media (max-width: 480px) {
+
+    .botones-titulo {
+        width: 100%;
+    }
+
+    .botones-titulo .boton-primario,
+    .botones-titulo .boton-secundario {
+        flex: 1;
+        text-align: center;
+    }
+
+    .linea-movimiento {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .elemento-filtro,
+    .elemento-fecha {
+        flex: 1 1 100%;
+        min-width: 0;
+    }
+
+    .botones-filtro {
+        width: 100%;
+    }
+
+    .botones-filtro .boton-primario,
+    .botones-filtro .boton-secundario {
+        flex: 1;
+        text-align: center;
+    }
+
+}

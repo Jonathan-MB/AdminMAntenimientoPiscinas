@@ -12,6 +12,7 @@ use App\Http\Controllers\PiscinaController;
 use App\Http\Controllers\RegistroController;
 use App\Http\Controllers\RondaProgramadaController;
 use App\Http\Controllers\SuplantacionController;
+use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UsuarioController;
 use Illuminate\Support\Facades\Route;
 
@@ -42,6 +43,19 @@ Route::middleware('auth')->group(function () {
     //  Diario del hotel: lo ve el propio hotel, y tambien el personal de AQUALIVE
     Route::get('/diario/{hotel}', [DiarioController::class, 'index'])->name('diario.index');
     Route::get('/diario/{hotel}/dia/{fecha}', [DiarioController::class, 'dia'])->name('diario.dia');
+
+    //  Reparaciones: jefe, reparacion y el master, que ve todo
+    Route::middleware('rol:master,jefe,reparacion')->group(function () {
+
+        Route::get('/reparaciones', [TicketController::class, 'index'])->name('reparaciones.index');
+        Route::post('/reparaciones', [TicketController::class, 'store'])->name('reparaciones.store');
+        Route::get('/reparaciones/historial', [TicketController::class, 'historial'])->name('reparaciones.historial');
+        Route::get('/reparaciones/{ticket}', [TicketController::class, 'show'])->name('reparaciones.show');
+        Route::patch('/reparaciones/{ticket}', [TicketController::class, 'update'])->name('reparaciones.update');
+        Route::delete('/reparaciones/{ticket}', [TicketController::class, 'destroy'])->name('reparaciones.destroy');
+
+    });
+
 
     //  Registro de la jornada: colaborador, administrador y master
     Route::middleware('rol:master,administrador,colaborador')->group(function () {

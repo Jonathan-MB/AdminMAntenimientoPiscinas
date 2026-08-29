@@ -29,6 +29,10 @@
         <nav class="barra-superior-menu">
             <a class="enlace-menu" href="{{ route('panel') }}">Panel</a>
 
+            @if (auth()->user()->tieneRol(\App\Models\Rol::MASTER, \App\Models\Rol::JEFE, \App\Models\Rol::REPARACION))
+                <a class="enlace-menu enlace-destacado" href="{{ route('reparaciones.index') }}">Reparaciones</a>
+            @endif
+
             @if (auth()->user()->tieneRol(\App\Models\Rol::MASTER, \App\Models\Rol::ADMINISTRADOR, \App\Models\Rol::COLABORADOR))
                 <a class="enlace-menu" href="{{ route('registro.index') }}">Registro</a>
             @endif

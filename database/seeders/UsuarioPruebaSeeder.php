@@ -27,6 +27,8 @@ class UsuarioPruebaSeeder extends Seeder
             ['admin1',     Rol::ADMINISTRADOR, null],
             ['colab1',     Rol::COLABORADOR,   null],
             ['hotelaruba', Rol::HOTEL,         $hotel?->id],
+            ['jefe1',      Rol::JEFE,          null],
+            ['repa1',      Rol::REPARACION,    null],
         ];
 
         foreach ($cuentas as $cuenta) {
@@ -49,6 +51,6 @@ class UsuarioPruebaSeeder extends Seeder
             $this->command->info("Cuenta de prueba: $nombre ($rolNombre)");
         }
 
-        $this->command->warn("Contraseña de las tres: $clave. Bórralas antes de producción.");
+        $this->command->warn("Contraseña de todas: $clave. Bórralas antes de producción.");
     }
 }

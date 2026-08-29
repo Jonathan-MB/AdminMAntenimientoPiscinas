@@ -24,7 +24,9 @@ los hoteles ven esta pantalla.
 | Filtros del panel (hotel, empleado, fechas) | Funcionando |
 | Ver como otro usuario (soporte) | Funcionando |
 | Roles de jefe y reparación | Funcionando |
-| Módulo de reparaciones | Pendiente |
+| Reparaciones: tickets, estados e historial | Funcionando |
+| Reparaciones: fotos del ticket | Pendiente |
+| Reparaciones: contadores y aviso en vivo | Pendiente |
 | Rangos de referencia de los parámetros | Pendiente |
 | Reportes al hotel | Pendiente |
 
@@ -158,22 +160,26 @@ app/
                        HotelController, PiscinaController, MetroAguaController,
                        RondaProgramadaController, DiarioController,
                        RegistroController, MedicionController, CambioController,
-                       SuplantacionController, PerfilController
+                       SuplantacionController, PerfilController,
+                       TicketController
   Http/Middleware/     VerificarRol      (alias 'rol', se usa 'rol:master,administrador')
   Http/Requests/       IniciarSesion, StoreUsuario, UpdateUsuario,
                        StoreHotel, UpdateHotel, StorePiscina, UpdatePiscina,
                        StoreRondaProgramada, UpdateRondaProgramada,
                        StoreMetroAgua, UpdateMetroAgua,
                        AbrirJornada, UpdateJornada, StoreMedicion,
-                       UpdatePerfil, CambiarPassword
+                       UpdatePerfil, CambiarPassword,
+                       StoreTicket, MoverTicket
   Models/              Rol, Usuario, Hotel, Piscina, RondaProgramada,
                        MetroAgua, LecturaMetro, Producto, Jornada, Ronda,
-                       Medicion, Dosis, Tarea, TareaRealizada, Cambio
+                       Medicion, Dosis, Tarea, TareaRealizada, Cambio,
+                       Ticket, MovimientoTicket
 database/
   migrations/          sessions, cache, jobs, roles, usuarios, rol_usuario,
                        hoteles, piscinas, rondas_programadas, metros_agua,
                        productos, tareas, jornadas, lecturas_metro, rondas,
-                       mediciones, dosis, tareas_realizadas, cambios
+                       mediciones, dosis, tareas_realizadas, cambios,
+                       tickets, movimientos_ticket
   seeders/             RolSeeder, UsuarioMasterSeeder, ProductoSeeder,
                        TareaSeeder, HotelSeeder,
                        JornadaDemoSeeder y UsuarioPruebaSeeder
@@ -185,7 +191,8 @@ public/
 resources/views/
   partials/            head, header, header-limpio, mensaje, footer
   login, panel, usuarios, hoteles, hotel, diario,
-  registro, jornada, medicion, cambios, perfil
+  registro, jornada, medicion, cambios, perfil,
+  reparaciones, ticket, historial-reparaciones
 Libro de marca/        Manual de marca, logos y paleta (copia para uso externo)
 docs/                  Convenciones de código
 ```
@@ -356,7 +363,7 @@ Para revisar las vistas de cada rol durante el desarrollo:
 php artisan db:seed --class=UsuarioPruebaSeeder
 ```
 
-Crea `admin1`, `colab1` y `hotelaruba` con dominio `.test` y la contraseña de
+Crea `admin1`, `colab1`, `hotelaruba`, `jefe1` y `repa1` con dominio `.test` y la contraseña de
 `PRUEBAS_PASSWORD`, o `pruebas2026` si no está en el `.env`. **No se llama desde
 `DatabaseSeeder` y no corre en producción.**
 
@@ -489,6 +496,53 @@ frente a un hotel sería peor que no mostrarlos.
 
 ---
 
+## Reparaciones
+
+Es la sección que reemplaza los avisos sueltos por WhatsApp: lo que se dañó, en qué hotel, y
+en qué punto va el cobro. Entran `master`, `jefe` y `reparacion`; para cualquier otro rol la
+sección devuelve **403**, y el enlace del menú ni siquiera se dibuja.
+
+Va **primero y resaltado** en el menú superior porque es lo que más se consulta durante el día.
+
+### Los cuatro estados
+
+| Estado | En pantalla | Color |
+|---|---|---|
+| `por_hacer` | Por hacer | Rojo |
+| `por_facturar` | Por facturar | Ámbar |
+| `por_cobrar` | Reparado y por cobrar | Azul |
+| `cobrado` | Cobrado | Verde |
+
+El tablero muestra **solo los tres abiertos**, una columna por estado. Cuando un ticket llega a
+`cobrado` sale del tablero y pasa al historial: el tablero es la lista de pendientes, no el
+archivo.
+
+### El rastro de quién movió qué
+
+Cada movimiento queda en `movimientos_ticket`, con el estado del que venía, al que fue, quién
+lo movió y cuándo. **La creación también es un movimiento**, con `estado_anterior` en `NULL`:
+así el historial arranca desde el origen y no desde el primer cambio.
+
+El reparador puede mover un ticket a cualquier estado. No se le limita el paso porque la
+operación real no es lineal —un cobro se cae, una factura se rehace— y porque el rastro ya
+dice quién lo hizo. Mover un ticket al estado en el que ya estaba devuelve **422** y no
+ensucia el historial con una línea que no cambió nada.
+
+El historial se borra junto con el ticket (`cascadeOnDelete`): sin ticket no significa nada.
+
+### Quién puede borrar
+
+Solo `jefe` y `master`. Se comprueba **en el controlador**, no solo escondiendo el botón:
+`TicketController::destroy` devuelve 403 a cualquier otro, así que el reparador tampoco lo
+consigue mandando la petición a mano.
+
+### El historial de cobrados
+
+Pantalla aparte, con filtro por hotel y por rango de fechas. Filtra por `updated_at`, que en un
+ticket cobrado es la fecha en que se cobró. Muestra hasta 50 y dice cuántos hay en total.
+
+---
+
 ## Zona horaria
 
 La operación es en **Aruba**. Toda la aplicación corre en `America/Aruba` (**AST, UTC−4, sin
@@ -584,11 +638,12 @@ php artisan route:list             # rutas declaradas
 
 ### Funcionalidad que falta
 
-- **El módulo de reparaciones.** Lo primero que tiene que resolver: hoy un usuario con rol
-  `jefe` o `reparacion` y nada más **cae en el panel de jornadas por descarte**, porque el panel
-  no filtra por rol y ellos no son ni `colaborador` ni `hotel`. Se deja así a propósito mientras
-  el módulo no exista —si no, no tendrían dónde entrar— pero su aterrizaje debe ser la sección
-  de reparaciones con sus contadores por estado.
+- **Las fotos del ticket.** Varias por ticket. Son la primera subida de archivos del proyecto,
+  así que hay que decidir dónde viven en el servidor antes de escribir el código.
+- **Los contadores por estado y el aviso en vivo** en la pantalla de entrada de `jefe` y
+  `reparacion`. Hoy un usuario que solo tenga esos roles **cae en el panel de jornadas por
+  descarte**, porque el panel manda al panel de jornadas a quien no sea `colaborador` ni `hotel`.
+  Su aterrizaje debe ser el tablero de reparaciones.
 - **Reportes al hotel**: el equivalente impreso o en PDF del formato que hoy se entrega en papel.
 - **Editar usuarios desde la pantalla.** `UsuarioController::update` existe y está probado, pero
   no hay botón: hoy solo se pueden crear y eliminar.
@@ -603,7 +658,7 @@ php artisan route:list             # rutas declaradas
 
 ### Antes de producción
 
-- **Borrar las cuentas de prueba** `admin1`, `colab1` y `hotelaruba`, y los datos de
+- **Borrar las cuentas de prueba** `admin1`, `colab1`, `hotelaruba`, `jefe1` y `repa1`, y los datos de
   `JornadaDemoSeeder`.
 - **Corregir la errata del logo**: el `.ai` dice «POLL TECHNOLOGY» y los PNG la arrastran.
 - Confirmar `APP_TIMEZONE=America/Aruba` en el `.env` del servidor.

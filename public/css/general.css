@@ -884,3 +884,20 @@ body {
     font-weight: 600;
     white-space: normal;
 }
+
+
+/* ----------Enlace destacado de la barra-------------- */
+
+.enlace-destacado {
+    color: #ffffff;
+    background-color: #00519e;
+    border-radius: 3px;
+    padding: 6px 14px;
+    border-bottom: 0;
+}
+
+.enlace-destacado:hover {
+    color: #ffffff;
+    background-color: #003a78;
+    border-bottom-color: transparent;
+}
