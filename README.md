@@ -287,8 +287,7 @@ database/
                        + debe_cambiar_password en usuarios
   seeders/             RolSeeder, UsuarioMasterSeeder, ProductoSeeder,
                        TareaSeeder, HotelSeeder,
-                       JornadaDemoSeeder y UsuarioPruebaSeeder
-                       (solo para desarrollo, no se llaman solos)
+                       DemoSeeder (solo desarrollo, no se llama solo)
 public/
   css/                 general.css + una hoja por vista
   js/                  un archivo por vista
@@ -540,20 +539,43 @@ naranja permanente con el nombre suplantado y el botón **Volver a mi cuenta**.
 - Si la cuenta original quedó inactiva o dejó de ser master mientras tanto, se cierra la sesión
   por completo en vez de devolver a una cuenta que ya no debería tener esos permisos.
 
-### Cuentas de prueba
+### La base de pruebas
 
-Para revisar las vistas de cada rol durante el desarrollo:
+Una sola orden deja la base con datos en todos lados, para probar las pantallas y sobre todo la
+impresión:
 
 ```bash
-php artisan db:seed --class=UsuarioPruebaSeeder
+php artisan db:seed --class=DemoSeeder
 ```
 
-Crea `admin1`, `colab1`, `hotelaruba`, `jefe1` y `repa1` con dominio `.test` y la contraseña de
-`PRUEBAS_PASSWORD`, o `pruebas2026` si no está en el `.env`. **No se llama desde
-`DatabaseSeeder` y no corre en producción.**
+Crea **tres hoteles con formas distintas a propósito**, porque un solo hotel esconde los errores:
 
-**Bórralas antes de publicar.** No son rutas trampa ni puertas traseras: son usuarios
-normales, sujetos a las mismas reglas que cualquier otro.
+| Hotel | Piscinas | Rondas | Metros |
+|---|---|---|---|
+| Aruba Hotel Enterprises N.V. | 5 | 2 | 1 |
+| Palm Beach Resort & Spa | 3 | 3 | 2 |
+| Eagle Bay Suites | 2 | 1 | 1 |
+
+Los tres llevan **dirección, teléfono y contacto**, que es lo que sale en el membrete impreso.
+
+Y además: unos 40 días de jornadas repartidas entre los tres, con mediciones, químicos, lecturas
+de metro, listado de trabajo y materiales; **días repartidos entre dos colaboradores**, para ver
+el «Registraron: colab1, colab2» y el nombre en cada piscina; **correcciones** cada pocos días,
+para la fila amarilla del panel; y **nueve tickets en los cuatro estados**, con su historial de
+movimientos y fotos de verdad.
+
+Las fotos son PNG generados por el propio seeder, escritos byte a byte porque este servidor no
+tiene GD. Si fueran archivos falsos, la ruta que las sirve devolvería 404 y no se podría probar la
+galería.
+
+Todas las cuentas usan `PRUEBAS_PASSWORD`, o `pruebas2026` si no está en el `.env`:
+
+`admin1`, `colab1`, `colab2`, `colab3`, `hotelaruba`, `hotelpalm`, `hoteleagle`, `jefe1`, `repa1`.
+
+El `master` conserva la contraseña del `.env`: `DemoSeeder` no lo toca.
+
+**El seeder se niega a correr con `APP_ENV=production`** y `php artisan db:seed` no lo llama, así
+que estos datos no pueden llegar al servidor por descuido.
 
 ---
 
@@ -742,16 +764,8 @@ texto y la casilla, no solo por la marca.
 
 ### Datos de ejemplo
 
-Mientras el formulario del colaborador no exista, no hay forma de capturar jornadas. Para ver
-el diario funcionando:
-
-```bash
-php artisan db:seed --class=JornadaDemoSeeder
-```
-
-Crea unos 15 días de registros inventados, saltando algunos para que el calendario muestre
-días con y sin datos. **No se llama desde `DatabaseSeeder`**: se corre a mano y se puede
-borrar cuando ya no haga falta.
+Para ver el diario con historial: `php artisan db:seed --class=DemoSeeder`. Está descrito en
+«La base de pruebas».
 
 ### La aplicación no juzga los parámetros, y es a propósito
 
@@ -1120,5 +1134,5 @@ que resolver **fuera** del despliegue:
   hoja impresa que recibe el cliente y hoy están vacíos. Se llenan desde la pantalla del hotel.
 
 Las cuentas de prueba y las jornadas de demo **no hay que borrarlas del servidor**: nunca llegan.
-`JornadaDemoSeeder` y `UsuarioPruebaSeeder` se niegan a correr con `APP_ENV=production`, y
-`php artisan db:seed` no los llama. Viven solo en la base local.
+`DemoSeeder` se niega a correr con `APP_ENV=production`, y `php artisan db:seed` no lo llama.
+Viven solo en la base local.

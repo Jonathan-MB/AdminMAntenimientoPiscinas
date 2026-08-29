@@ -136,8 +136,9 @@ php artisan db:seed --force
 terminal interactiva.
 
 `db:seed` corre **solo** lo de producción: roles, usuario master, productos, tareas y el hotel
-con sus piscinas y rondas, transcritos del formato en papel. Los seeders de demo
-(`JornadaDemoSeeder`, `UsuarioPruebaSeeder`) **se niegan a correr** con `APP_ENV=production`.
+con sus piscinas y rondas, transcritos del formato en papel. `DemoSeeder`, que es el que llena la
+base de datos de prueba, **se niega a correr** con `APP_ENV=production` y tampoco se llama desde
+`db:seed`.
 
 **Apunta la contraseña del master** que imprime el seeder. No vuelve a mostrarse.
 
@@ -254,3 +255,23 @@ Y si `public/index.php` cambió, **rehaz el paso 4**.
   suya, un administrador se la cambia desde **Usuarios** y queda registrado quién lo hizo.
 - **Copias de seguridad de la base.** Hostinger las hace, pero conviene bajar un volcado propio
   cada tanto: el historial de las jornadas no se puede reconstruir.
+
+---
+
+## Volver a la base de trabajo
+
+Durante las pruebas, el `.env` apunta a `control_piscinas_demo`. La base con la que se venía
+trabajando sigue intacta en `control_mantenimiento_piscinas`. Para volver a ella:
+
+```
+DB_DATABASE=control_mantenimiento_piscinas
+```
+
+y después `php artisan config:clear`.
+
+Para rehacer la base de pruebas desde cero en cualquier momento:
+
+```bash
+php artisan migrate:fresh --seed
+php artisan db:seed --class=DemoSeeder
+```
