@@ -26,6 +26,7 @@
                     <th>Roles</th>
                     <th>Hotel</th>
                     <th title="Un usuario inactivo no puede iniciar sesión">Estado</th>
+                    <th title="Quién puso la contraseña que está usando ahora">Contraseña</th>
                     <th class="columna-acciones">Acciones</th>
                 </tr>
             </thead>
@@ -41,6 +42,28 @@
                         </td>
                         <td data-titulo="Hotel">{{ $usuario->hotel?->nombre ?: '—' }}</td>
                         <td data-titulo="Estado">{{ $usuario->activo ? 'Activo' : 'Inactivo' }}</td>
+
+                        <td data-titulo="Contraseña" class="columna-password">
+                            @php $ultimo = $usuario->ultimoCambioPassword; @endphp
+
+                            @if (! $ultimo)
+                                <span class="dato-password sin-dato">Sin registro</span>
+                            @elseif ($ultimo->fue_propio)
+                                <span class="dato-password">
+                                    La eligió {{ $usuario->nombre_usuario }}
+                                    <span class="cuando-password">{{ $ultimo->created_at->format('d/m/Y') }}</span>
+                                </span>
+                            @else
+                                <span class="dato-password dato-password-ajena">
+                                    Se la puso {{ $ultimo->autor?->nombre_usuario ?? 'un usuario eliminado' }}
+                                    <span class="cuando-password">{{ $ultimo->created_at->format('d/m/Y') }}</span>
+                                </span>
+                            @endif
+
+                            @if ($usuario->debe_cambiar_password)
+                                <span class="marca-provisional" title="Todavía no ha elegido una suya">Provisional</span>
+                            @endif
+                        </td>
                         <td data-titulo="Acciones" class="columna-acciones">
                             @php
                                 $puedeEditar = auth()->user()->esMaster()

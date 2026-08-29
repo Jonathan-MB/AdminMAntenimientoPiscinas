@@ -79,6 +79,45 @@
 }
 
 
+/* ----------Quien puso la contrasena-------------- */
+
+.columna-password {
+    white-space: normal;
+}
+
+.dato-password {
+    display: block;
+    font-size: 12px;
+    color: #5f6062;
+    line-height: 1.35;
+}
+
+/*  Una contraseña que puso otra persona se mira distinto  */
+.dato-password-ajena {
+    color: #8a5800;
+}
+
+.cuando-password {
+    display: block;
+    color: #5f6062;
+}
+
+.sin-dato {
+    font-style: italic;
+}
+
+.marca-provisional {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #c07a00;
+    border-radius: 2px;
+    padding: 2px 7px;
+    margin-top: 4px;
+}
+
+
 /* ----------Aviso dentro del pop up-------------- */
 
 #errorEditar {

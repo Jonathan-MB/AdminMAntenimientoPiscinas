@@ -161,6 +161,31 @@ el master está viendo la aplicación como otro usuario**: la marca es de la per
 de quien mira. A una petición JSON le responde **403** en vez de redirigirla, para que un fetch no
 reciba una pantalla de HTML donde esperaba datos.
 
+### Queda registrado quién le cambió la contraseña a quién
+
+`cambios_password` guarda una línea cada vez que una contraseña cambia: **a quién**, **quién lo
+hizo** y **cuándo**. La contraseña no, claro; solo el hecho de que cambió. Se anota en los cuatro
+caminos que existen: al crear un usuario, al cambiársela a otro desde la pantalla de usuarios, al
+cambiar la propia desde el perfil, y al elegirla en la pantalla obligatoria.
+
+La pantalla de usuarios lo muestra en la columna **Contraseña**:
+
+| Lo que se ve | Qué significa |
+|---|---|
+| *La eligió colab1* · fecha | Se la puso él mismo. En gris: no hay nada que mirar |
+| *Se la puso admin1* · fecha | Otra persona conoce esa clave. En ámbar |
+| Pastilla **Provisional** | Todavía no ha elegido una suya |
+| *Sin registro* | Cambió antes de que existiera este registro, o nunca |
+
+Las dos claves foráneas van a propósito contra la costumbre del proyecto, que es
+`restrictOnDelete()`:
+
+- `usuario_id` en **cascada**: si se borra la cuenta, su historial se va con ella. Sin cuenta no
+  significa nada.
+- `autor_id` **a nulo**: si se borra quien hizo el cambio, la línea se queda y la pantalla dice
+  «un usuario eliminado». El hecho importa aunque el autor ya no esté. Con `restrictOnDelete()`
+  además **no se podría borrar** a ningún administrador que hubiera reseteado una contraseña.
+
 ### La escalada de privilegios que había que cerrar antes
 
 `UsuarioController::update` protegía al master **solo en sus roles y en su estado**:
@@ -251,13 +276,14 @@ app/
   Models/              Rol, Usuario, Hotel, Piscina, RondaProgramada,
                        MetroAgua, LecturaMetro, Producto, Jornada, Ronda,
                        Medicion, Dosis, Tarea, TareaRealizada, Cambio,
-                       Ticket, MovimientoTicket, FotoTicket
+                       Ticket, MovimientoTicket, FotoTicket, CambioPassword
 database/
   migrations/          sessions, cache, jobs, roles, usuarios, rol_usuario,
                        hoteles, piscinas, rondas_programadas, metros_agua,
                        productos, tareas, jornadas, lecturas_metro, rondas,
                        mediciones, dosis, tareas_realizadas, cambios,
                        tickets, movimientos_ticket, fotos_ticket,
+                       cambios_password,
                        + debe_cambiar_password en usuarios
   seeders/             RolSeeder, UsuarioMasterSeeder, ProductoSeeder,
                        TareaSeeder, HotelSeeder,
@@ -921,9 +947,6 @@ php artisan route:list             # rutas declaradas
 
 - **Editar y reordenar piscinas.** Las rondas sí se editan en línea; las piscinas solo se crean,
   activan y eliminan. Es una inconsistencia.
-- **Recuperar la contraseña sin ayuda de nadie.** Hoy la resuelve un administrador desde la
-  pantalla de usuarios, y la clave que pone es provisional. Falta el envío por correo para que el
-  propio usuario la recupere fuera del horario de oficina.
 - **Paginación del panel.** Muestra hasta 30 jornadas y avisa si hay más. Con meses de operación
   va a hacer falta paginar.
 - **Autor por medición.** Hoy la jornada guarda un solo `usuario_id`, el de quien la abrió. Si dos
@@ -931,6 +954,14 @@ php artisan route:list             # rutas declaradas
 
 ### Decidido que no se hace
 
+- **Recuperar la contraseña por correo.** Se empezó y **se descartó** el 29 de agosto de 2026.
+  Con un equipo de seis o siete personas y un administrador localizable, el único caso que el
+  correo cubre —recuperar un domingo por la noche— es raro, y a cambio mete piezas que fallan en
+  silencio: que el hosting entregue el correo, que no caiga en no deseado, y que la dirección
+  registrada sea real y la lea alguien. Si el correo de un técnico está mal escrito, la
+  recuperación no funciona y **nadie se entera**, porque la pantalla tiene que responder lo mismo
+  exista o no la cuenta. En su lugar se hizo el **registro de quién cambió la contraseña de
+  quién**, que es lo que se quería: saber quién pidió el cambio.
 - **Rangos de referencia de los parámetros del agua.** Se propuso y **se descartó** el 28 de
   agosto de 2026. El aplicativo registra las mediciones y no las califica. El porqué está en
   «La aplicación no juzga los parámetros, y es a propósito».

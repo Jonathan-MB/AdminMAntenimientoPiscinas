@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUsuarioRequest;
 use App\Http\Requests\UpdateUsuarioRequest;
+use App\Models\CambioPassword;
 use App\Models\Hotel;
 use App\Models\Rol;
 use App\Models\Usuario;
@@ -14,7 +15,9 @@ class UsuarioController extends Controller
 {
     public function index(Request $request)
     {
-        $usuarios = Usuario::with('roles', 'hotel')->orderBy('nombre_usuario')->get();
+        $usuarios = Usuario::with(['roles', 'hotel', 'ultimoCambioPassword.autor'])
+            ->orderBy('nombre_usuario')
+            ->get();
         $roles    = $this->rolesQuePuedeAsignar();
         $hoteles  = Hotel::where('activo', true)->orderBy('nombre')->get();
 
@@ -51,6 +54,8 @@ class UsuarioController extends Controller
         //  La contraseña con la que se crea es provisional: la cambia el al entrar
         $usuario->debe_cambiar_password = true;
         $usuario->save();
+
+        CambioPassword::anotar($usuario->id, Auth::id());
 
         $usuario->roles()->sync($roles);
 
@@ -159,6 +164,10 @@ class UsuarioController extends Controller
         }
 
         $usuario->save();
+
+        if (array_key_exists('password', $data)) {
+            CambioPassword::anotar($usuario->id, $actual->id);
+        }
 
         if ($cambioRoles) {
             $usuario->roles()->sync($roles);

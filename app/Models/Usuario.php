@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -40,6 +42,19 @@ class Usuario extends Authenticatable
     public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Rol::class, 'rol_usuario', 'usuario_id', 'rol_id');
+    }
+
+
+    public function cambiosPassword(): HasMany
+    {
+        return $this->hasMany(CambioPassword::class, 'usuario_id');
+    }
+
+
+    //  El ultimo, para mostrar quien se la puso sin traer todo el historial
+    public function ultimoCambioPassword(): HasOne
+    {
+        return $this->hasOne(CambioPassword::class, 'usuario_id')->latestOfMany();
     }
 
 

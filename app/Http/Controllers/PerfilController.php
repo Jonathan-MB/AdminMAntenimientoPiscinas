@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CambiarPasswordRequest;
+use App\Models\CambioPassword;
 use App\Http\Requests\UpdatePerfilRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -41,6 +42,8 @@ class PerfilController extends Controller
         $usuario->password = $request->validated()['password'];
         $usuario->debe_cambiar_password = false;
         $usuario->save();
+
+        CambioPassword::anotar($usuario->id, $usuario->id);
 
         //  Al cambiar la clave se renueva la sesion, por si alguien mas la tenia
         $request->session()->regenerate();
