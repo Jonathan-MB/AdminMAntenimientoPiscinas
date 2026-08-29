@@ -185,8 +185,9 @@
     </div>
 
     <p class="nota-formulario nota-suelta">
-        Una piscina con mediciones registradas no se puede eliminar: se desactiva y deja de
-        aparecer al registrar.
+        El nombre y el orden se corrigen aquí mismo: el nombre nuevo sale también en los registros
+        que ya estaban hechos. Una piscina con mediciones no se puede eliminar: se desactiva y deja
+        de aparecer al registrar.
     </p>
 
     <div class="caja-tabla">
@@ -202,14 +203,22 @@
             <tbody>
                 @forelse ($hotel->piscinas as $piscina)
                     <tr data-piscina="{{ $piscina->id }}">
-                        <td data-titulo="Orden">{{ $piscina->orden }}</td>
-                        <td data-titulo="Piscina">{{ $piscina->nombre }}</td>
+                        <td data-titulo="Orden">
+                            <input class="campo-tabla campo-orden" type="number" value="{{ $piscina->orden }}" min="0" max="999">
+                        </td>
+                        <td data-titulo="Piscina">
+                            <input class="campo-tabla campo-nombre" type="text" value="{{ $piscina->nombre }}" maxlength="45">
+                        </td>
                         <td data-titulo="Estado">
                             <span class="etiqueta-estado {{ $piscina->activa ? 'etiqueta-activo' : 'etiqueta-inactivo' }}">
                                 {{ $piscina->activa ? 'Activa' : 'Inactiva' }}
                             </span>
                         </td>
                         <td data-titulo="Acciones" class="columna-acciones">
+                            <button class="boton-secundario boton-chico boton-guardar-piscina" type="button"
+                                    data-id="{{ $piscina->id }}"
+                                    title="Guardar el nombre y el orden de esta piscina">Guardar</button>
+
                             <button class="boton-secundario boton-chico boton-alternar-piscina" type="button"
                                     data-id="{{ $piscina->id }}"
                                     data-activa="{{ $piscina->activa ? 1 : 0 }}">

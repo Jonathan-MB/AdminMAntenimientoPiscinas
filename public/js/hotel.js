@@ -301,6 +301,45 @@ document.querySelectorAll('.boton-eliminar-metro').forEach(function (boton) {
 
 // ============ PISCINAS ============
 
+document.querySelectorAll('.boton-guardar-piscina').forEach(function (boton) {
+    boton.addEventListener('click', async function () {
+        const fila = document.querySelector('tr[data-piscina="' + boton.dataset.id + '"]');
+
+        const cuerpo = {
+            nombre: fila.querySelector('.campo-nombre').value.trim(),
+            orden:  Number(fila.querySelector('.campo-orden').value),
+        };
+
+        if (cuerpo.nombre === '') {
+            alert('El nombre de la piscina no puede quedar vacío');
+            return;
+        }
+
+        boton.disabled = true;
+
+        try {
+            const res = await fetch(rutaPiscinas + '/' + boton.dataset.id, {
+                method: 'PATCH',
+                headers: cabeceras(),
+                body: JSON.stringify(cuerpo)
+            });
+
+            const datos = await res.json();
+            alert(datos.message);
+
+            if (res.ok) {
+                location.reload();
+                return;
+            }
+        } catch (error) {
+            alert('Error de conexión al guardar');
+        }
+
+        boton.disabled = false;
+    });
+});
+
+
 document.querySelectorAll('.boton-alternar-piscina').forEach(function (boton) {
     boton.addEventListener('click', async function () {
         const activa = boton.dataset.activa === '1';

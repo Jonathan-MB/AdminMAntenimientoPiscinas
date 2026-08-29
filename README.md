@@ -917,6 +917,22 @@ tabletas son la excepción y se cuentan: nadie las pesa, echa tres. «Cloro gran
 Están en `ProductoSeeder`. Como usa `firstOrCreate`, cambiar una unidad ahí **no actualiza** los
 productos ya sembrados: hay que tocarlos también en la base.
 
+### El nombre de una piscina se corrige, y se corrige hacia atrás
+
+Las piscinas se editan en línea desde la tabla del hotel, igual que las rondas y los metros: se
+cambia el nombre o el orden y se pulsa **Guardar**. El endpoint ya aceptaba los dos campos; lo que
+faltaba era la pantalla, así que un nombre mal escrito **se quedaba para siempre**: una piscina
+con mediciones no se puede eliminar, y no había otra forma de tocarla.
+
+Al corregir el nombre, **los registros ya hechos pasan a mostrar el nombre nuevo**, en el diario y
+en la hoja impresa. Eso es a propósito y es lo que se quiere aquí: las mediciones apuntan a la
+piscina por su id, no guardan una copia del nombre, así que corregir una errata la corrige en todo
+el historial. Es una piscina que siempre fue la misma y estaba mal escrita, no una piscina
+distinta.
+
+Si algún día hiciera falta que un informe viejo conserve el nombre que tenía ese día, habría que
+guardar el nombre junto con la medición. Hoy no hace falta y complicaría el modelo.
+
 ### Las piscinas y las rondas son datos, no columnas
 
 En el formato en papel, SPA HOT y SPA COLD están **escritas a mano** sobre las piscinas
@@ -945,11 +961,6 @@ php artisan route:list             # rutas declaradas
 
 ### Funcionalidad que falta
 
-- **Renombrar y reordenar piscinas.** `PiscinaController::update` acepta `nombre` y `orden`, pero
-  la pantalla solo activa, desactiva y elimina; el `PATCH` que manda es únicamente el de activar.
-  Y una piscina con mediciones **no se puede eliminar**, así que hoy **un nombre mal escrito se
-  queda para siempre**, y sale en todos los informes que ve el hotel. Las rondas y los metros sí
-  se editan en línea desde su tabla: las piscinas son la excepción, y no por diseño.
 - **El diario muestra menos que la hoja impresa.** Los materiales sacados y los trabajos del día se
   registran y se imprimen, pero el diario del hotel no los muestra. El hotel ve menos en pantalla
   que en el papel que recibe.
