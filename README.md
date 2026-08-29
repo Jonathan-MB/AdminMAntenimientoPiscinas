@@ -975,8 +975,6 @@ php artisan route:list             # rutas declaradas
 
 ### Funcionalidad que falta
 
-- **El hotel no ve las reparaciones de su propio hotel.** No se ha pedido; queda anotado porque es
-  información suya y el tablero ya existe.
 - **Paginación del panel.** Muestra hasta 30 jornadas y avisa si hay más. Con meses de operación
   va a hacer falta paginar.
 - **Autor por medición.** Hoy la jornada guarda un solo `usuario_id`, el de quien la abrió. Si dos
@@ -984,6 +982,15 @@ php artisan route:list             # rutas declaradas
 
 ### Decidido que no se hace
 
+- **Que el hotel vea sus propias reparaciones.** Se propuso y **se descartó** el 29 de agosto de
+  2026. El tablero no es un parte de averías: sus estados son **«por facturar»**, **«reparado y
+  por cobrar»** y **«cobrado»**. Eso es la cadena de cobro de AQUALIVE, no información del hotel.
+  Enseñarle a un cliente que su reparación está «por cobrar» expone una conversación comercial que
+  no le toca a él tener con una pantalla. Si algún día el hotel debe enterarse de una reparación,
+  será con otros estados y otro texto, no abriéndole este tablero.
+
+  Hoy ya está cerrado: `/reparaciones`, `/reparaciones/historial` y `/reparaciones/resumen`
+  responden **403** al rol `hotel`, y el enlace no aparece en su barra.
 - **`jornadas.entregada`.** Se quitó el 29 de agosto de 2026. Venía del formato en papel, que se
   «entrega» al final del turno, pero **nunca se escribió ni se leyó** desde ninguna pantalla:
   estaban la columna, el `$fillable`, el cast y la regla de validación, y nada más. Si algún día
