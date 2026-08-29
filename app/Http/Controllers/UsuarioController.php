@@ -67,7 +67,18 @@ class UsuarioController extends Controller
             ], 422);
         }
 
-        //  Al master no se le cambian los roles ni se le desactiva
+        $actual = Auth::user();
+
+        //  Al master solo lo edita el master. Antes esto solo cubria roles y
+        //  estado, asi que un administrador podia cambiarle la contraseña y
+        //  quedarse con la cuenta.
+        if ($usuario->esMaster() && ! $actual->esMaster()) {
+            return response()->json([
+                'message' => 'Solo el master puede modificar la cuenta del master'
+            ], 403);
+        }
+
+        //  El rol master es exclusivo: no se cambia ni se desactiva, ni el suyo
         if ($usuario->esMaster() && ($roles !== null || isset($data['activo']))) {
             return response()->json([
                 'message' => 'El usuario master no se puede modificar de esa forma'
@@ -75,10 +86,25 @@ class UsuarioController extends Controller
         }
 
         //  Un administrador no toca a otro administrador
-        if ($usuario->esAdministrador() && ! Auth::user()->esMaster() && Auth::id() !== $usuario->id) {
+        if ($usuario->esAdministrador() && ! $actual->esMaster() && $actual->id !== $usuario->id) {
             return response()->json([
                 'message' => 'Solo el master puede modificar a un administrador'
             ], 403);
+        }
+
+        //  Nadie se deja a si mismo fuera de la aplicacion
+        if ($actual->id === $usuario->id) {
+            if (array_key_exists('activo', $data) && ! $data['activo']) {
+                return response()->json([
+                    'message' => 'No puedes desactivar tu propio usuario'
+                ], 403);
+            }
+
+            if ($roles !== null && ! $this->incluyeRol($roles, Rol::ADMINISTRADOR)) {
+                return response()->json([
+                    'message' => 'No puedes quitarte a ti mismo el rol de administrador'
+                ], 403);
+            }
         }
 
         if ($roles !== null) {
@@ -86,6 +112,25 @@ class UsuarioController extends Controller
 
             if ($error) {
                 return response()->json(['message' => $error], 403);
+            }
+        }
+
+        //  Solo el rol hotel lleva hotel asignado, igual que al crear
+        if ($roles !== null || array_key_exists('hotel_id', $data)) {
+            $rolesFinales = $roles ?? $usuario->roles->pluck('id')->all();
+
+            if ($this->incluyeRol($rolesFinales, Rol::HOTEL)) {
+                $hotelId = array_key_exists('hotel_id', $data) ? $data['hotel_id'] : $usuario->hotel_id;
+
+                if (empty($hotelId)) {
+                    return response()->json([
+                        'message' => 'Un usuario con rol hotel necesita un hotel asignado'
+                    ], 422);
+                }
+
+                $data['hotel_id'] = $hotelId;
+            } else {
+                $data['hotel_id'] = null;
             }
         }
 

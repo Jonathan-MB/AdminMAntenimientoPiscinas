@@ -536,6 +536,12 @@ body {
     margin-top: 12px;
 }
 
+/*  La nota que va suelta debajo de un titulo, no pegada a un campo  */
+.nota-suelta {
+    margin-top: 0;
+    margin-bottom: 14px;
+}
+
 .boton-eliminar {
     background-color: transparent;
     color: #b3261e;

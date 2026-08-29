@@ -27,6 +27,7 @@ class UpdateUsuarioRequest extends FormRequest
                 'password'       => ['nullable', 'string', 'min:8', 'max:60'],
                 'roles'          => ['required', 'array', 'min:1'],
                 'roles.*'        => ['integer', 'exists:roles,id'],
+                'hotel_id'       => ['nullable', 'integer', 'exists:hoteles,id'],
                 'activo'         => ['required', 'boolean'],
             ];
         }
@@ -38,6 +39,7 @@ class UpdateUsuarioRequest extends FormRequest
             'password'       => ['sometimes', 'string', 'min:8', 'max:60'],
             'roles'          => ['sometimes', 'array', 'min:1'],
             'roles.*'        => ['integer', 'exists:roles,id'],
+            'hotel_id'       => ['sometimes', 'nullable', 'integer', 'exists:hoteles,id'],
             'activo'         => ['sometimes', 'boolean'],
         ];
     }
@@ -62,6 +64,10 @@ class UpdateUsuarioRequest extends FormRequest
 
         if ($this->has('nombreUsuario')) {
             $data['nombre_usuario'] = $this->nombreUsuario;
+        }
+
+        if ($this->has('hotelId')) {
+            $data['hotel_id'] = $this->hotelId ?: null;
         }
 
         $this->merge($data);

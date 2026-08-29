@@ -79,6 +79,36 @@
 }
 
 
+/* ----------Aviso dentro del pop up-------------- */
+
+#errorEditar {
+    display: none;
+    margin-bottom: 14px;
+}
+
+.error-visible {
+    display: block;
+}
+
+
+/* ----------Bloque de la contrasena-------------- */
+
+.bloque-password {
+    border-top: 1px solid #eef2f6;
+    padding-top: 14px;
+    margin-top: 4px;
+    margin-bottom: 18px;
+}
+
+.bloque-password .campo-formulario {
+    margin-top: 6px;
+}
+
+.linea-rol input:disabled {
+    cursor: not-allowed;
+}
+
+
 /* ----------Movil-------------- */
 
 @media (max-width: 480px) {

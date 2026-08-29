@@ -15,7 +15,7 @@ los hoteles ven esta pantalla.
 |---|---|
 | Acceso (login / logout) | Funcionando |
 | Roles y permisos | Funcionando |
-| Administración de usuarios | Funcionando |
+| Administración de usuarios (crear, editar, contraseñas) | Funcionando |
 | Modelo de datos de la operación | Funcionando |
 | Hoteles y piscinas (pantallas) | Funcionando |
 | Diario del hotel con calendario | Funcionando |
@@ -114,6 +114,47 @@ Dos reglas que se leen distinto cuando alguien tiene varios roles:
 
 Por lo mismo, **al entrar manda el rol más amplio**: quien es colaborador y además administra
 aterriza en el panel, no en la pantalla de registro.
+
+### Editar un usuario y cambiarle la contraseña
+
+Desde **Usuarios**, el botón **Editar** de cada fila abre los datos de esa persona: nombre,
+correo, roles, hotel, si está activa, y un campo de **contraseña nueva**.
+
+El campo de contraseña **se deja en blanco para no tocarla**. Escribir una la reemplaza **sin
+pedir la anterior**: es la salida para cuando alguien la olvida. Se muestra en claro mientras se
+escribe, a propósito, para que quien la fija pueda dictarla por teléfono.
+
+El botón solo aparece donde la acción es posible, con las mismas reglas que aplica el servidor:
+al `master` solo lo edita el `master`; a un `administrador`, solo el `master` o él mismo.
+
+### La escalada de privilegios que había que cerrar antes
+
+`UsuarioController::update` protegía al master **solo en sus roles y en su estado**:
+
+```php
+if ($usuario->esMaster() && ($roles !== null || isset($data['activo']))) { ... 403 }
+```
+
+Un `administrador` que mandara `PATCH /usuarios/1 {"password":"..."}` **pasaba de largo** y se
+quedaba con la cuenta del master. Estaba así desde que se escribió el método; nadie lo había
+tocado porque no había botón, y este trabajo consistía justo en poner ese botón.
+
+Comprobado antes de arreglarlo, con un valor idéntico al que ya tenía —para no cambiar nada—:
+la respuesta fue `422 No se detectaron cambios`, o sea que la petición **había llegado hasta el
+final** de las protecciones.
+
+Ahora la regla es entera: **al master no lo modifica nadie más que el master**, en ningún campo.
+Se añadieron además dos que faltaban:
+
+- Nadie **se desactiva a sí mismo**.
+- Nadie **se quita a sí mismo el rol de administrador**. En la pantalla esa casilla aparece
+  bloqueada, así que la petición ni se intenta.
+
+### El hotel se mantiene coherente al editar
+
+`update` no aceptaba `hotel_id`, así que al cambiar los roles el hotel quedaba como estuviera.
+Ahora sigue la misma regla que al crear: si entre los roles está `hotel` hace falta un hotel
+asignado —si no, **422**—, y si se le quita ese rol, el hotel **se pone en nulo**.
 
 ### Reglas de eliminación
 
@@ -839,12 +880,11 @@ php artisan route:list             # rutas declaradas
 
 ### Funcionalidad que falta
 
-- **Editar usuarios desde la pantalla.** `UsuarioController::update` existe y está probado, pero
-  no hay botón: hoy solo se pueden crear y eliminar.
 - **Editar y reordenar piscinas.** Las rondas sí se editan en línea; las piscinas solo se crean,
   activan y eliminan. Es una inconsistencia.
-- **Recuperar contraseña olvidada.** Se quitó al inicio porque no se pidió. Hoy la única salida
-  es que un administrador la cambie, y para eso hace falta el punto anterior.
+- **Recuperar la contraseña sin ayuda de nadie.** Hoy la resuelve un administrador desde la
+  pantalla de usuarios, que era lo urgente. Falta el envío por correo para que el propio usuario
+  la recupere fuera del horario de oficina.
 - **Paginación del panel.** Muestra hasta 30 jornadas y avisa si hay más. Con meses de operación
   va a hacer falta paginar.
 - **Autor por medición.** Hoy la jornada guarda un solo `usuario_id`, el de quien la abrió. Si dos

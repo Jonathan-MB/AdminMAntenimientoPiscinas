@@ -42,6 +42,25 @@
                         <td data-titulo="Hotel">{{ $usuario->hotel?->nombre ?: '—' }}</td>
                         <td data-titulo="Estado">{{ $usuario->activo ? 'Activo' : 'Inactivo' }}</td>
                         <td data-titulo="Acciones" class="columna-acciones">
+                            @php
+                                $puedeEditar = auth()->user()->esMaster()
+                                    || $usuario->id === auth()->id()
+                                    || (! $usuario->esMaster() && ! $usuario->esAdministrador());
+                            @endphp
+
+                            @if ($puedeEditar)
+                                <button class="boton-secundario boton-chico boton-editar-usuario" type="button"
+                                        data-id="{{ $usuario->id }}"
+                                        data-nombre="{{ $usuario->nombre_usuario }}"
+                                        data-correo="{{ $usuario->correo }}"
+                                        data-roles="{{ $usuario->roles->pluck('id')->implode(',') }}"
+                                        data-hotel="{{ $usuario->hotel_id }}"
+                                        data-activo="{{ $usuario->activo ? 1 : 0 }}"
+                                        data-master="{{ $usuario->esMaster() ? 1 : 0 }}"
+                                        data-yo="{{ $usuario->id === auth()->id() ? 1 : 0 }}"
+                                        title="Cambiar sus datos, sus roles o su contraseña">Editar</button>
+                            @endif
+
                             @if (auth()->user()->esMaster() && $usuario->id !== auth()->id() && $usuario->activo)
                                 <form class="formulario-ver-como" method="POST" action="{{ route('suplantacion.iniciar', $usuario) }}">
                                     @csrf
@@ -129,6 +148,90 @@
                     <button class="boton-primario" type="submit">Guardar</button>
                 </div>
             </form>
+
+        </div>
+    </div>
+
+    {{-- --------------------POP UP EDITAR------------------- --}}
+
+    <div class="fondo-popup" id="fondoPopupEditar">
+        <div class="popup">
+
+            <h2 class="titulo-popup">Editar usuario</h2>
+
+            <p class="nota-formulario nota-suelta" id="notaEditando"></p>
+
+            <div class="mensaje mensaje-error" id="errorEditar"></div>
+
+            <div class="elemento-formulario">
+                <label class="titulo-elemento" for="editarNombre">Nombre de usuario</label>
+                <input class="campo-formulario" type="text" id="editarNombre" maxlength="45">
+            </div>
+
+            <div class="elemento-formulario">
+                <label class="titulo-elemento" for="editarCorreo">Correo</label>
+                <input class="campo-formulario" type="email" id="editarCorreo" maxlength="120">
+            </div>
+
+            <div class="elemento-formulario" id="grupoRolesEditar">
+                <span class="titulo-elemento">Roles</span>
+
+                <p class="nota-formulario nota-suelta">Un usuario puede tener varios. Los permisos se suman.</p>
+
+                <div class="lista-roles">
+                    @foreach ($roles as $rol)
+                        <label class="linea-rol">
+                            <input type="checkbox" class="rol-editar" value="{{ $rol->id }}"
+                                   data-rol="{{ $rol->nombre }}">
+                            <span>{{ $rol->etiqueta }}</span>
+                        </label>
+                    @endforeach
+                </div>
+            </div>
+
+            <div class="elemento-formulario" id="grupoHotelEditar">
+                <label class="titulo-elemento" for="editarHotel">Hotel que podrá consultar</label>
+                <select class="campo-formulario" id="editarHotel">
+                    <option value="">Elige un hotel</option>
+                    @foreach ($hoteles as $hotel)
+                        <option value="{{ $hotel->id }}">{{ $hotel->nombre }}</option>
+                    @endforeach
+                </select>
+                <p class="nota-formulario">Solo aplica al rol hotel.</p>
+            </div>
+
+            <div class="elemento-formulario" id="grupoActivoEditar">
+                <label class="linea-rol">
+                    <input type="checkbox" id="editarActivo">
+                    <span>Usuario activo</span>
+                </label>
+                <p class="nota-formulario">Un usuario inactivo no puede iniciar sesión.</p>
+            </div>
+
+            {{-- --------------------CONTRASEÑA------------------- --}}
+
+            <div class="bloque-password">
+                <span class="titulo-elemento">Contraseña</span>
+
+                <p class="nota-formulario nota-suelta">
+                    Déjalo en blanco para no tocarla. Escribe una nueva solo si el usuario la olvidó:
+                    no hace falta saber la anterior.
+                </p>
+
+                <input class="campo-formulario" type="text" id="editarPassword"
+                       minlength="8" maxlength="60" autocomplete="off"
+                       placeholder="Nueva contraseña, mínimo 8 caracteres">
+
+                <p class="nota-formulario">
+                    Se ve mientras la escribes para que puedas dictarla. Dile que la cambie desde su
+                    perfil en cuanto entre.
+                </p>
+            </div>
+
+            <div class="linea-botones-popup">
+                <button class="boton-secundario" type="button" id="botonCerrarEditar">Cancelar</button>
+                <button class="boton-primario" type="button" id="botonGuardarEditar">Guardar cambios</button>
+            </div>
 
         </div>
     </div>
