@@ -36,11 +36,11 @@
 }
 
 .columna-estado {
-    background-color: #ffffff;
-    border: 1px solid #e3e7ed;
+    background-color: #eef2f7;
+    border: 1px solid #c3ceda;
     border-top: 4px solid #c3ceda;
     border-radius: 4px;
-    padding: 16px 16px 18px;
+    padding: 16px 14px 18px;
 }
 
 .columna-por_hacer    { border-top-color: #b3261e; }
@@ -63,11 +63,13 @@
     color: #1a1a1a;
 }
 
+/*  Sobre la columna, que ya es gris azulado, la pastilla va en blanco  */
 .cuenta-estado {
     font-size: 13px;
     font-weight: 600;
-    color: #5f6062;
-    background-color: #eaf0f6;
+    color: #4a4b4d;
+    background-color: #ffffff;
+    border: 1px solid #c3ceda;
     border-radius: 20px;
     min-width: 26px;
     padding: 2px 9px;
@@ -76,7 +78,7 @@
 
 .columna-vacia {
     font-size: 13px;
-    color: #5f6062;
+    color: #4a4b4d;
     font-style: italic;
     padding: 10px 0;
 }
@@ -89,16 +91,32 @@
     flex-direction: column;
     gap: 4px;
     background-color: #ffffff;
-    border: 1px solid #e3e7ed;
+    border: 1px solid #c3ceda;
+    border-left: 4px solid #c3ceda;
     border-radius: 4px;
     padding: 12px 14px 14px;
-    margin-bottom: 10px;
+    margin-bottom: 14px;
+    box-shadow: 0 1px 3px rgba(26, 26, 26, 0.10);
     transition: 0.4s;
 }
 
-.tarjeta-ticket:hover {
-    border-color: #c3ceda;
+.tarjeta-ticket:last-child {
+    margin-bottom: 0;
 }
+
+.tarjeta-ticket:hover {
+    border-color: #5f6062;
+    box-shadow: 0 2px 8px rgba(26, 26, 26, 0.16);
+}
+
+/*  La banda de la izquierda repite el color del estado  */
+.columna-por_hacer    .tarjeta-ticket { border-left-color: #b3261e; }
+.columna-por_facturar .tarjeta-ticket { border-left-color: #c07a00; }
+.columna-por_cobrar   .tarjeta-ticket { border-left-color: #00519e; }
+
+.columna-por_hacer    .tarjeta-ticket:hover { border-color: #b3261e; }
+.columna-por_facturar .tarjeta-ticket:hover { border-color: #c07a00; }
+.columna-por_cobrar   .tarjeta-ticket:hover { border-color: #00519e; }
 
 .titulo-ticket {
     font-size: 15px;

@@ -804,6 +804,12 @@ El tablero muestra **solo los tres abiertos**, una columna por estado. Cuando un
 `cobrado` sale del tablero y pasa al historial: el tablero es la lista de pendientes, no el
 archivo.
 
+Las columnas van sobre un gris azulado y las tarjetas en blanco. Al principio las dos eran
+blancas y el tablero se leía como un bloque: no se veía dónde acababa un ticket y empezaba el
+siguiente. Además de la separación, cada tarjeta lleva a la izquierda **una banda del color de su
+estado**, así que dice de qué columna es aunque se mire de reojo o se llegue desde el buscador
+del teléfono, donde las columnas van una debajo de otra.
+
 ### El rastro de quién movió qué
 
 Cada movimiento queda en `movimientos_ticket`, con el estado del que venía, al que fue, quién
