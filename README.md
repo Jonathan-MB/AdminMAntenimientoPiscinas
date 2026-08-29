@@ -124,8 +124,42 @@ El campo de contraseña **se deja en blanco para no tocarla**. Escribir una la r
 pedir la anterior**: es la salida para cuando alguien la olvida. Se muestra en claro mientras se
 escribe, a propósito, para que quien la fija pueda dictarla por teléfono.
 
+Esa contraseña es **provisional**. Ver «La contraseña que pone un administrador dura un ingreso».
+
 El botón solo aparece donde la acción es posible, con las mismas reglas que aplica el servidor:
 al `master` solo lo edita el `master`; a un `administrador`, solo el `master` o él mismo.
+
+### La contraseña que pone un administrador dura un ingreso
+
+Si un administrador le fija la contraseña a **otra persona**, esa clave queda marcada como
+provisional (`usuarios.debe_cambiar_password`). Sirve para volver a entrar y para nada más: en
+cuanto entra, la aplicación la lleva a **`/elegir-contrasena`** y no la deja ir a ninguna otra
+pantalla hasta que elija una suya.
+
+El motivo es simple: **una contraseña que otra persona conoce no es una contraseña**. Quien la
+dictó por teléfono la sabe, y probablemente quedó escrita en algún lado.
+
+La marca se pone en dos casos y se quita en uno:
+
+| Qué pasa | Marca |
+|---|---|
+| Se crea un usuario (la clave inicial la elige quien lo crea) | Se pone |
+| Un administrador le cambia la clave a otra persona | Se pone |
+| Alguien se cambia **su propia** contraseña, desde el perfil o desde la pantalla de usuarios | Se quita |
+
+`debe_cambiar_password` **no está en `$fillable`** a propósito: lo pone el código, nunca una
+petición.
+
+La pantalla **no pide la contraseña actual**: acaba de escribirla para entrar, y justamente el
+problema es que se la dio otra persona. Sí comprueba que la nueva **no sea la misma** que le
+dieron, comparando contra el hash guardado. Al guardar se **renueva la sesión**, porque la
+anterior la conocía alguien más.
+
+El middleware `ExigirCambioPassword` deja pasar cuatro rutas, o el usuario se queda encerrado: la
+propia pantalla, su envío, cerrar sesión y volver de una suplantación. Y **no se aplica mientras
+el master está viendo la aplicación como otro usuario**: la marca es de la persona suplantada, no
+de quien mira. A una petición JSON le responde **403** en vez de redirigirla, para que un fetch no
+reciba una pantalla de HTML donde esperaba datos.
 
 ### La escalada de privilegios que había que cerrar antes
 
@@ -202,15 +236,18 @@ app/
                        RondaProgramadaController, DiarioController,
                        RegistroController, MedicionController, CambioController,
                        SuplantacionController, PerfilController,
-                       TicketController, FotoTicketController
-  Http/Middleware/     VerificarRol      (alias 'rol', se usa 'rol:master,administrador')
+                       TicketController, FotoTicketController,
+                       PasswordTemporalController
+  Http/Middleware/     VerificarRol           (alias 'rol')
+                       ExigirCambioPassword   (alias 'password.temporal')
   Http/Requests/       IniciarSesion, StoreUsuario, UpdateUsuario,
                        StoreHotel, UpdateHotel, StorePiscina, UpdatePiscina,
                        StoreRondaProgramada, UpdateRondaProgramada,
                        StoreMetroAgua, UpdateMetroAgua,
                        AbrirJornada, UpdateJornada, StoreMedicion,
                        UpdatePerfil, CambiarPassword,
-                       StoreTicket, MoverTicket, StoreFotoTicket
+                       StoreTicket, MoverTicket, StoreFotoTicket,
+                       CambiarPasswordTemporal
   Models/              Rol, Usuario, Hotel, Piscina, RondaProgramada,
                        MetroAgua, LecturaMetro, Producto, Jornada, Ronda,
                        Medicion, Dosis, Tarea, TareaRealizada, Cambio,
@@ -220,7 +257,8 @@ database/
                        hoteles, piscinas, rondas_programadas, metros_agua,
                        productos, tareas, jornadas, lecturas_metro, rondas,
                        mediciones, dosis, tareas_realizadas, cambios,
-                       tickets, movimientos_ticket, fotos_ticket
+                       tickets, movimientos_ticket, fotos_ticket,
+                       + debe_cambiar_password en usuarios
   seeders/             RolSeeder, UsuarioMasterSeeder, ProductoSeeder,
                        TareaSeeder, HotelSeeder,
                        JornadaDemoSeeder y UsuarioPruebaSeeder
@@ -234,7 +272,8 @@ resources/views/
                        footer, aviso-reparaciones
   login, panel, usuarios, hoteles, hotel, diario,
   registro, jornada, medicion, cambios, perfil,
-  reparaciones, ticket, historial-reparaciones, impresion-dia
+  reparaciones, ticket, historial-reparaciones, impresion-dia,
+  password-temporal
 Libro de marca/        Manual de marca, logos y paleta (copia para uso externo)
 docs/                  Convenciones de código
 ```
@@ -883,8 +922,8 @@ php artisan route:list             # rutas declaradas
 - **Editar y reordenar piscinas.** Las rondas sí se editan en línea; las piscinas solo se crean,
   activan y eliminan. Es una inconsistencia.
 - **Recuperar la contraseña sin ayuda de nadie.** Hoy la resuelve un administrador desde la
-  pantalla de usuarios, que era lo urgente. Falta el envío por correo para que el propio usuario
-  la recupere fuera del horario de oficina.
+  pantalla de usuarios, y la clave que pone es provisional. Falta el envío por correo para que el
+  propio usuario la recupere fuera del horario de oficina.
 - **Paginación del panel.** Muestra hasta 30 jornadas y avisa si hay más. Con meses de operación
   va a hacer falta paginar.
 - **Autor por medición.** Hoy la jornada guarda un solo `usuario_id`, el de quien la abrió. Si dos

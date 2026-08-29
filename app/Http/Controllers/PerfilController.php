@@ -39,6 +39,7 @@ class PerfilController extends Controller
     {
         $usuario = Auth::user();
         $usuario->password = $request->validated()['password'];
+        $usuario->debe_cambiar_password = false;
         $usuario->save();
 
         //  Al cambiar la clave se renueva la sesion, por si alguien mas la tenia

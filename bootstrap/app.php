@@ -12,7 +12,8 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
-            'rol' => \App\Http\Middleware\VerificarRol::class,
+            'rol'               => \App\Http\Middleware\VerificarRol::class,
+            'password.temporal' => \App\Http\Middleware\ExigirCambioPassword::class,
         ]);
 
         $middleware->redirectGuestsTo(fn () => route('login'));

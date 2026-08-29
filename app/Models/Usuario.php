@@ -22,14 +22,18 @@ class Usuario extends Authenticatable
         'hotel_id',
     ];
 
+    //  debe_cambiar_password no va en fillable a proposito: lo pone el codigo,
+    //  nunca una peticion
+
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
     protected $casts = [
-        'activo'   => 'boolean',
-        'password' => 'hashed',
+        'activo'                => 'boolean',
+        'debe_cambiar_password' => 'boolean',
+        'password'              => 'hashed',
     ];
 
 

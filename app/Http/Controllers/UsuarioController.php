@@ -47,6 +47,11 @@ class UsuarioController extends Controller
         }
 
         $usuario = Usuario::create($datos);
+
+        //  La contraseña con la que se crea es provisional: la cambia el al entrar
+        $usuario->debe_cambiar_password = true;
+        $usuario->save();
+
         $usuario->roles()->sync($roles);
 
         return redirect()->back()->with('mensajeCreado', 'Usuario creado correctamente');
@@ -132,6 +137,13 @@ class UsuarioController extends Controller
             } else {
                 $data['hotel_id'] = null;
             }
+        }
+
+        //  Si un administrador le pone la contraseña a otro, esa clave es
+        //  provisional: solo sirve para volver a entrar y elegir la suya.
+        //  Cambiarse la propia desde aqui no obliga a nada.
+        if (array_key_exists('password', $data) && $actual->id !== $usuario->id) {
+            $usuario->debe_cambiar_password = true;
         }
 
         // Cargar datos sin guardar

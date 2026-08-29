@@ -7,6 +7,7 @@ use App\Http\Controllers\HotelController;
 use App\Http\Controllers\MedicionController;
 use App\Http\Controllers\MetroAguaController;
 use App\Http\Controllers\PanelController;
+use App\Http\Controllers\PasswordTemporalController;
 use App\Http\Controllers\PerfilController;
 use App\Http\Controllers\PiscinaController;
 use App\Http\Controllers\RegistroController;
@@ -24,7 +25,11 @@ Route::post('/salir', [AccesoController::class, 'cerrar'])->name('acceso.cerrar'
 
 
 //  Zona con sesion iniciada
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'password.temporal'])->group(function () {
+
+    //  Elegir contraseña propia cuando la actual la puso un administrador
+    Route::get('/elegir-contrasena', [PasswordTemporalController::class, 'index'])->name('password.temporal.index');
+    Route::patch('/elegir-contrasena', [PasswordTemporalController::class, 'update'])->name('password.temporal.update');
 
     Route::get('/panel', [PanelController::class, 'index'])->name('panel');
 
