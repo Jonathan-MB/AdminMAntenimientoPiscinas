@@ -68,9 +68,11 @@ function dibujarDia(datos) {
         return;
     }
 
+    const autores = datos.autores || [];
+
     let html = '<div class="resumen-jornada">'
         + '<div class="dato-resumen"><span class="titulo-elemento">Metros de agua</span><strong>' + textoMetros(datos.metros) + '</strong></div>'
-        + '<div class="dato-resumen"><span class="titulo-elemento">Registró</span><strong>' + limpiar(datos.colaborador) + '</strong></div>'
+        + '<div class="dato-resumen"><span class="titulo-elemento">' + (autores.length === 1 ? 'Registró' : 'Registraron') + '</span><strong>' + limpiar(autores.join(', ')) + '</strong></div>'
         + '<div class="dato-resumen"><span class="titulo-elemento">Rondas</span><strong>' + datos.rondas.length + '</strong></div>'
         + '</div>';
 
@@ -86,6 +88,7 @@ function dibujarDia(datos) {
                 + '<div class="cabecera-piscina">'
                 + '<span class="nombre-piscina">' + limpiar(medicion.piscina) + '</span>'
                 + (medicion.retrolavado ? '<span class="marca-retrolavado">Retrolavado</span>' : '')
+                + (autores.length > 1 && medicion.autor ? '<span class="marca-autor" title="Quién registró esta piscina">' + limpiar(medicion.autor) + '</span>' : '')
                 + '</div>'
                 + '<span class="etiqueta-bloque">Pruebas del agua</span>'
                 + '<div class="rejilla-lecturas">'

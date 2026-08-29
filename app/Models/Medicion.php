@@ -68,6 +68,13 @@ class Medicion extends Model
     }
 
 
+    //  Quien la registro. No va en fillable: lo pone el controlador.
+    public function usuario(): BelongsTo
+    {
+        return $this->belongsTo(Usuario::class, 'usuario_id');
+    }
+
+
     public function dosis(): HasMany
     {
         return $this->hasMany(Dosis::class, 'medicion_id');

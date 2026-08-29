@@ -207,11 +207,51 @@ class UsuarioController extends Controller
             ], 403);
         }
 
+        //  Si dejo trabajo hecho, borrarlo dejaria huecos en el historico. La
+        //  base ya lo impide; sin esto la pantalla mostraba el error de SQL en
+        //  crudo, con un 500.
+        $rastro = $this->rastroDe($usuario);
+
+        if ($rastro !== null) {
+            return response()->json([
+                'message' => "No se puede eliminar: $rastro. Desactívalo en vez de eliminarlo."
+            ], 409);
+        }
+
         $usuario->delete();
 
         return response()->json([
             'message' => 'Usuario eliminado correctamente'
         ], 200);
+    }
+
+
+
+    //  Lo que impide borrarlo, en palabras. Devuelve null si no dejo rastro.
+    private function rastroDe(Usuario $usuario): ?string
+    {
+        $cuentas = [
+            ['jornada',    'jornadas',    $usuario->jornadas()->count()],
+            ['medición',   'mediciones',  $usuario->mediciones()->count()],
+            ['corrección', 'correcciones', $usuario->cambios()->count()],
+            ['ticket',     'tickets',     $usuario->tickets()->count()],
+        ];
+
+        $partes = [];
+
+        foreach ($cuentas as $cuenta) {
+            list($singular, $plural, $cuantos) = $cuenta;
+
+            if ($cuantos > 0) {
+                $partes[] = $cuantos . ' ' . ($cuantos === 1 ? $singular : $plural);
+            }
+        }
+
+        if (! $partes) {
+            return null;
+        }
+
+        return 'tiene ' . implode(', ', $partes) . ' a su nombre';
     }
 
 

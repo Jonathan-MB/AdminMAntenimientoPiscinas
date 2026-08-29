@@ -103,8 +103,8 @@
                         </div>
 
                         <div class="dato-resumen">
-                            <span class="titulo-elemento">Registró</span>
-                            <strong>{{ $jornada->usuario->nombre_usuario }}</strong>
+                            <span class="titulo-elemento">{{ count($autores) === 1 ? 'Registró' : 'Registraron' }}</span>
+                            <strong>{{ implode(', ', $autores) }}</strong>
                         </div>
 
                         <div class="dato-resumen">
@@ -127,6 +127,10 @@
 
                                         @if ($medicion->retrolavado)
                                             <span class="marca-retrolavado">Retrolavado</span>
+                                        @endif
+
+                                        @if (count($autores) > 1 && $medicion->usuario)
+                                            <span class="marca-autor" title="Quién registró esta piscina">{{ $medicion->usuario->nombre_usuario }}</span>
                                         @endif
                                     </div>
 

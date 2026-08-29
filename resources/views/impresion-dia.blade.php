@@ -47,7 +47,7 @@
         <h1>Revisión del {{ $titulo }}</h1>
 
         <div class="firma-hoja">
-            <span><span class="rotulo">Registró</span> {{ $jornada->usuario->nombre_usuario }}</span>
+            <span><span class="rotulo">{{ count($autores) === 1 ? 'Registró' : 'Registraron' }}</span> {{ implode(', ', $autores) }}</span>
             <span><span class="rotulo">Rondas</span> {{ $jornada->rondas->count() }}</span>
         </div>
     </div>
@@ -123,9 +123,14 @@
                             <td>{{ $medicion->retrolavado ? 'Sí' : 'No' }}</td>
                         </tr>
 
-                        @if ($medicion->dosis->count() || $medicion->observacion)
+                        @if ($medicion->dosis->count() || $medicion->observacion || count($autores) > 1)
                             <tr class="fila-detalle">
                                 <td colspan="10">
+                                    @if (count($autores) > 1 && $medicion->usuario)
+                                        <span class="rotulo">Registró</span>
+                                        <span class="texto-detalle">{{ $medicion->usuario->nombre_usuario }}</span>
+                                    @endif
+
                                     @if ($medicion->dosis->count())
                                         <span class="rotulo">Químicos aplicados</span>
                                         <span class="texto-detalle">

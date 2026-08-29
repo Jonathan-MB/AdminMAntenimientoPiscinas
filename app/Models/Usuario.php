@@ -45,6 +45,31 @@ class Usuario extends Authenticatable
     }
 
 
+    //  Lo que deja a su nombre, para saber si se puede eliminar
+    public function jornadas(): HasMany
+    {
+        return $this->hasMany(Jornada::class, 'usuario_id');
+    }
+
+
+    public function mediciones(): HasMany
+    {
+        return $this->hasMany(Medicion::class, 'usuario_id');
+    }
+
+
+    public function cambios(): HasMany
+    {
+        return $this->hasMany(Cambio::class, 'usuario_id');
+    }
+
+
+    public function tickets(): HasMany
+    {
+        return $this->hasMany(Ticket::class, 'usuario_id');
+    }
+
+
     public function cambiosPassword(): HasMany
     {
         return $this->hasMany(CambioPassword::class, 'usuario_id');

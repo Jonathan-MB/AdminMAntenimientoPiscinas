@@ -33,9 +33,10 @@ class DiarioController extends Controller
         $calendario = $this->armarCalendario($mes, $dias);
         $jornada  = $this->traerJornada($hotel, $seleccionado);
 
-        $tareas = $jornada ? $this->tareasDelDia($jornada) : collect();
+        $tareas  = $jornada ? $this->tareasDelDia($jornada) : collect();
+        $autores = $jornada ? $this->autoresDe($jornada) : [];
 
-        return view('diario', compact('hotel', 'mes', 'calendario', 'seleccionado', 'jornada', 'dias', 'tareas'));
+        return view('diario', compact('hotel', 'mes', 'calendario', 'seleccionado', 'jornada', 'dias', 'tareas', 'autores'));
     }
 
 
@@ -63,7 +64,7 @@ class DiarioController extends Controller
             'metros'           => $this->metrosEnArreglo($jornada),
             'materiales'       => $jornada->materiales_sacados,
             'tareas'           => $this->tareasDelDia($jornada),
-            'colaborador'      => $jornada->usuario->nombre_usuario,
+            'autores'          => $this->autoresDe($jornada),
             'rondas'           => $this->rondasEnArreglo($jornada),
         ], 200);
     }
@@ -82,12 +83,18 @@ class DiarioController extends Controller
             abort(404, 'No hay registro de ese día');
         }
 
-        $jornada->load(['lecturasMetro.metroAgua', 'tareasRealizadas.tarea', 'rondas.mediciones.piscina']);
+        $jornada->load([
+            'lecturasMetro.metroAgua',
+            'tareasRealizadas.tarea',
+            'rondas.mediciones.piscina',
+            'rondas.mediciones.usuario',
+        ]);
 
         return view('impresion-dia', [
             'hotel'    => $hotel,
             'jornada'  => $jornada,
             'tareas'   => $this->tareasDelDia($jornada),
+            'autores'  => $this->autoresDe($jornada),
             'dia'      => $dia,
             'titulo'   => $this->titularFecha($dia),
             'impresa'  => Carbon::now(),
@@ -178,6 +185,7 @@ class DiarioController extends Controller
                 'tareasRealizadas',
                 'rondas.rondaProgramada',
                 'rondas.mediciones.piscina',
+                'rondas.mediciones.usuario',
                 'rondas.mediciones.dosis.producto',
             ])
             ->where('hotel_id', $hotel->id)
@@ -205,6 +213,7 @@ class DiarioController extends Controller
                         ->map(function ($medicion) {
                             return [
                                 'piscina'     => $medicion->piscina->nombre,
+                                'autor'       => $medicion->usuario?->nombre_usuario,
                                 'clLibre'     => $medicion->cl_libre,
                                 'clTotal'     => $medicion->cl_total,
                                 'clCombinado' => $medicion->cl_combinado,
@@ -234,6 +243,29 @@ class DiarioController extends Controller
     //  distinguir "no la hizo" de "no estaba en la lista". Se suman las activas
     //  de hoy y las que tengan registro en esa jornada, por si alguna se desactivo
     //  despues.
+    //  Quienes registraron algo ese dia: quien abrio la jornada mas los autores
+    //  de cada medicion. Con uno solo, la pantalla no repite el nombre en cada
+    //  piscina; con varios, si, porque ahi esta la informacion.
+    private function autoresDe(Jornada $jornada): array
+    {
+        $nombres = $jornada->rondas
+            ->flatMap(function ($ronda) {
+                return $ronda->mediciones->map(function ($medicion) {
+                    return $medicion->usuario?->nombre_usuario;
+                });
+            })
+            ->filter()
+            ->push($jornada->usuario->nombre_usuario)
+            ->unique()
+            ->sort()
+            ->values()
+            ->all();
+
+        return $nombres;
+    }
+
+
+
     private function tareasDelDia(Jornada $jornada)
     {
         $realizadas = $jornada->tareasRealizadas->keyBy('tarea_id');

@@ -91,6 +91,12 @@ class MedicionController extends Controller
                 ? $medicion->dosis()->with('producto')->get()->pluck('cantidad', 'producto.nombre')->all()
                 : [];
 
+            //  El autor es quien la registro la primera vez; una correccion
+            //  posterior no se la lleva, porque eso ya queda en cambios
+            if (! $medicion->exists) {
+                $medicion->usuario_id = Auth::id();
+            }
+
             $medicion->fill($datos);
             $medicion->save();
 
@@ -166,8 +172,13 @@ class MedicionController extends Controller
             return;
         }
 
-        //  Se comparan como texto: 7.40 y "7.40" son el mismo valor
-        if ((string) $antes === (string) $despues) {
+        //  Los numeros se comparan como numeros: la base guarda 7.40 y el
+        //  formulario manda 7.4, que como texto parecen distintos y no lo son
+        if (is_numeric($antes) && is_numeric($despues)) {
+            if ((float) $antes === (float) $despues) {
+                return;
+            }
+        } elseif ((string) $antes === (string) $despues) {
             return;
         }
 

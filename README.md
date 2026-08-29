@@ -608,6 +608,23 @@ existe **sin avisar**, así que el hotel llevaba desde entonces viendo «—» e
 nada fallaba. Apareció al construir la impresión, que muestra los mismos datos. Ya lee las
 lecturas de verdad, en las dos pantallas.
 
+### Quién registró cada medición
+
+`mediciones.usuario_id` guarda **quién la registró**. Antes la jornada guardaba un solo usuario, el
+que la abrió, así que si dos colaboradores se repartían el día todo quedaba a nombre de uno.
+
+El autor es **quien la registró la primera vez**. Una corrección posterior **no se lleva la
+autoría**: eso ya queda en `cambios`, con su propio autor y con el valor de antes y el de después.
+Son dos preguntas distintas —quién la midió y quién la corrigió— y cada una tiene su respuesta.
+
+En pantalla se muestra **solo cuando hace falta**: si el día lo hizo una sola persona, la cabecera
+dice «Registró: colab1» y no se repite el nombre en cada piscina. Si lo hicieron varias, la
+cabecera dice «Registraron: colab1, colab2» y **cada piscina lleva el nombre de quien la midió**.
+El diario, su JSON y la hoja impresa siguen la misma regla.
+
+Las 150 mediciones que ya existían se atribuyeron a quien abrió su jornada, que es lo único que se
+sabía de esas filas.
+
 ### La ventana de corrección
 
 El `colaborador` solo puede editar la jornada **del día en curso**. Pasada la medianoche en
@@ -977,8 +994,6 @@ php artisan route:list             # rutas declaradas
 
 - **Paginación del panel.** Muestra hasta 30 jornadas y avisa si hay más. Con meses de operación
   va a hacer falta paginar.
-- **Autor por medición.** Hoy la jornada guarda un solo `usuario_id`, el de quien la abrió. Si dos
-  colaboradores se reparten el día, todo queda atribuido a uno solo.
 
 ### Decidido que no se hace
 
