@@ -64,18 +64,36 @@
               enctype="multipart/form-data">
             @csrf
 
-            <div class="elemento-formulario">
-                <label class="titulo-elemento" for="fotos">Agregar fotos</label>
-                <input class="campo-formulario campo-archivo" type="file" id="fotos" name="fotos[]"
-                       accept="image/jpeg,image/png,image/webp" multiple required>
+            <span class="titulo-elemento">Agregar fotos</span>
+
+            {{-- Dos campos y no uno: con "capture" el telefono abre solo la
+                 camara y se pierde la galeria, asi que van por separado --}}
+            <div class="linea-fotos">
+                <label class="boton-foto">
+                    <input type="file" name="fotos[]" id="fotoCamara"
+                           accept="image/*" capture="environment">
+                    <span class="icono-foto" aria-hidden="true">&#128247;</span>
+                    Tomar foto
+                </label>
+
+                <label class="boton-foto">
+                    <input type="file" name="fotos[]" id="fotoGaleria"
+                           accept="image/*" multiple>
+                    <span class="icono-foto" aria-hidden="true">&#128194;</span>
+                    Elegir de la galería
+                </label>
             </div>
+
+            <p class="elegidas" id="fotosElegidas"></p>
 
             <p class="nota-formulario">
                 Hasta {{ \App\Models\FotoTicket::MAXIMO_POR_TICKET }} fotos por ticket,
                 de {{ \App\Models\FotoTicket::MAXIMO_KB / 1024 }} MB cada una. JPG, PNG o WEBP.
             </p>
 
-            <button class="boton-primario" type="submit">Subir</button>
+            {{-- Nace habilitado: si no hay JavaScript, el boton tiene que servir
+                 igual. Es el JavaScript el que lo apaga hasta elegir algo. --}}
+            <button class="boton-primario" type="submit" id="botonSubirFotos">Subir</button>
         </form>
 
         <h2 class="titulo-bloque">Quién lo movió y cuándo</h2>

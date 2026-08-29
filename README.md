@@ -834,6 +834,18 @@ consigue mandando la petición a mano.
 Hasta **6 por ticket**, de **5 MB** cada una, en JPG, PNG o WEBP. Se suben desde la pantalla del
 ticket y se ven en grande al tocarlas.
 
+Hay **dos botones y no uno**: «Tomar foto» y «Elegir de la galería». Son dos campos separados
+porque el atributo `capture` no es un filtro sino una orden: puesto en el campo, el teléfono abre
+**solo** la cámara y se pierde el acceso a la galería. Con dos campos, ambos llamados `fotos[]`, se
+puede tomar una foto **y además** elegir otras del carrete, y llegan juntas en el mismo envío.
+
+El `accept` es `image/*` y no la lista de tipos concreta: con la lista, Android a veces no ofrece
+la cámara en el selector. Lo que no sirva lo rechaza el servidor con un mensaje que explica qué
+hacer.
+
+El botón «Subir» nace habilitado en el HTML y es el JavaScript el que lo apaga hasta que haya algo
+elegido. Al revés, sin JavaScript el botón quedaría muerto.
+
 **No viven en `public/`.** Se guardan en `storage/app/private/tickets/{id}/` con un nombre UUID,
 y se sirven por la ruta `reparaciones/foto/{foto}`, que está dentro del mismo grupo con
 `rol:master,jefe,reparacion`. Dos motivos:

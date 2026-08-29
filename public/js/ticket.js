@@ -71,3 +71,49 @@ document.querySelectorAll('.boton-quitar-foto').forEach(function (boton) {
         }
     });
 });
+
+
+// ============ CAMARA O GALERIA ============
+
+const fotoCamara = document.getElementById('fotoCamara');
+const fotoGaleria = document.getElementById('fotoGaleria');
+const fotosElegidas = document.getElementById('fotosElegidas');
+const botonSubirFotos = document.getElementById('botonSubirFotos');
+
+
+//  Los dos campos suman: se puede tomar una y ademas elegir de la galeria
+function contarElegidas() {
+    const camara = fotoCamara.files.length;
+    const galeria = fotoGaleria.files.length;
+    const total = camara + galeria;
+
+    botonSubirFotos.disabled = total === 0;
+
+    if (total === 0) {
+        fotosElegidas.textContent = '';
+        return;
+    }
+
+    const partes = [];
+
+    if (camara) {
+        partes.push(camara === 1 ? '1 foto tomada' : camara + ' fotos tomadas');
+    }
+
+    if (galeria) {
+        partes.push(galeria === 1 ? '1 de la galería' : galeria + ' de la galería');
+    }
+
+    fotosElegidas.textContent = partes.join(' · ') + '. Toca «Subir» para guardarlas.';
+}
+
+
+//  Si algun dia el formulario deja de estar, que no se caiga el resto
+if (fotoCamara && fotoGaleria) {
+    [fotoCamara, fotoGaleria].forEach(function (campo) {
+        campo.addEventListener('change', contarElegidas);
+    });
+
+    //  Se apaga aqui y no en el HTML: sin JavaScript el boton debe funcionar
+    contarElegidas();
+}
