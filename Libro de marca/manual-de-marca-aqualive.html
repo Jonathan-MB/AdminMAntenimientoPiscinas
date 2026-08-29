@@ -613,15 +613,17 @@
         <div class="ficha">
             <span>Origen: <b>LOGO FINAL VECTORIAL vertical.ai</b></span>
             <span>Perfil: <b>Coated FOGRA27</b></span>
-            <span>Versión: <b>1.1 — 25 ago 2026</b></span>
+            <span>Versión: <b>1.2 — 28 ago 2026</b></span>
         </div>
     </header>
 
     <section>
         <div class="aviso">
-            <b>El descriptor del archivo maestro dice POLL, no POOL</b>
+            <b>El descriptor decía POLL: corregido en los PNG, pendiente en el .ai</b>
             <p>Al decodificar los trazos vectoriales del archivo <span class="mono">LOGO FINAL VECTORIAL vertical.ai</span> el descriptor se lee <b>«POLL TECHNOLOGY»</b>. No es un error de interpretación: en esa tipografía la <span class="mono">O</span> mide 25,66 unidades y tiene dos subtrazos (contorno y contrapunzón), mientras que la <span class="mono">L</span> mide 15,66 con un solo subtrazo. Los caracteres 3 y 4 de la primera palabra miden ambos 15,66, tienen un subtrazo cada uno, y sus datos de trazo son <b>byte a byte idénticos</b> entre sí.</p>
-            <p>Los archivos PNG de esta entrega se generaron <b>fieles al maestro</b>, así que arrastran la errata. Antes de publicar nada hacia las cadenas hoteleras hay que corregir el <span class="mono">.ai</span> o reemplazarlo por la versión horizontal, que sí dice POOL.</p>
+            <p><b>Los PNG de esta carpeta ya dicen POOL TECHNOLOGY.</b> No se retocaron a mano ni se volvió a componer el texto: se tomaron los trazos del propio maestro, se sustituyó la <span class="mono">L</span> sobrante por una <b>copia exacta de la O</b> que ya estaba en la palabra, y se rasterizó de nuevo esa franja. Fuera de las filas del descriptor, los archivos son idénticos a los anteriores.</p>
+            <p>La separación entre las dos <span class="mono">O</span> no se inventó: se dedujo del propio logo, porque las otras tres combinaciones sí existen en él. Si <span class="mono">h(A→B)</span> es el hueco de tinta entre dos letras, <span class="mono">h(O→O) = h(O→L) − h(L→L) + h(L→O) = 10,0832 − 9,4156 + 6,1681 = 6,8357</span>. «TECHNOLOGY» conserva su espaciado exacto y solo se desplaza; el descriptor queda 7,42 unidades más ancho y se recentra sobre el mismo eje, así que el resto del logo no se mueve.</p>
+            <p><b>Falta el archivo maestro.</b> La parte editable de Illustrator sigue diciendo POLL, así que quien abra el <span class="mono">.ai</span> verá la errata. En esta misma carpeta está <span class="mono">logos/descriptor-pool-technology.svg</span>: el descriptor corregido en curvas de verdad, para reemplazar esa línea en el maestro.</p>
         </div>
     </section>
 

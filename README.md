@@ -235,15 +235,41 @@ acento mínimo de azul agua.
 
 El manual completo está en `Libro de marca/manual-de-marca-aqualive.html` (se abre con doble clic).
 
-### Errata conocida en el logo maestro
+### La errata del descriptor: corregida en los PNG, pendiente en el `.ai`
 
 El archivo `LOGO FINAL VECTORIAL vertical.ai` dice **«POLL TECHNOLOGY»**, no «POOL».
-En esa tipografía la `O` mide 25,66 con dos subtrazos y la `L` mide 15,66 con uno; los
-caracteres 3 y 4 de la primera palabra son byte a byte idénticos entre sí.
+En esa tipografía la `O` mide 25,66 unidades con dos subtrazos y la `L` mide 15,66 con uno;
+los caracteres 3 y 4 de la primera palabra son byte a byte idénticos entre sí. La versión
+horizontal del logo sí dice POOL, así que la equivocada es esta.
 
-Los PNG de `public/img/` se generaron **fieles al archivo maestro**, así que arrastran la errata.
-La versión horizontal del logo sí dice POOL. **Hay que corregir el `.ai` antes de que esto
-llegue a un cliente.**
+**Los PNG ya están corregidos.** No se retocaron a mano ni se volvió a componer el texto: se
+sacaron los trazos vectoriales del propio archivo maestro, se sustituyó la `L` sobrante por una
+**copia exacta de la `O`** que ya estaba en la palabra, y se rasterizó de nuevo esa franja.
+
+La separación entre las dos `O` no se inventó, se dedujo del propio logo. Si `h(A→B)` es el
+hueco de tinta entre dos letras:
+
+```
+h(O→O) = h(O→L) - h(L→L) + h(L→O) = 10,0832 - 9,4156 + 6,1681 = 6,8357
+```
+
+Las tres separaciones de la derecha existen en «POLL TECHNOLOGY», así que el resultado usa el
+espaciado del propio tipógrafo. «TECHNOLOGY» conserva su espaciado exacto: solo se desplaza.
+El descriptor queda 7,42 unidades más ancho —la `O` es más ancha que la `L`— y se recentra
+sobre el mismo eje, de modo que el resto del logo no se mueve ni un píxel.
+
+Comprobado así: se rasterizó el descriptor **equivocado** con el mismo código y se comparó con
+el PNG original. La diferencia media fue de **1,08 sobre 255** (0,4 %), o sea que el rasterizador
+reproduce el archivo maestro; solo entonces se rasterizó el corregido. Fuera de las filas del
+descriptor, los PNG nuevos son **idénticos** a los viejos.
+
+`logo-800`, `logo-400` y `logo-blanco-800` se regeneran reduciendo el de 1600 px, que es como
+se habían hecho los originales (comprobado: coincidían con una reducción por cajas dentro de
+0,4 sobre 255).
+
+**Falta el `.ai`.** La parte editable de Illustrator sigue diciendo POLL, así que quien lo abra
+verá la errata. Para eso está `Libro de marca/logos/descriptor-pool-technology.svg`: el
+descriptor corregido en curvas de verdad, listo para reemplazar esa línea en el maestro.
 
 ---
 
@@ -335,13 +361,19 @@ administrador.
 
 ---
 
-## Las hojas de estilo llevan versión
+## Los archivos de `public/` llevan versión
 
 `@recurso('css/panel.css')` devuelve la ruta con la fecha de modificación del archivo detrás
 (`?v=1787872758`). La directiva está en `AppServiceProvider`.
 
 Sin esto el navegador sigue sirviendo la hoja vieja después de cada cambio, y uno cree que el
 CSS no funciona cuando en realidad ni se descargó.
+
+**Las imágenes también.** Al corregir el descriptor del logo, el servidor ya entregaba el PNG
+nuevo y la pantalla seguía mostrando el viejo: el navegador lo tenía guardado. El logo, el
+isotipo de la barra y el icono de iOS pasan por `@recurso` por el mismo motivo. Es más
+importante en las imágenes que en el CSS, porque un logo se cambia una vez cada mucho tiempo y
+para entonces todo el mundo lo tiene cacheado.
 
 ---
 
@@ -719,6 +751,8 @@ php artisan route:list             # rutas declaradas
 
 - **Borrar las cuentas de prueba** `admin1`, `colab1`, `hotelaruba`, `jefe1` y `repa1`, y los datos de
   `JornadaDemoSeeder`.
-- **Corregir la errata del logo**: el `.ai` dice «POLL TECHNOLOGY» y los PNG la arrastran.
+- **Corregir el `.ai` maestro**: los PNG ya dicen «POOL TECHNOLOGY», pero la parte editable
+  del `.ai` sigue con la errata. El reemplazo está en
+  `Libro de marca/logos/descriptor-pool-technology.svg`.
 - Confirmar `APP_TIMEZONE=America/Aruba` en el `.env` del servidor.
 - Generar las cachés por SSH en el servidor, nunca subir `bootstrap/cache/`.

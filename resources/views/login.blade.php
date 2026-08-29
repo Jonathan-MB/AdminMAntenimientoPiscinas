@@ -8,7 +8,7 @@
 
     <div class="tarjeta-acceso">
 
-        <img class="acceso-logo" src="{{ asset('img/logo-400.png') }}" alt="AQUALIVE Pool Technology">
+        <img class="acceso-logo" src="@recurso('img/logo-400.png')" alt="AQUALIVE Pool Technology">
 
         <h1 class="acceso-titulo">Control de mantenimiento</h1>
 

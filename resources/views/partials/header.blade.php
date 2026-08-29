@@ -20,7 +20,7 @@
 <header class="barra-superior">
 
     <a class="barra-superior-marca" href="{{ route('panel') }}">
-        <img class="barra-superior-logo" src="{{ asset('img/isotipo-cuadrado.png') }}" alt="AQUALIVE">
+        <img class="barra-superior-logo" src="@recurso('img/isotipo-cuadrado.png')" alt="AQUALIVE">
         AQUALIVE
         <span class="barra-superior-descriptor">Pool Technology</span>
     </a>
