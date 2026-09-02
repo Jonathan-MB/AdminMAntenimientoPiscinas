@@ -3,6 +3,10 @@
 Procedimiento completo, en orden. Está escrito para hacerse una vez; al final hay una versión
 corta para las actualizaciones siguientes.
 
+> **Hecho el 2 de septiembre de 2026** en `limegreen-mongoose-115418.hostingersite.com`. Lo que
+> sigue ya está corregido con lo que el servidor resultó ser, que no era lo que esta guía suponía.
+> Las diferencias van marcadas.
+
 Lo que no puede pasar: que el `.env`, la carpeta `vendor/` o las cachés viajen desde Windows.
 Todo eso se genera en el servidor.
 
@@ -34,24 +38,29 @@ No importes nada: las tablas las crean las migraciones.
 
 ## 3. Subir el proyecto
 
-Hostinger sirve `public_html/` como raíz del dominio. **El proyecto no va ahí dentro**, porque
-entonces el `.env` y el código quedarían accesibles desde el navegador.
+Hostinger sirve el docroot del dominio. **El proyecto no va ahí dentro**, porque entonces el
+`.env` y el código quedarían accesibles desde el navegador.
 
-La estructura queda así:
+**El docroot no es `~/public_html`.** En esta cuenta Hostinger usa la estructura por dominios, y
+dentro de la carpeta del dominio hay un archivo `DO_NOT_UPLOAD_HERE` avisándolo:
 
 ```
-/home/uXXXXXXX/
-├── aqualive/            <- el proyecto, FUERA del docroot
+/home/u604113341/
+├── aqualive/                    <- el proyecto, FUERA del docroot
 │   ├── app/  bootstrap/  config/  database/  resources/  routes/  storage/
 │   ├── artisan
 │   ├── composer.json
-│   └── .env             <- se crea aqui, en el servidor
-└── public_html/         <- el contenido de public/, no la carpeta
-    ├── index.php
-    ├── .htaccess
-    ├── favicon.ico
-    ├── css/  js/  img/
+│   └── .env                     <- se crea aqui, en el servidor
+└── domains/
+    └── limegreen-mongoose-115418.hostingersite.com/
+        └── public_html/         <- el contenido de public/, no la carpeta
+            ├── index.php
+            ├── .htaccess
+            ├── favicon.ico
+            ├── css/  js/  img/
 ```
+
+Comprueba primero cuál es tu docroot: `ls ~/domains/*/`.
 
 Sube por **SSH con git** (recomendado) o por el gestor de archivos:
 
@@ -63,9 +72,13 @@ git clone https://github.com/Jonathan-MB/AdminMAntenimientoPiscinas.git aqualive
 Después mueve el contenido de `public/` a `public_html/` y borra la carpeta `public/` vacía:
 
 ```bash
-cp -r ~/aqualive/public/. ~/public_html/
-rm -rf ~/aqualive/public
+DOC=~/domains/limegreen-mongoose-115418.hostingersite.com/public_html
+mv "$DOC/default.php" ~/default.php.hostinger   # la portada de bienvenida de Hostinger
+cp -r ~/aqualive/public/. "$DOC/"
 ```
+
+La carpeta `public/` del proyecto **se deja donde está**: al actualizar con `git pull` se vuelve a
+copiar de ahí.
 
 **No subas**: `vendor/`, `node_modules/`, `.env`, `bootstrap/cache/*.php`, ni la carpeta
 `Libro de marca/` (es documentación, no la necesita el servidor).
@@ -135,6 +148,21 @@ php artisan db:seed --force
 `--force` hace falta porque en producción Laravel pide confirmación y por SSH no siempre hay
 terminal interactiva.
 
+### Composer va a fallar al final, y no pasa nada
+
+Hostinger tiene **`proc_open` deshabilitado**, así que Composer no puede lanzar los scripts de
+después de instalar y termina con *«The Process class relies on proc_open»*. **Los paquetes se
+instalan igual.** Lo único que queda sin correr es el descubrimiento de paquetes de Laravel, que
+se lanza aparte:
+
+```bash
+php artisan package:discover
+```
+
+La lista completa de funciones bloqueadas incluye también `exec`, `shell_exec`, `symlink` y
+`popen`. Por `symlink` es por lo que **`php artisan storage:link` no funcionaría aquí** — y por lo
+que fue buena idea servir las fotos por una ruta en vez de por un enlace en `public/`.
+
 `db:seed` corre **solo** lo de producción: roles, usuario master, productos, tareas y el hotel
 con sus piscinas y rondas, transcritos del formato en papel. `DemoSeeder`, que es el que llena la
 base de datos de prueba, **se niega a correr** con `APP_ENV=production` y tampoco se llama desde
@@ -184,12 +212,15 @@ php artisan optimize:clear
 
 En el panel de Hostinger, **PHP configuration**:
 
+En esta cuenta **no hubo que tocar nada**: venía con PHP 8.3.30, y `upload_max_filesize` y
+`post_max_size` en **1536M**, muy por encima de lo necesario. Compruébalo igual:
+
 - **PHP 8.2 o superior.**
-- `upload_max_filesize` y `post_max_size` en **40M**. Seis fotos de 5 MB son 30 MB en una sola
-  petición; si `post_max_size` es menor, PHP descarta el formulario **antes** de que Laravel lo
-  vea y el empleado recibe un error de sesión caducada, no uno de tamaño.
-- Extensiones: `fileinfo` y `pdo_mysql`. `gd` no hace falta —no se redimensionan imágenes—, pero
-  si está disponible, activarla deja la puerta abierta a generar miniaturas más adelante.
+- `upload_max_filesize` y `post_max_size` en **40M** o más. Seis fotos de 5 MB son 30 MB en una
+  sola petición; si `post_max_size` es menor, PHP descarta el formulario **antes** de que Laravel
+  lo vea y el empleado recibe un error de sesión caducada, no uno de tamaño.
+- Extensiones: `fileinfo` y `pdo_mysql`. Aquí además **hay `gd`**, que en el XAMPP local no
+  estaba: deja la puerta abierta a generar miniaturas de las fotos más adelante.
 
 ---
 
@@ -255,6 +286,34 @@ Y si `public/index.php` cambió, **rehaz el paso 4**.
   suya, un administrador se la cambia desde **Usuarios** y queda registrado quién lo hizo.
 - **Copias de seguridad de la base.** Hostinger las hace, pero conviene bajar un volcado propio
   cada tanto: el historial de las jornadas no se puede reconstruir.
+
+---
+
+## Este despliegue es una demostración, no la producción de verdad
+
+El sitio de `limegreen-mongoose-115418.hostingersite.com` está con **`APP_ENV=staging`** y con los
+datos del `DemoSeeder`: tres hoteles inventados, 38 jornadas y nueve tickets.
+
+Se puso `staging` y no `production` a propósito: el `DemoSeeder` **se niega a correr en
+production**, y aquí hacían falta datos para poder mirar las pantallas y las impresiones. Con
+`staging` el guardia sigue puesto para el día que importe, y `APP_DEBUG=false` mantiene los
+errores escondidos igual que en producción.
+
+**Cuando esto pase a ser el sitio de verdad** —con el dominio del cliente y datos reales—, hay que:
+
+1. Poner `APP_ENV=production` en el `.env`.
+2. Vaciar y volver a sembrar solo lo real:
+   ```bash
+   php artisan migrate:fresh --force
+   php artisan db:seed --force
+   ```
+   Eso borra los tres hoteles de mentira y las nueve cuentas de prueba, y deja únicamente roles,
+   productos, tareas, el hotel del formato en papel y el usuario master.
+3. Cargar dirección, teléfono y contacto del hotel desde la pantalla, para el membrete.
+4. Volver a cachear: `php artisan config:cache && php artisan route:cache && php artisan view:cache`.
+
+Mientras tanto, **la contraseña `pruebas2026` sirve para nueve cuentas en un sitio público**. No es
+grave porque no hay datos reales, pero no dejes esto así el día que los haya.
 
 ---
 
