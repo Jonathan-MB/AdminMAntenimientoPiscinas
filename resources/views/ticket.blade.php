@@ -13,7 +13,12 @@
         <div class="linea-titulo">
             <div>
                 <h1 class="vista-titulo sin-borde">{{ $ticket->titulo }}</h1>
-                <p class="subtitulo-ticket">{{ $ticket->hotel->nombre }}</p>
+                <p class="subtitulo-ticket">
+                    {{ $ticket->cliente }}
+                    @if ($ticket->direccion)
+                        · {{ $ticket->direccion }}
+                    @endif
+                </p>
             </div>
 
             <span class="pastilla-estado pastilla-{{ $ticket->estado }}">{{ $ticket->etiqueta_estado }}</span>

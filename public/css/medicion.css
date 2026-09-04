@@ -89,24 +89,33 @@
 .rejilla-quimicos {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 0 16px;
+    gap: 24px 16px;
     background-color: #ffffff;
     border: 1px solid #e3e7ed;
     border-radius: 4px;
-    padding: 18px 20px 4px;
+    padding: 18px 20px;
 }
 
-/*  Cada celda estira y el campo se pega abajo: asi una etiqueta que se
-    parte en dos lineas no deja el campo de al lado a otra altura  */
+/*  El hueco entre filas lo pone el grid y no el margen del elemento: asi la
+    distancia entre un campo y la etiqueta de la fila siguiente (24 px, 20 en
+    el telefono) es siempre mayor que la que hay entre una etiqueta y su campo
+    (6 px), y se lee sin dudar a cual pertenece cada una.  */
 .rejilla-lecturas .elemento-formulario,
 .rejilla-quimicos .elemento-formulario {
     display: flex;
     flex-direction: column;
     height: 100%;
+    margin-bottom: 0;
 }
 
-.rejilla-lecturas .campo-numero,
-.rejilla-quimicos .campo-numero {
+/*  El sobrante de alto de la fila se va ARRIBA de la etiqueta, no entre la
+    etiqueta y su campo. Asi la pareja etiqueta-campo viaja junta y siempre
+    queda a 6 px, mientras el hueco contra la fila de arriba crece. Antes el
+    margen automatico estaba en el campo: la etiqueta se quedaba pegada a la
+    fila anterior y parecia ser de ella, que es lo que confundia en el
+    telefono.  */
+.rejilla-lecturas .titulo-elemento,
+.rejilla-quimicos .titulo-elemento {
     margin-top: auto;
 }
 
@@ -207,11 +216,14 @@
         gap: 8px;
     }
 
+    /*  Dos columnas mientras quepan. En un telefono muy angosto (una Fold
+        cerrada son 280 px) baja a una sola: con la columna partida la
+        etiqueta se iba a tres lineas y volvia a separarse de su campo.  */
     .rejilla-lecturas,
     .rejilla-quimicos {
-        grid-template-columns: repeat(2, 1fr);
-        padding: 14px 14px 2px;
-        gap: 0 12px;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+        padding: 14px;
+        gap: 20px 12px;
     }
 
     .campo-numero {

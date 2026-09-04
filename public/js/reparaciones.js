@@ -16,7 +16,7 @@ const botonCerrarCrear = document.getElementById('botonCerrarCrear');
 
 botonAbrirCrear.addEventListener('click', function () {
     fondoPopupCrear.classList.add('popup-visible');
-    document.getElementById('hotelId').focus();
+    document.getElementById('cliente').focus();
 });
 
 

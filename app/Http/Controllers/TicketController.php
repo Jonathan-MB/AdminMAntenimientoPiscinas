@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\MoverTicketRequest;
 use App\Http\Requests\StoreTicketRequest;
-use App\Models\Hotel;
 use App\Models\MovimientoTicket;
 use App\Models\Rol;
 use App\Models\Ticket;
@@ -18,16 +17,14 @@ class TicketController extends Controller
     //  El tablero: los tickets que siguen abiertos, agrupados por estado
     public function index(Request $request)
     {
-        $tickets = Ticket::with('hotel', 'usuario')
+        $tickets = Ticket::with('usuario')
             ->withCount('fotos')
             ->whereIn('estado', Ticket::estadosAbiertos())
             ->orderBy('created_at')
             ->get()
             ->groupBy('estado');
 
-        $hoteles = Hotel::where('activo', true)->orderBy('nombre')->get();
-
-        return view('reparaciones', compact('tickets', 'hoteles'));
+        return view('reparaciones', compact('tickets'));
     }
 
 
@@ -57,7 +54,7 @@ class TicketController extends Controller
 
     public function show(Request $request, Ticket $ticket)
     {
-        $ticket->load(['hotel', 'usuario', 'fotos', 'movimientos' => function ($consulta) {
+        $ticket->load(['usuario', 'fotos', 'movimientos' => function ($consulta) {
             $consulta->with('usuario')->orderByDesc('created_at')->orderByDesc('id');
         }]);
 
@@ -123,18 +120,18 @@ class TicketController extends Controller
 
 
 
-    //  Los cobrados, con filtro por hotel y por fecha
+    //  Los cobrados, con filtro por cliente y por fecha
     public function historial(Request $request)
     {
-        $hotelId = $request->query('hotel');
+        $cliente = $request->query('cliente');
         $desde   = $request->query('desde');
         $hasta   = $request->query('hasta');
 
-        $consulta = Ticket::with('hotel', 'usuario')
+        $consulta = Ticket::with('usuario')
             ->where('estado', Ticket::COBRADO);
 
-        if ($hotelId) {
-            $consulta->where('hotel_id', $hotelId);
+        if ($cliente) {
+            $consulta->where('cliente', 'like', '%' . $cliente . '%');
         }
 
         if ($desde) {
@@ -148,9 +145,8 @@ class TicketController extends Controller
         $total = (clone $consulta)->count();
 
         $tickets = $consulta->orderByDesc('updated_at')->limit(50)->get();
-        $hoteles = Hotel::orderBy('nombre')->get();
 
-        return view('historial-reparaciones', compact('tickets', 'hoteles', 'total', 'hotelId', 'desde', 'hasta'));
+        return view('historial-reparaciones', compact('tickets', 'total', 'cliente', 'desde', 'hasta'));
     }
 
 

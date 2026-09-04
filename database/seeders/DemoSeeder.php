@@ -51,7 +51,7 @@ class DemoSeeder extends Seeder
             $jornadas += $this->historial($hotel, $personas['colaboradores'], $productos, $tareas, $indice);
         }
 
-        $this->tickets($hoteles, $personas);
+        $this->tickets($personas);
 
         $this->command->info('Hoteles: ' . count($hoteles) . '. Jornadas: ' . $jornadas . '.');
         $this->command->info('Tickets: ' . Ticket::count() . ' (en los cuatro estados).');
@@ -328,32 +328,32 @@ class DemoSeeder extends Seeder
 
 
 
-    //  Tickets en los cuatro estados, repartidos entre los hoteles, con su
-    //  historial de movimientos y alguna foto.
-    private function tickets(array $hoteles, array $personas): void
+    //  Tickets en los cuatro estados, con clientes de texto libre (no todos
+    //  son hoteles), con su historial de movimientos y alguna foto.
+    private function tickets(array $personas): void
     {
         $reparador = $personas['reparador'];
         $jefe      = $personas['jefe'];
 
+        //  El cliente ya no sale de un select de hoteles: es texto libre,
+        //  asi que dos de estos son a proposito ajenos a los tres hoteles.
         $definicion = [
-            ['Bomba del spa hace ruido',        'Se escucha un golpeteo al arrancar.',           Ticket::POR_HACER,    0, 2],
-            ['Luz de la piscina fundida',       'La luz del fondo no enciende desde el lunes.',  Ticket::POR_HACER,    1, 0],
-            ['Escalera suelta en el jacuzzi',   'Se mueve al pisarla, riesgo para el huésped.',  Ticket::POR_HACER,    2, 1],
-            ['Fuga en la ducha exterior',       'Gotea constante, se cambió el empaque.',        Ticket::POR_FACTURAR, 0, 0],
-            ['Filtro de arena con fisura',      'Se reemplazó el filtro completo.',              Ticket::POR_FACTURAR, 1, 2],
-            ['Motor de la bomba principal',     'Se rebobinó el motor y quedó funcionando.',     Ticket::POR_COBRAR,   0, 1],
-            ['Reja del cuarto de máquinas',     'Se soldó la reja y se pintó.',                  Ticket::POR_COBRAR,   2, 0],
-            ['Cambio de tablero eléctrico',     'Tablero nuevo, instalado y probado.',           Ticket::COBRADO,      0, 0],
-            ['Bomba dosificadora sin cebar',    'Se limpió y se cebó, quedó operando.',          Ticket::COBRADO,      1, 1],
+            ['Bomba del spa hace ruido',        'Se escucha un golpeteo al arrancar.',           Ticket::POR_HACER,    'Aruba Hotel Enterprises N.V.', 'L.G. Smith Boulevard 82, Oranjestad',   2],
+            ['Luz de la piscina fundida',       'La luz del fondo no enciende desde el lunes.',  Ticket::POR_HACER,    'Palm Beach Resort & Spa',       'J.E. Irausquin Boulevard 230, Palm Beach', 0],
+            ['Escalera suelta en el jacuzzi',   'Se mueve al pisarla, riesgo para el huésped.',  Ticket::POR_HACER,    'Residencia Lacle',              'Watapanaseweg 44, Noord',               1],
+            ['Fuga en la ducha exterior',       'Gotea constante, se cambió el empaque.',        Ticket::POR_FACTURAR, 'Aruba Hotel Enterprises N.V.', 'L.G. Smith Boulevard 82, Oranjestad',   0],
+            ['Filtro de arena con fisura',      'Se reemplazó el filtro completo.',              Ticket::POR_FACTURAR, 'Palm Beach Resort & Spa',       'J.E. Irausquin Boulevard 230, Palm Beach', 2],
+            ['Motor de la bomba principal',     'Se rebobinó el motor y quedó funcionando.',     Ticket::POR_COBRAR,   'Aruba Hotel Enterprises N.V.', 'L.G. Smith Boulevard 82, Oranjestad',   1],
+            ['Reja del cuarto de máquinas',     'Se soldó la reja y se pintó.',                  Ticket::POR_COBRAR,   'Restaurante Zeerover',          'Oranjestad',                            0],
+            ['Cambio de tablero eléctrico',     'Tablero nuevo, instalado y probado.',           Ticket::COBRADO,      'Aruba Hotel Enterprises N.V.', 'L.G. Smith Boulevard 82, Oranjestad',   0],
+            ['Bomba dosificadora sin cebar',    'Se limpió y se cebó, quedó operando.',          Ticket::COBRADO,      'Palm Beach Resort & Spa',       'J.E. Irausquin Boulevard 230, Palm Beach', 1],
         ];
 
         $orden = Ticket::estadosAbiertos();
         $orden[] = Ticket::COBRADO;
 
         foreach ($definicion as $i => $datos) {
-            list($titulo, $observacion, $estadoFinal, $hotelIndice, $conFotos) = $datos;
-
-            $hotel = $hoteles[$hotelIndice];
+            list($titulo, $observacion, $estadoFinal, $cliente, $direccion, $conFotos) = $datos;
 
             if (Ticket::where('titulo', $titulo)->exists()) {
                 continue;
@@ -363,7 +363,8 @@ class DemoSeeder extends Seeder
                 'titulo'      => $titulo,
                 'observacion' => $observacion,
                 'estado'      => $estadoFinal,
-                'hotel_id'    => $hotel->id,
+                'cliente'     => $cliente,
+                'direccion'   => $direccion,
                 'usuario_id'  => $reparador->id,
             ]);
 

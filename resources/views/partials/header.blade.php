@@ -53,10 +53,15 @@
                 {{ auth()->user()->nombre_usuario }}
             </a>
 
-            <form method="POST" action="{{ route('acceso.cerrar') }}">
-                @csrf
-                <button class="boton-salir" type="submit">Salir</button>
-            </form>
+            {{-- Navegando como otro usuario el boton no debe estar: podria
+                 confundirse con "Volver a mi cuenta" y cerrar la suplantacion
+                 en vez de la sesion real. --}}
+            @unless (session()->has(\App\Http\Controllers\SuplantacionController::LLAVE))
+                <form method="POST" action="{{ route('acceso.cerrar') }}">
+                    @csrf
+                    <button class="boton-salir" type="submit">Salir</button>
+                </form>
+            @endunless
         </div>
     @endauth
 

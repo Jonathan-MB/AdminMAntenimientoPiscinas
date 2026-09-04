@@ -38,7 +38,7 @@
 
                         <a class="titulo-ticket" href="{{ route('reparaciones.show', $ticket) }}">{{ $ticket->titulo }}</a>
 
-                        <span class="hotel-ticket">{{ $ticket->hotel->nombre }}</span>
+                        <span class="cliente-ticket">{{ $ticket->cliente }}</span>
 
                         <span class="pie-ticket">
                             {{ $ticket->created_at->format('d/m/Y') }} · {{ $ticket->usuario->nombre_usuario }}
@@ -84,13 +84,17 @@
                 @csrf
 
                 <div class="elemento-formulario">
-                    <label class="titulo-elemento" for="hotelId">Hotel</label>
-                    <select class="campo-formulario" id="hotelId" name="hotelId" required>
-                        <option value="">Elige el hotel</option>
-                        @foreach ($hoteles as $hotel)
-                            <option value="{{ $hotel->id }}" @selected(old('hotelId') == $hotel->id)>{{ $hotel->nombre }}</option>
-                        @endforeach
-                    </select>
+                    <label class="titulo-elemento" for="cliente">Nombre del cliente</label>
+                    <input class="campo-formulario" type="text" id="cliente" name="cliente"
+                           value="{{ old('cliente') }}" maxlength="150"
+                           placeholder="Aruba Hotel Enterprises N.V." required>
+                </div>
+
+                <div class="elemento-formulario">
+                    <label class="titulo-elemento" for="direccion">Dirección</label>
+                    <input class="campo-formulario" type="text" id="direccion" name="direccion"
+                           value="{{ old('direccion') }}" maxlength="200"
+                           placeholder="L.G. Smith Boulevard 82, Oranjestad">
                 </div>
 
                 <div class="elemento-formulario">

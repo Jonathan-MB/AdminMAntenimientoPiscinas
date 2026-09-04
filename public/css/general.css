@@ -165,10 +165,29 @@ body {
 
     .barra-superior-marca {
         font-size: 16px;
+        overflow: hidden;
     }
 
     .barra-superior-logo {
         height: 28px;
+    }
+
+    .barra-superior-menu {
+        gap: 8px 14px;
+    }
+
+    .enlace-menu {
+        font-size: 13px;
+    }
+
+    /*  Un nombre de usuario largo no puede empujar al boton de salir fuera
+        de la pantalla. Se recorta: el nombre completo esta en el perfil,
+        que es a donde lleva este mismo enlace.  */
+    .sesion-usuario {
+        max-width: 130px;
+        min-width: 0;
+        overflow: hidden;
+        white-space: nowrap;
     }
 
     .contenedor-general {
@@ -332,6 +351,33 @@ body {
     box-shadow: 0 0 0 3px #c9e9f8;
 }
 
+.campo-password {
+    position: relative;
+}
+
+.campo-password .campo-formulario {
+    padding-right: 62px;
+}
+
+.boton-ver-password {
+    position: absolute;
+    top: 50%;
+    right: 6px;
+    transform: translateY(-50%);
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #00519e;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: 0.4s;
+}
+
+.boton-ver-password:hover {
+    color: #00365e;
+}
+
 
 /* ----------Tablas-------------- */
 
@@ -430,13 +476,23 @@ body {
         gap: 10px;
     }
 
+    /*  Con cinco entradas (master) la fila no cabe en un telefono y se salia
+        de la pantalla: que baje de linea en vez de desbordarse  */
     .barra-superior-menu {
-        gap: 16px;
+        flex-wrap: wrap;
+        gap: 10px 16px;
         order: 3;
         width: 100%;
         margin-left: 0;
         padding-top: 8px;
         border-top: 1px solid #e3e7ed;
+    }
+
+    /*  Los tres hijos de la barra tienen que poder encoger, o el nombre largo
+        de un usuario vuelve a estirar la fila mas alla del ancho  */
+    .barra-superior-marca,
+    .barra-superior-sesion {
+        min-width: 0;
     }
 
     .barra-superior-sesion {
@@ -474,16 +530,23 @@ body {
         padding: 6px 0;
     }
 
+    /*  Apilada ya no hay barra de desplazamiento que salve el ancho: si el
+        rotulo y el valor no caben en la linea, el valor baja. Sin esto un
+        nombre largo de hotel estiraba la pagina entera y la barra superior
+        se quedaba corta contra el borde derecho.  */
     .caja-tabla td {
         display: flex;
+        flex-wrap: wrap;
         justify-content: space-between;
-        gap: 14px;
+        gap: 4px 14px;
         border-bottom: 0;
         padding: 7px 14px;
+        overflow-wrap: anywhere;
     }
 
     .caja-tabla td::before {
         content: attr(data-titulo);
+        flex-shrink: 0;
         font-size: 11px;
         font-weight: 600;
         letter-spacing: 1px;

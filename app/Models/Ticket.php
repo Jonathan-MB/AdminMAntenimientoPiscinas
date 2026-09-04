@@ -21,7 +21,8 @@ class Ticket extends Model
         'titulo',
         'observacion',
         'estado',
-        'hotel_id',
+        'cliente',
+        'direccion',
         'usuario_id',
     ];
 
@@ -42,12 +43,6 @@ class Ticket extends Model
     public static function estadosAbiertos(): array
     {
         return [self::POR_HACER, self::POR_FACTURAR, self::POR_COBRAR];
-    }
-
-
-    public function hotel(): BelongsTo
-    {
-        return $this->belongsTo(Hotel::class, 'hotel_id');
     }
 
 

@@ -17,13 +17,9 @@
     <form class="barra-filtros" method="GET" action="{{ route('reparaciones.historial') }}">
 
         <div class="elemento-filtro">
-            <label class="titulo-elemento" for="hotel">Hotel</label>
-            <select class="campo-formulario" id="hotel" name="hotel">
-                <option value="">Todos</option>
-                @foreach ($hoteles as $hotel)
-                    <option value="{{ $hotel->id }}" @selected($hotelId == $hotel->id)>{{ $hotel->nombre }}</option>
-                @endforeach
-            </select>
+            <label class="titulo-elemento" for="cliente">Cliente</label>
+            <input class="campo-formulario" type="text" id="cliente" name="cliente"
+                   value="{{ $cliente }}" maxlength="150" placeholder="Nombre del cliente">
         </div>
 
         <div class="elemento-filtro elemento-fecha">
@@ -39,7 +35,7 @@
         <div class="botones-filtro">
             <button class="boton-primario" type="submit">Filtrar</button>
 
-            @if ($hotelId || $desde || $hasta)
+            @if ($cliente || $desde || $hasta)
                 <a class="boton-secundario" href="{{ route('reparaciones.historial') }}">Limpiar</a>
             @endif
         </div>
@@ -59,7 +55,7 @@
     @if ($tickets->count())
         <div class="encabezado-historial">
             <span class="fila-fecha">Cobrado</span>
-            <span class="fila-datos">Reparación y hotel</span>
+            <span class="fila-datos">Reparación y cliente</span>
             <span class="fila-acciones">Acciones</span>
         </div>
     @endif
@@ -74,7 +70,7 @@
 
             <div class="fila-datos">
                 <span class="fila-titulo">{{ $ticket->titulo }}</span>
-                <span class="fila-nota">{{ $ticket->hotel->nombre }} · creado por {{ $ticket->usuario->nombre_usuario }}</span>
+                <span class="fila-nota">{{ $ticket->cliente }} · creado por {{ $ticket->usuario->nombre_usuario }}</span>
             </div>
 
             <div class="fila-acciones">
@@ -87,7 +83,7 @@
 
     @if ($total === 0)
         <p class="caja-vacia">
-            @if ($hotelId || $desde || $hasta)
+            @if ($cliente || $desde || $hasta)
                 Prueba quitando alguno de los filtros.
             @else
                 Todavía no hay reparaciones cobradas.

@@ -54,10 +54,4 @@ class Hotel extends Model
     {
         return $this->hasMany(Usuario::class, 'hotel_id');
     }
-
-
-    public function tickets(): HasMany
-    {
-        return $this->hasMany(Ticket::class, 'hotel_id');
-    }
 }

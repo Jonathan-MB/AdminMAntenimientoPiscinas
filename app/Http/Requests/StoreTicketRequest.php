@@ -19,7 +19,8 @@ class StoreTicketRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'hotel_id'    => ['required', 'integer', 'exists:hoteles,id'],
+            'cliente'     => ['required', 'string', 'max:150'],
+            'direccion'   => ['nullable', 'string', 'max:200'],
             'titulo'      => ['required', 'string', 'max:120'],
             'observacion' => ['nullable', 'string', 'max:2000'],
         ];
@@ -29,18 +30,10 @@ class StoreTicketRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'hotel_id.required' => 'Elige el hotel',
-            'hotel_id.exists'   => 'Ese hotel no existe',
-            'titulo.required'   => 'Escribe de qué se trata la reparación',
-            'titulo.max'        => 'El título no puede pasar de 120 caracteres',
+            'cliente.required' => 'Escribe el nombre del cliente',
+            'cliente.max'      => 'El nombre del cliente no puede pasar de 150 caracteres',
+            'titulo.required'  => 'Escribe de qué se trata la reparación',
+            'titulo.max'       => 'El título no puede pasar de 120 caracteres',
         ];
-    }
-
-
-    protected  function prepareForValidation(): void
-    {
-        $this->merge([
-            'hotel_id' => $this->hotelId,
-        ]);
     }
 }
