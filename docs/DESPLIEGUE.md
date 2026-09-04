@@ -362,6 +362,18 @@ restaurar entero.
 
 Después de restaurar, limpia las cachés: `php artisan optimize:clear`.
 
+> **Si lo restauras en el XAMPP local**, la primera línea te va a dar
+> `ERROR at line 1: Unknown command '\-'`. El servidor tiene MariaDB 11.8 y escribe una línea de
+> *sandbox mode* que el cliente más viejo de XAMPP no entiende. **El respaldo está bien**; basta
+> saltarse esa línea:
+>
+> ```bash
+> gunzip -c base-20260904-0553.sql.gz | tail -n +2 | mysql -u root prueba_restauracion
+> ```
+>
+> Probado así el 4 de septiembre de 2026: devolvió los 10 usuarios, las 41 jornadas, las 314
+> mediciones y los 9 tickets, con los roles tal como estaban.
+
 ---
 
 ## Lo que queda pendiente después de desplegar
