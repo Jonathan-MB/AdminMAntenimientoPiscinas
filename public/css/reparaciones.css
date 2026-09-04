@@ -25,6 +25,42 @@
     margin-top: 4px;
 }
 
+/*  La direccion se lee y se copia para pegarla en el mapa  */
+.linea-direccion {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 10px;
+    font-size: 14px;
+    color: #4a4b4d;
+    margin-top: 6px;
+}
+
+.boton-copiar {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    font-family: inherit;
+    color: #00519e;
+    background-color: #ffffff;
+    border: 1px solid #c3ceda;
+    border-radius: 3px;
+    padding: 4px 12px;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: 0.4s;
+}
+
+.boton-copiar:hover {
+    border-color: #00519e;
+}
+
+.boton-copiado {
+    color: #1b7a4b;
+    border-color: #1b7a4b;
+}
+
 
 /* ----------Tablero por estado-------------- */
 
@@ -133,6 +169,12 @@
 .cliente-ticket {
     font-size: 13px;
     color: #1a1a1a;
+}
+
+.direccion-ticket {
+    font-size: 12px;
+    color: #5f6062;
+    margin-top: -2px;
 }
 
 .pie-ticket {
@@ -298,6 +340,14 @@
     .botones-titulo .boton-secundario {
         flex: 1;
         text-align: center;
+    }
+
+    /*  Se tocan con el dedo, y en el telefono es donde se usan  */
+    .boton-copiar {
+        display: inline-flex;
+        align-items: center;
+        min-height: 44px;
+        padding: 4px 16px;
     }
 
     .linea-movimiento {

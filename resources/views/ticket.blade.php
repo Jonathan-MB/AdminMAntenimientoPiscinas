@@ -13,12 +13,25 @@
         <div class="linea-titulo">
             <div>
                 <h1 class="vista-titulo sin-borde">{{ $ticket->titulo }}</h1>
-                <p class="subtitulo-ticket">
-                    {{ $ticket->cliente }}
-                    @if ($ticket->direccion)
-                        · {{ $ticket->direccion }}
-                    @endif
-                </p>
+                <p class="subtitulo-ticket">{{ $ticket->cliente }}</p>
+
+                @if ($ticket->direccion)
+                    {{-- El boton nace oculto: si no hay JavaScript no copia nada,
+                         y la direccion se puede seleccionar igual con el dedo --}}
+                    <p class="linea-direccion">
+                        <span id="textoDireccion">{{ $ticket->direccion }}</span>
+
+                        <button class="boton-copiar" type="button" id="botonCopiar" hidden
+                                data-direccion="{{ $ticket->direccion }}"
+                                title="Copiar la dirección para pegarla donde quieras">Copiar</button>
+
+                        {{-- Si el navegador niega el portapapeles, por aqui se llega
+                             al mapa igual, y de un toque en el telefono --}}
+                        <a class="boton-copiar" target="_blank" rel="noopener"
+                           href="https://www.google.com/maps/search/?api=1&query={{ urlencode($ticket->direccion) }}"
+                           title="Abrir esta dirección en Google Maps">Ver en el mapa</a>
+                    </p>
+                @endif
             </div>
 
             <span class="pastilla-estado pastilla-{{ $ticket->estado }}">{{ $ticket->etiqueta_estado }}</span>

@@ -117,3 +117,56 @@ if (fotoCamara && fotoGaleria) {
     //  Se apaga aqui y no en el HTML: sin JavaScript el boton debe funcionar
     contarElegidas();
 }
+
+
+// ============ COPIAR LA DIRECCION ============
+
+const botonCopiar = document.getElementById('botonCopiar');
+
+
+//  El portapapeles moderno pide sitio seguro (https o localhost). En un
+//  telefono viejo o si el navegador lo niega, se cae al truco del textarea.
+function copiarTexto(texto) {
+    if (navigator.clipboard && window.isSecureContext) {
+        return navigator.clipboard.writeText(texto);
+    }
+
+    return new Promise(function (resolver, rechazar) {
+        const caja = document.createElement('textarea');
+        caja.value = texto;
+        caja.setAttribute('readonly', '');
+        caja.style.position = 'fixed';
+        caja.style.top = '-1000px';
+        document.body.appendChild(caja);
+        caja.select();
+
+        try {
+            document.execCommand('copy') ? resolver() : rechazar();
+        } catch (error) {
+            rechazar(error);
+        } finally {
+            document.body.removeChild(caja);
+        }
+    });
+}
+
+
+if (botonCopiar) {
+    //  Se enciende desde aqui: si no hay JavaScript no debe verse un boton
+    //  que no hace nada. La direccion se puede seleccionar a mano igual.
+    botonCopiar.hidden = false;
+
+    botonCopiar.addEventListener('click', function () {
+        copiarTexto(botonCopiar.dataset.direccion).then(function () {
+            botonCopiar.textContent = 'Copiada';
+            botonCopiar.classList.add('boton-copiado');
+
+            setTimeout(function () {
+                botonCopiar.textContent = 'Copiar';
+                botonCopiar.classList.remove('boton-copiado');
+            }, 2000);
+        }).catch(function () {
+            botonCopiar.textContent = 'Selecciónala y cópiala';
+        });
+    });
+}

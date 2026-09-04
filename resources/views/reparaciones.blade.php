@@ -40,6 +40,10 @@
 
                         <span class="cliente-ticket">{{ $ticket->cliente }}</span>
 
+                        @if ($ticket->direccion)
+                            <span class="direccion-ticket">{{ $ticket->direccion }}</span>
+                        @endif
+
                         <span class="pie-ticket">
                             {{ $ticket->created_at->format('d/m/Y') }} · {{ $ticket->usuario->nombre_usuario }}
                             @if ($ticket->fotos_count > 0)
