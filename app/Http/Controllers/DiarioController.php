@@ -221,6 +221,7 @@ class DiarioController extends Controller
                                 'alcalinidad' => $medicion->alcalinidad,
                                 'durezaCalcio' => $medicion->dureza_calcio,
                                 'acidoCianurico' => $medicion->acido_cianurico,
+                                'sal'            => $medicion->sal,
                                 'retrolavado' => $medicion->retrolavado,
                                 'observacion' => $medicion->observacion,
                                 'dosis'       => $medicion->dosis->map(function ($dosis) {

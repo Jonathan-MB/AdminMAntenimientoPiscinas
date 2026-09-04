@@ -151,6 +151,51 @@ fila siguiente (20-24 px), en todos los anchos: la más corta es siempre la que 
 
 ---
 
+## Tercera ronda — 4 de septiembre de 2026, por la tarde
+
+### 13. La sal, en sus dos formas
+
+- **Lectura**: se guardó `3120.50` en una piscina y quedó en `mediciones.sal`.
+- **Dosis**: `25` kilos del producto Sal, en `dosis`. Las dos conviven en la misma medición, que
+  es justo lo que se pidió: con cuánta empieza y cuánta se echa.
+- Aparece en el formulario, en el diario **por HTML y por JSON** (son dos caminos, hay que probar
+  los dos), y en la hoja impresa de los **tres** hoteles.
+
+### 14. La hoja impresa, con una columna más
+
+Pasó de 10 a 11 columnas, y eso es lo que más fácil se rompe:
+
+- Cabecera, filas y el `colspan` de la fila de detalle: **11 en los tres hoteles**. Un `colspan`
+  desfasado no da error, solo descuadra la hoja en silencio.
+- Mide **186 mm** y en impresión hay 190 disponibles (A4 menos los márgenes de 10 mm).
+- Ninguna celda corta su contenido, comprobado con `scrollWidth > clientWidth` celda por celda.
+  El `3120.50` entra completo.
+
+### 15. La observación editable
+
+- Se edita, se guarda, y el historial encadena las versiones: cada fila lleva quién, cuándo y qué
+  decía antes.
+- Guardar **lo mismo** devuelve 422 y no ensucia el historial. Pasarse de 2000 caracteres, 422.
+  Un `colaborador`, **403**.
+- Probado también desde la interfaz en el teléfono: abrir, escribir, guardar y ver la edición
+  aparecer abajo.
+
+### 16. Las migraciones, por los dos caminos
+
+- **Sobre una base con datos** (el caso del servidor): tres mediciones existentes conservaron sus
+  valores y quedaron con la sal en nulo. El ácido cianúrico pasó a kilos y la Sal entró **de
+  última** en el catálogo.
+- **Desde cero**: el catálogo queda en el orden correcto y el seeder llena la sal.
+- Regresión de permisos por rol: sin cambios.
+
+> Ahí saltó un fallo que solo aparece en el camino desde cero: en una base nueva las migraciones
+> corren **antes** que los seeders, así que la tabla de productos está vacía y `max(orden) + 1`
+> daba 1. La sal salía **de primera** en la pantalla, delante del ácido muriático. Se arregló
+> haciendo que la migración solo inserte el producto si el catálogo ya existe; si no, lo crea el
+> seeder en su sitio. **Probar un solo camino no habría enseñado esto.**
+
+---
+
 ## Lo que no se pudo probar aquí
 
 **El botón de copiar la dirección.** El portapapeles exige activación del usuario
@@ -161,3 +206,16 @@ real**. Si el botón cambia a «Copiada» en verde, funcionó.
 
 Por eso mismo al lado va el enlace a Google Maps, que no depende de permisos. De ese sí se
 verificó que la dirección queda bien codificada en la URL y que Google responde 200.
+
+---
+
+## Un aviso más para quien repita esto
+
+**Mandar acentos por la consola de Windows corrompe el JSON.** Una prueba de la observación con
+`curl -d '{"observacion":"Se revisó..."}'` guardó `null` y pareció un fallo del código. No lo
+era: el shell mutiló la `ó`, el JSON llegó inválido y Laravel lo descartó entero. Escribiendo el
+cuerpo en un archivo UTF-8 y mandándolo con `--data-binary @archivo`, los acentos y hasta la raya
+`—` pasan intactos.
+
+Es el mismo error que ya estaba anotado para MySQL, en otra puerta. En un proyecto en español,
+**una prueba sin acentos no prueba nada**: los datos reales siempre los llevan.

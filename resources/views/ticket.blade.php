@@ -43,11 +43,53 @@
             <div class="mensaje mensaje-error">{{ $errors->first() }}</div>
         @endif
 
-        @if ($ticket->observacion)
-            <div class="tarjeta-detalle">
-                <h2 class="titulo-bloque">Observación</h2>
-                <p class="texto-observacion">{{ $ticket->observacion }}</p>
+        {{-- --------------------OBSERVACION------------------- --}}
+
+        <div class="tarjeta-detalle">
+
+            <div class="linea-bloque">
+                <h2 class="titulo-bloque sin-margen">Observación</h2>
+
+                {{-- Nace oculto y lo enciende el JavaScript: sin el, editar no
+                     funciona y no debe verse un boton que no hace nada --}}
+                <button class="boton-secundario boton-chico" type="button"
+                        id="botonEditarObservacion" hidden>Editar</button>
             </div>
+
+            <p class="texto-observacion @unless ($ticket->observacion) texto-vacio @endunless"
+               id="textoObservacion">{{ $ticket->observacion ?: 'Todavía no hay observación. Aquí se anota cómo va la reparación.' }}</p>
+
+            <div class="editor-observacion" id="editorObservacion" hidden>
+                <textarea class="campo-formulario" id="campoObservacion" rows="5"
+                          maxlength="2000">{{ $ticket->observacion }}</textarea>
+
+                <p class="nota-formulario">Al guardar queda registrado quién la cambió y qué decía antes.</p>
+
+                <div class="linea-botones-observacion">
+                    <button class="boton-secundario" type="button" id="botonCancelarObservacion">Cancelar</button>
+                    <button class="boton-primario" type="button" id="botonGuardarObservacion">Guardar</button>
+                </div>
+            </div>
+
+        </div>
+
+        @if ($ticket->edicionesObservacion->count())
+            <h2 class="titulo-bloque">Ediciones de la observación</h2>
+
+            @foreach ($ticket->edicionesObservacion as $edicion)
+                <div class="linea-edicion">
+
+                    <span class="edicion-cuando">
+                        {{ $edicion->created_at->format('d/m/Y H:i') }} · {{ $edicion->usuario->nombre_usuario }}
+                    </span>
+
+                    <div class="edicion-textos">
+                        <span class="rotulo-edicion">Decía</span>
+                        <p class="texto-anterior">{{ $edicion->texto_anterior ?: '(estaba vacía)' }}</p>
+                    </div>
+
+                </div>
+            @endforeach
         @endif
 
         {{-- --------------------FOTOS------------------- --}}
@@ -153,6 +195,7 @@
 
 <script>
     const rutaFotos = '{{ url('/reparaciones/foto') }}';
+    const rutaObservacion = '{{ url('/reparaciones/' . $ticket->id . '/observacion') }}';
 </script>
 
 <script src="@recurso('js/ticket.js')"></script>

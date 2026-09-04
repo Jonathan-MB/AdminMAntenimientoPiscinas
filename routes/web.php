@@ -66,6 +66,7 @@ Route::middleware(['auth', 'password.temporal'])->group(function () {
         Route::get('/reparaciones/resumen', [TicketController::class, 'resumen'])->name('reparaciones.resumen');
         Route::get('/reparaciones/{ticket}', [TicketController::class, 'show'])->name('reparaciones.show');
         Route::patch('/reparaciones/{ticket}', [TicketController::class, 'update'])->name('reparaciones.update');
+        Route::patch('/reparaciones/{ticket}/observacion', [TicketController::class, 'observacion'])->name('reparaciones.observacion');
         Route::delete('/reparaciones/{ticket}', [TicketController::class, 'destroy'])->name('reparaciones.destroy');
 
         Route::post('/reparaciones/{ticket}/fotos', [FotoTicketController::class, 'store'])->name('fotos.store');

@@ -156,6 +156,7 @@ class MedicionController extends Controller
             'alcalinidad'     => 'Alcalinidad',
             'dureza_calcio'   => 'Dureza de calcio',
             'acido_cianurico' => 'Ácido cianúrico',
+            'sal'             => 'Nivel de sal',
             'nivel_agua'      => 'Nivel del agua',
             'retrolavado'     => 'Retrolavado',
             'observacion'     => 'Observación',

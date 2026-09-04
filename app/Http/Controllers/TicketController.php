@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\EditarObservacionTicketRequest;
 use App\Http\Requests\MoverTicketRequest;
 use App\Http\Requests\StoreTicketRequest;
+use App\Models\EdicionObservacionTicket;
 use App\Models\MovimientoTicket;
 use App\Models\Rol;
 use App\Models\Ticket;
@@ -55,6 +57,8 @@ class TicketController extends Controller
     public function show(Request $request, Ticket $ticket)
     {
         $ticket->load(['usuario', 'fotos', 'movimientos' => function ($consulta) {
+            $consulta->with('usuario')->orderByDesc('created_at')->orderByDesc('id');
+        }, 'edicionesObservacion' => function ($consulta) {
             $consulta->with('usuario')->orderByDesc('created_at')->orderByDesc('id');
         }]);
 
@@ -115,6 +119,41 @@ class TicketController extends Controller
 
         return response()->json([
             'message' => 'Ticket eliminado correctamente'
+        ], 200);
+    }
+
+
+
+    //  La observacion se corrige mientras avanza la reparacion. Cada edicion
+    //  guarda lo que decia antes: sin eso, corregirla borraria lo anterior.
+    public function observacion(EditarObservacionTicketRequest $request, Ticket $ticket)
+    {
+        $antes    = $ticket->observacion;
+        $despues  = $request->validated()['observacion'] ?? null;
+
+        if ($antes === $despues) {
+            return response()->json([
+                'message' => 'La observación no cambió'
+            ], 422);
+        }
+
+        DB::transaction(function () use ($ticket, $antes, $despues) {
+            $ticket->observacion = $despues;
+            $ticket->save();
+
+            EdicionObservacionTicket::create([
+                'texto_anterior' => $antes,
+                'texto_nuevo'    => $despues,
+                'ticket_id'      => $ticket->id,
+                'usuario_id'     => Auth::id(),
+            ]);
+        });
+
+        return response()->json([
+            'message'     => 'Observación guardada',
+            'observacion' => $despues,
+            'autor'       => Auth::user()->nombre_usuario,
+            'cuando'      => now()->format('d/m/Y H:i'),
         ], 200);
     }
 

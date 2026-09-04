@@ -99,6 +99,7 @@ function dibujarDia(datos) {
                 + '<div class="lectura"><span>Alcalinidad</span><strong>' + valor(medicion.alcalinidad) + '</strong></div>'
                 + '<div class="lectura"><span>Dureza</span><strong>' + valor(medicion.durezaCalcio) + '</strong></div>'
                 + '<div class="lectura"><span>Cianúrico</span><strong>' + valor(medicion.acidoCianurico) + '</strong></div>'
+                + '<div class="lectura"><span>Sal</span><strong>' + valor(medicion.sal) + '</strong></div>'
                 + '</div>';
 
             if (medicion.dosis.length) {

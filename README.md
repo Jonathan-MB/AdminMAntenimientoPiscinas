@@ -30,6 +30,8 @@ los hoteles ven esta pantalla.
 | Impresión de la revisión de un día | Funcionando |
 | Paginación del panel | Funcionando |
 | Respaldo diario de la base y las fotos | Funcionando |
+| Nivel de sal y sal aplicada | Funcionando |
+| Observación del ticket editable, con su rastro | Funcionando |
 
 **En pruebas con el equipo** en [aqualiveapp.com](https://aqualiveapp.com) desde el 2 de septiembre
 de 2026, con `APP_ENV=staging` y los datos del `DemoSeeder`. Ya hay trabajo capturado a mano ahí,
@@ -640,12 +642,27 @@ Tres pasos, pensados para un teléfono a las seis de la mañana:
      casillas, y los materiales y químicos sacados de almacén.
    - **Piscinas**: cada ronda con sus piscinas y un contador de avance (`3 de 5 piscinas`).
      Las que ya tienen registro se marcan en verde con un visto.
-3. **`/jornada/{id}/medicion/{ronda}/{piscina}`** — una pantalla por piscina: las 7 lecturas,
-   los 9 químicos con su unidad, el **nivel del agua** (alto, normal o bajo), el retrolavado y
+3. **`/jornada/{id}/medicion/{ronda}/{piscina}`** — una pantalla por piscina: las 8 lecturas,
+   los 10 químicos con su unidad, el **nivel del agua** (alto, normal o bajo), el retrolavado y
    la observación.
 
 Dejar un campo en blanco significa **no medido**, que no es lo mismo que cero. Un químico en
 blanco significa que no se aplicó.
+
+### La sal se mide y se echa, y son dos cosas distintas
+
+Añadida el 4 de septiembre de 2026. Una piscina de sal ronda las 3000 ppm, y para saber cuánta
+hay que agregar primero hay que saber con cuánta viene. Por eso la sal aparece **dos veces**, y
+no es duplicación:
+
+- **«Nivel de sal»**, entre las lecturas — con cuánta empieza la piscina. Va en `mediciones.sal`,
+  en ppm, como la alcalinidad o la dureza.
+- **«Sal · kilos»**, entre los químicos — cuánta se le echa. Va como cualquier otro producto, en
+  `dosis`.
+
+Separadas, el diario y la hoja impresa muestran las dos: se ve que la piscina estaba en 3120 ppm
+y que se le echaron 25 kilos. Si fuera un solo campo habría que elegir cuál de las dos preguntas
+responder, y las dos hacen falta para decidir la siguiente dosis.
 
 La ronda se crea sola la primera vez que se guarda una piscina de esa ronda.
 
@@ -790,7 +807,7 @@ El bloqueo no es solo visual: los campos se deshabilitan **y** el servidor respo
 - El calendario marca con un punto los días que tienen registro, y no deja abrir días futuros.
 - Al elegir un día, el detalle se carga **sin recargar la página**, por
   `/diario/{hotel}/dia/{fecha}`, y la fecha queda en la barra de direcciones.
-- Cada ronda se muestra con una tarjeta por piscina: las 7 lecturas, los químicos aplicados
+- Cada ronda se muestra con una tarjeta por piscina: las 8 lecturas, los químicos aplicados
   con su unidad, el retrolavado y las observaciones.
 
 **Quién lo ve:** el personal de AQUALIVE puede abrir el de cualquier hotel. Un usuario con rol
@@ -886,6 +903,27 @@ blancas y el tablero se leía como un bloque: no se veía dónde acababa un tick
 siguiente. Además de la separación, cada tarjeta lleva a la izquierda **una banda del color de su
 estado**, así que dice de qué columna es aunque se mire de reojo o se llegue desde el buscador
 del teléfono, donde las columnas van una debajo de otra.
+
+### La observación se edita, y lo anterior no se pierde
+
+Una reparación cambia mientras avanza: se diagnostica una cosa y resulta ser otra, se pide un
+repuesto, llega el martes. La observación se edita desde el propio ticket, con el botón
+**Editar** al lado del bloque.
+
+**Cada edición guarda lo que decía antes, quién la cambió y cuándo**, y eso se ve debajo, igual
+que el historial de estados. Sin ese rastro, editar sería borrar: alguien podría quitar una nota
+incómoda —«se avisó que la bomba estaba al límite»— y no quedaría forma de saber que existió. Es
+el mismo criterio de las correcciones de mediciones y de los cambios de contraseña.
+
+Guardar el mismo texto devuelve **422** y no ensucia el historial con una edición que no cambió
+nada. Vaciar la observación sí se registra: pasar de un texto a nada es un cambio, y el
+historial muestra lo que decía.
+
+Entran los mismos tres roles de la sección. Un `colaborador` recibe **403**.
+
+Al guardar, la pantalla se recarga a propósito: la edición entra en el historial de abajo, y
+armarlo a mano en JavaScript sería repetir lo que ya hace Blade. Si no se recargara, la
+constancia se vería incompleta justo después de dejarla.
 
 ### El rastro de quién movió qué
 
@@ -1073,8 +1111,10 @@ distinto de lo que se ve.
 ### La pantalla de la piscina
 
 Los nombres largos de producto («Bicarbonato de sodio libras») parten en dos líneas y dejaban el
-campo de al lado a otra altura. Ahora cada celda de la rejilla estira y el campo se pega abajo,
-así que los pares quedan alineados aunque una etiqueta ocupe el doble.
+campo de al lado a otra altura. Cada celda de la rejilla estira y el sobrante se va **por encima
+de la etiqueta**, así que los campos quedan alineados aunque una etiqueta ocupe el doble, y la
+etiqueta viaja pegada al suyo. (Ver «La etiqueta viaja pegada a su campo»: al principio el
+sobrante se ponía debajo de la etiqueta y el resultado se leía al revés.)
 
 La unidad estaba en azul agua sobre blanco, que casi no se ve al sol. Pasa a gris y se distingue
 de la etiqueta por el grosor, no por el color. La casilla de retrolavado sube de 18 a 26 px.
@@ -1130,17 +1170,19 @@ Sale directo de los dos formatos en papel que llenan los empleados.
 | `metros_agua` | Los metros de agua de cada hotel, con nombre y orden |
 | `lecturas_metro` | La lectura de cada metro en cada jornada |
 | `piscinas` | Las piscinas de cada hotel (POOL VIP, BIG POOL, SPA HOT…), editables |
-| `productos` | Los 9 químicos con su unidad: galones, onzas, libras o tabletas |
+| `productos` | Los 10 químicos con su unidad: galones, onzas, libras, kilos o tabletas |
 | `jornadas` | La hoja del día: fecha, materiales sacados, quién firma |
 | `rondas` | La ronda que se hizo ese día, con la hora real y la observación |
-| `mediciones` | Las 7 lecturas por piscina y ronda, el nivel del agua y el retrolavado |
+| `mediciones` | Las 8 lecturas por piscina y ronda, el nivel del agua y el retrolavado |
 | `dosis` | Cuánto se aplicó de cada producto |
 | `tareas` | El listado de trabajo diario: una lista corrida, el `orden` marca la secuencia del turno |
 | `tareas_realizadas` | Qué se marcó ese día |
 | `cambios` | Qué se corrigió después de haber guardado, con el valor anterior y el nuevo |
+| `ediciones_observacion_ticket` | Qué decía la observación de un ticket antes de cada edición, y quién la cambió |
 
-Las **7 lecturas** son las del formato: `cl_libre`, `cl_total`, `cl_combinado`, `ph`,
-`alcalinidad`, `dureza_calcio` y `acido_cianurico`.
+Las **8 lecturas** son las siete del formato —`cl_libre`, `cl_total`, `cl_combinado`, `ph`,
+`alcalinidad`, `dureza_calcio` y `acido_cianurico`— más `sal`, que pidió el equipo el 4 de
+septiembre de 2026.
 
 `back Wash` del papel **no es un producto**: es una acción, y va como el booleano `retrolavado`
 en `mediciones`.
@@ -1155,15 +1197,22 @@ la unidad con la que de verdad se dosifica:
 |---|---|
 | **galones** | Ácido muriático |
 | **onzas** | Alguicida, Super blue, Balance fosfato |
-| **libras** | Cloro granulado, Tricloro, Bicarbonato de sodio, Ácido cianúrico |
+| **libras** | Cloro granulado, Tricloro, Bicarbonato de sodio |
+| **kilos** | Ácido cianúrico, Sal |
 | **tabletas** | Tabletas 3" |
 
 El criterio: líquidos en galones u onzas según el tamaño de la dosis, sólidos en libras. Las
 tabletas son la excepción y se cuentan: nadie las pesa, echa tres. «Cloro granulado» decía
 «1.5 lb / cup», que era la medida del cacito y no una unidad.
 
+El **ácido cianúrico pasó de libras a kilos** el 4 de septiembre de 2026, a petición del equipo.
+Solo cambió la etiqueta: **las cantidades ya registradas se dejaron como estaban**, porque nadie
+puede saber hoy si se anotaron pensando en una unidad o en la otra, y convertirlas a ciegas
+inventaría datos. Si alguna hay que corregir, la corrige quien la aplicó.
+
 Están en `ProductoSeeder`. Como usa `firstOrCreate`, cambiar una unidad ahí **no actualiza** los
-productos ya sembrados: hay que tocarlos también en la base.
+productos ya sembrados: por eso el cambio de unidad viajó en una migración, que es lo único que
+llega a un servidor donde los seeders no se corren.
 
 ### El nombre de una piscina se corrige, y se corrige hacia atrás
 

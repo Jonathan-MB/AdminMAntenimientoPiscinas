@@ -336,6 +336,8 @@ piscina con mediciones registradas no se puede eliminar: se desactiva».
 | `Route::resource` completo | `->only([...])` con lo que el controlador implementa. |
 | IDs escritos a mano en el JS | Buscar por nombre, no por id. Los ids dependen del orden de inserción. |
 | Acentos por consola de MySQL | phpMyAdmin, o `--default-character-set=utf8mb4`. La `é` debe ser `C3A9` en `HEX()`. |
+| Acentos por la consola al probar con `curl` | El shell de Windows los corrompe y el JSON llega inválido: parece un fallo del código y es de la prueba. Cuerpo en un archivo UTF-8 y `--data-binary @archivo`. En un proyecto en español, una prueba sin acentos no prueba nada. |
+| Insertar datos de catálogo en una migración | Las migraciones corren **antes** que los seeders. Con la tabla vacía, un `max(orden) + 1` da 1 y el registro sale de primero. Insertar solo si el catálogo ya existe, y dejar que el seeder lo cree en su sitio en las bases nuevas. |
 | `bootstrap/cache/` versionado | Va en `.gitignore`. Las cachés se generan en el servidor. |
 | Código muerto de una idea descartada | Si se abandona, se borra completa. |
 | Desactivar en vez de borrar «por si acaso» | Mientras el proyecto no esté en producción, lo que sobra se borra. Desactivar es para proteger historia real, no datos de prueba: deja filas muertas que nadie va a mirar. |

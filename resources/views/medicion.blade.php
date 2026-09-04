@@ -59,6 +59,7 @@
                     ['alcalinidad',    'Alcalinidad',      'alcalinidad',     '1'],
                     ['durezaCalcio',   'Dureza de calcio', 'dureza_calcio',   '1'],
                     ['acidoCianurico', 'Ácido cianúrico',  'acido_cianurico', '1'],
+                    ['sal',            'Nivel de sal',     'sal',             '1'],
                 ];
             @endphp
 

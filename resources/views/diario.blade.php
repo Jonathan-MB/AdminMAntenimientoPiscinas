@@ -144,6 +144,7 @@
                                         <div class="lectura"><span>Alcalinidad</span><strong>{{ $medicion->alcalinidad ?? '—' }}</strong></div>
                                         <div class="lectura"><span>Dureza</span><strong>{{ $medicion->dureza_calcio ?? '—' }}</strong></div>
                                         <div class="lectura"><span>Cianúrico</span><strong>{{ $medicion->acido_cianurico ?? '—' }}</strong></div>
+                                        <div class="lectura"><span>Sal</span><strong>{{ $medicion->sal ?? '—' }}</strong></div>
                                     </div>
 
                                     @if ($medicion->dosis->count())

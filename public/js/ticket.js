@@ -170,3 +170,72 @@ if (botonCopiar) {
         });
     });
 }
+
+
+// ============ EDITAR LA OBSERVACION ============
+
+const botonEditarObservacion = document.getElementById('botonEditarObservacion');
+const botonCancelarObservacion = document.getElementById('botonCancelarObservacion');
+const botonGuardarObservacion = document.getElementById('botonGuardarObservacion');
+const editorObservacion = document.getElementById('editorObservacion');
+const textoObservacion = document.getElementById('textoObservacion');
+const campoObservacion = document.getElementById('campoObservacion');
+
+
+function verEditor(abierto) {
+    editorObservacion.hidden = ! abierto;
+    textoObservacion.hidden = abierto;
+    botonEditarObservacion.hidden = abierto;
+
+    if (abierto) {
+        campoObservacion.focus();
+    }
+}
+
+
+if (botonEditarObservacion) {
+    //  Se enciende aqui: sin JavaScript no hay forma de guardar
+    botonEditarObservacion.hidden = false;
+
+    botonEditarObservacion.addEventListener('click', function () {
+        verEditor(true);
+    });
+
+
+    botonCancelarObservacion.addEventListener('click', function () {
+        //  Devolver el campo a lo que hay guardado, o "cancelar" dejaria el
+        //  texto a medio escribir esperando en la proxima apertura
+        campoObservacion.value = campoObservacion.defaultValue;
+        verEditor(false);
+    });
+
+
+    botonGuardarObservacion.addEventListener('click', async function () {
+        botonGuardarObservacion.disabled = true;
+
+        try {
+            const respuesta = await fetch(rutaObservacion, {
+                method: 'PATCH',
+                headers: cabeceras(),
+                body: JSON.stringify({ observacion: campoObservacion.value }),
+            });
+
+            const datos = await respuesta.json();
+
+            if (! respuesta.ok) {
+                alert(datos.message || 'No se pudo guardar la observación');
+                botonGuardarObservacion.disabled = false;
+                return;
+            }
+
+            //  Se recarga a proposito: la edicion entra en el historial de
+            //  abajo, y actualizarlo a mano seria repetir aqui lo que ya
+            //  arma Blade. Si no se recarga, la constancia se ve incompleta.
+            location.reload();
+
+        } catch (error) {
+            alert('Error de conexión. Revisa la señal e intenta otra vez.');
+            botonGuardarObservacion.disabled = false;
+        }
+    });
+}

@@ -26,6 +26,7 @@ class StoreMedicionRequest extends FormRequest
             'alcalinidad'     => ['nullable', 'numeric', 'min:0', 'max:99999'],
             'dureza_calcio'   => ['nullable', 'numeric', 'min:0', 'max:99999'],
             'acido_cianurico' => ['nullable', 'numeric', 'min:0', 'max:99999'],
+            'sal'             => ['nullable', 'numeric', 'min:0', 'max:99999'],
             'retrolavado'     => ['sometimes', 'boolean'],
             'nivel_agua'      => ['required', 'in:alto,normal,bajo'],
             'observacion'     => ['nullable', 'string', 'max:255'],
@@ -65,6 +66,7 @@ class StoreMedicionRequest extends FormRequest
             'alcalinidad'     => $this->vacioANulo($this->alcalinidad),
             'dureza_calcio'   => $this->vacioANulo($this->durezaCalcio),
             'acido_cianurico' => $this->vacioANulo($this->acidoCianurico),
+            'sal'             => $this->vacioANulo($this->sal),
             'retrolavado'     => $this->boolean('retrolavado'),
             'nivel_agua'      => $this->nivelAgua ?: 'normal',
 

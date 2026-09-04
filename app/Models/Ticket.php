@@ -64,6 +64,12 @@ class Ticket extends Model
     }
 
 
+    public function edicionesObservacion(): HasMany
+    {
+        return $this->hasMany(EdicionObservacionTicket::class, 'ticket_id');
+    }
+
+
     public function getEtiquetaEstadoAttribute(): string
     {
         return self::estados()[$this->estado] ?? $this->estado;

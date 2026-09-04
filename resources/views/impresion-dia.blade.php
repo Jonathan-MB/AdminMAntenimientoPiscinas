@@ -102,6 +102,7 @@
                         <th scope="col">Alcalinidad<span class="unidad-col">ppm</span></th>
                         <th scope="col">Dureza Ca<span class="unidad-col">ppm</span></th>
                         <th scope="col">Ác. cianúrico<span class="unidad-col">ppm</span></th>
+                        <th scope="col">Sal<span class="unidad-col">ppm</span></th>
                         <th scope="col">Nivel</th>
                         <th scope="col">Retro.</th>
                     </tr>
@@ -119,13 +120,14 @@
                             <td>{{ $medicion->alcalinidad ?? '—' }}</td>
                             <td>{{ $medicion->dureza_calcio ?? '—' }}</td>
                             <td>{{ $medicion->acido_cianurico ?? '—' }}</td>
+                            <td>{{ $medicion->sal ?? '—' }}</td>
                             <td>{{ \App\Models\Medicion::niveles()[$medicion->nivel_agua] ?? '—' }}</td>
                             <td>{{ $medicion->retrolavado ? 'Sí' : 'No' }}</td>
                         </tr>
 
                         @if ($medicion->dosis->count() || $medicion->observacion || count($autores) > 1)
                             <tr class="fila-detalle">
-                                <td colspan="10">
+                                <td colspan="11">
                                     @if (count($autores) > 1 && $medicion->usuario)
                                         <span class="rotulo">Registró</span>
                                         <span class="texto-detalle">{{ $medicion->usuario->nombre_usuario }}</span>

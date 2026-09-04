@@ -27,6 +27,7 @@ class Medicion extends Model
         'alcalinidad',
         'dureza_calcio',
         'acido_cianurico',
+        'sal',
         'retrolavado',
         'nivel_agua',
         'observacion',
@@ -42,6 +43,7 @@ class Medicion extends Model
         'alcalinidad'     => 'decimal:2',
         'dureza_calcio'   => 'decimal:2',
         'acido_cianurico' => 'decimal:2',
+        'sal'             => 'decimal:2',
         'retrolavado'     => 'boolean',
     ];
 

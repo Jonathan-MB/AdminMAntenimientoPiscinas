@@ -271,6 +271,9 @@ class DemoSeeder extends Seeder
                         'alcalinidad'     => mt_rand(70, 130),
                         'dureza_calcio'   => mt_rand(180, 400),
                         'acido_cianurico' => mt_rand(20, 60),
+                        //  Una piscina de sal ronda las 3000 ppm; las que no lo
+                        //  son no se miden, y por eso una de cada cuatro va nula
+                        'sal'             => mt_rand(0, 3) === 0 ? null : mt_rand(2600, 3600),
                         'retrolavado'     => mt_rand(0, 6) === 0,
                         'nivel_agua'      => ['normal', 'normal', 'normal', 'alto', 'bajo'][mt_rand(0, 4)],
                         'observacion'     => mt_rand(0, 4) === 0 ? 'Se limpió el skimmer' : null,
