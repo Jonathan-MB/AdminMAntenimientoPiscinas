@@ -3,7 +3,7 @@
 Procedimiento completo, en orden. Está escrito para hacerse una vez; al final hay una versión
 corta para las actualizaciones siguientes.
 
-> **Hecho el 2 de septiembre de 2026** en `limegreen-mongoose-115418.hostingersite.com`. Lo que
+> **Hecho el 2 de septiembre de 2026** en `aqualiveapp.com`. Lo que
 > sigue ya está corregido con lo que el servidor resultó ser, que no era lo que esta guía suponía.
 > Las diferencias van marcadas.
 
@@ -52,7 +52,7 @@ dentro de la carpeta del dominio hay un archivo `DO_NOT_UPLOAD_HERE` avisándolo
 │   ├── composer.json
 │   └── .env                     <- se crea aqui, en el servidor
 └── domains/
-    └── limegreen-mongoose-115418.hostingersite.com/
+    └── aqualiveapp.com/
         └── public_html/         <- el contenido de public/, no la carpeta
             ├── index.php
             ├── .htaccess
@@ -69,16 +69,17 @@ cd ~
 git clone https://github.com/Jonathan-MB/AdminMAntenimientoPiscinas.git aqualive
 ```
 
-Después mueve el contenido de `public/` a `public_html/` y borra la carpeta `public/` vacía:
+Después copia el contenido de `public/` dentro de `public_html/`:
 
 ```bash
-DOC=~/domains/limegreen-mongoose-115418.hostingersite.com/public_html
+DOC=~/domains/aqualiveapp.com/public_html
 mv "$DOC/default.php" ~/default.php.hostinger   # la portada de bienvenida de Hostinger
 cp -r ~/aqualive/public/. "$DOC/"
 ```
 
-La carpeta `public/` del proyecto **se deja donde está**: al actualizar con `git pull` se vuelve a
-copiar de ahí.
+La carpeta `public/` del proyecto **se deja donde está y no se borra**: al actualizar con
+`git pull` se vuelve a copiar de ahí. El docroot es una copia y no un enlace porque Hostinger
+tiene `symlink` deshabilitado, así que cada despliegue hay que repetir la copia.
 
 **No subas**: `vendor/`, `node_modules/`, `.env`, `bootstrap/cache/*.php`, ni la carpeta
 `Libro de marca/` (es documentación, no la necesita el servidor).
@@ -254,6 +255,21 @@ el paso 3.
 
 ## 10. Actualizaciones siguientes
 
+**Cuando ya hay gente usando el sitio, respalda la base antes de migrar.** Es un minuto y evita el
+único paso irreversible de la lista:
+
+```bash
+mkdir -p ~/respaldos
+PASS=$(grep "^DB_PASSWORD=" ~/aqualive/.env | sed 's/^DB_PASSWORD=//; s/^"//; s/"$//')
+mysqldump -u u604113341_aqualiveapp -p"$PASS" u604113341_aqualiveapp \
+  > ~/respaldos/antes-$(date +%Y%m%d-%H%M).sql
+```
+
+`migrate` **no borra datos**; `migrate:fresh` sí, y borra todos. En un sitio con gente trabajando
+va siempre `migrate` a secas. Si un cambio necesita transformar una tabla que ya existe, eso se
+resuelve con una migración nueva que convierta los datos, **nunca editando una migración que ya
+corrió**: esa no se vuelve a ejecutar y el servidor se quedaría con la tabla vieja.
+
 ```bash
 cd ~/aqualive
 php artisan down
@@ -269,11 +285,25 @@ php artisan view:cache
 php artisan up
 ```
 
-Si el cambio tocó archivos de `public/` (CSS, JS, imágenes), cópialos otra vez:
+Si el cambio tocó archivos de `public/` (CSS, JS, imágenes), **cópialos otra vez**. `git pull`
+actualiza `~/aqualive/public/`, pero el docroot es una **copia**, no un enlace: sin este paso el
+navegador sigue sirviendo el CSS y el JS viejos, y un archivo nuevo directamente no existe.
 
 ```bash
-cp -r ~/aqualive/public/. ~/public_html/
-rm -rf ~/aqualive/public
+DOC=~/domains/aqualiveapp.com/public_html
+cp -r ~/aqualive/public/css/. "$DOC/css/"
+cp -r ~/aqualive/public/js/.  "$DOC/js/"
+cp -r ~/aqualive/public/img/. "$DOC/img/"
+```
+
+Se copian las carpetas una por una **a propósito**: `cp -r ~/aqualive/public/. "$DOC/"` pisaría el
+`index.php` del docroot, que es el único archivo editado a mano en el servidor (paso 4). Y la
+carpeta `public/` del proyecto **no se borra**: es de donde sale la copia la próxima vez.
+
+Comprueba que llegó, que es más rápido que descubrirlo por el navegador:
+
+```bash
+curl -s -o /dev/null -w "%{http_code}\n" https://aqualiveapp.com/js/general.js
 ```
 
 Y si `public/index.php` cambió, **rehaz el paso 4**.
@@ -291,8 +321,14 @@ Y si `public/index.php` cambió, **rehaz el paso 4**.
 
 ## Este despliegue es una demostración, no la producción de verdad
 
-El sitio de `limegreen-mongoose-115418.hostingersite.com` está con **`APP_ENV=staging`** y con los
+El sitio de `aqualiveapp.com` está con **`APP_ENV=staging`** y con los
 datos del `DemoSeeder`: tres hoteles inventados, 38 jornadas y nueve tickets.
+
+> **Actualizado el 4 de septiembre de 2026.** Desde el equipo ya se estaba probando con esos
+> datos —había jornadas nuevas y a `admin1` le habían sumado el rol de reparación—, así que este
+> despliegue fue el primero **conservando la base**: respaldo, `migrate` a secas y la migración
+> `cambiar_hotel_por_cliente_en_tickets` copiando a cada ticket el nombre y la dirección de su
+> hotel antes de soltar la llave foránea. Nada que se hubiera capturado se perdió.
 
 Se puso `staging` y no `production` a propósito: el `DemoSeeder` **se niega a correr en
 production**, y aquí hacían falta datos para poder mirar las pantallas y las impresiones. Con
