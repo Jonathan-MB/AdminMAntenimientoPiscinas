@@ -310,6 +310,60 @@ Y si `public/index.php` cambió, **rehaz el paso 4**.
 
 ---
 
+## 11. El respaldo automático
+
+`scripts/respaldar.sh` guarda la base **y las fotos de los tickets**, que no están en la base: sin
+ellas se restaurarían los tickets sin sus fotos. Deja los últimos **14 días** y borra el resto.
+Escribe una línea por ejecución en `~/respaldos/respaldo.log` y no imprime nada si va bien, para
+que el cron no mande un correo cada día.
+
+La contraseña la lee del `.env` en el momento y la pasa por un archivo temporal, **no por la línea
+de comandos**: esto es un servidor compartido y `ps` la dejaría a la vista de los demás.
+
+Se puede lanzar a mano cuando quieras:
+
+```bash
+~/aqualive/scripts/respaldar.sh && tail -1 ~/respaldos/respaldo.log
+```
+
+### Programarlo
+
+**En esta cuenta no hay `crontab` por SSH**: Hostinger solo deja crear tareas desde hPanel, en
+**Avanzado → Trabajos cron**. Los valores:
+
+| Campo | Valor |
+|---|---|
+| Comando | `/bin/bash /home/u604113341/aqualive/scripts/respaldar.sh` |
+| Frecuencia | Personalizada: `0 7 * * *` |
+
+**El servidor va en UTC, no en hora de Aruba.** Las `07:00` UTC son las **03:00** de Aruba, que es
+cuando no hay nadie capturando. Si lo pones a las 3 pensando en la hora local, se ejecutaría a las
+11 de la noche.
+
+### Restaurar
+
+Un respaldo que nadie ha restaurado nunca es una suposición, no un respaldo. Así se hace:
+
+```bash
+cd ~/respaldos
+PASS=$(grep "^DB_PASSWORD=" ~/aqualive/.env | sed 's/^DB_PASSWORD=//; s/^"//; s/"$//')
+
+# La base
+gunzip -c base-20260904-0553.sql.gz | mysql -u u604113341_aqualiveapp -p"$PASS" u604113341_aqualiveapp
+
+# Las fotos
+tar -xzf fotos-20260904-0553.tar.gz -C ~/aqualive
+```
+
+El volcado trae `DROP TABLE ... CREATE TABLE`, así que **reemplaza** lo que haya: deja la base tal
+como estaba el día del respaldo y se pierde lo capturado desde entonces. Por eso, si el problema
+es solo un dato borrado por error, sale más barato mirar el volcado y reponer esa fila que
+restaurar entero.
+
+Después de restaurar, limpia las cachés: `php artisan optimize:clear`.
+
+---
+
 ## Lo que queda pendiente después de desplegar
 
 - **Recuperar la contraseña por correo** no existe: se descartó a propósito. Si alguien olvida la
