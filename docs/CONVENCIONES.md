@@ -340,6 +340,8 @@ piscina con mediciones registradas no se puede eliminar: se desactiva».
 | Código muerto de una idea descartada | Si se abandona, se borra completa. |
 | Desactivar en vez de borrar «por si acaso» | Mientras el proyecto no esté en producción, lo que sobra se borra. Desactivar es para proteger historia real, no datos de prueba: deja filas muertas que nadie va a mirar. |
 | Rutas trampa para «probar» | Nunca. Una ruta que salta la autenticación se olvida y viaja a producción. Para ver otras vistas: usuarios de prueba con dominio `.test`, o la suplantación del `master`, que es una función real y auditada. |
+| Editar una migración que ya corrió en un servidor | Ahí no se vuelve a ejecutar: la base se queda con la tabla vieja y la aplicación revienta. Se hace una migración **nueva** que transforme la tabla y **convierta los datos**. Editar la original solo vale mientras la base sea desechable. |
+| Suponer que el navegador copia al portapapeles | `navigator.clipboard` pide sitio seguro **y** permiso; si falta alguno falla en silencio. Dejar siempre un camino que no dependa de eso. |
 
 ---
 

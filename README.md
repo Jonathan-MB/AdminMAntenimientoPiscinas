@@ -29,6 +29,11 @@ los hoteles ven esta pantalla.
 | Reparaciones: contadores y aviso en vivo | Funcionando |
 | Impresión de la revisión de un día | Funcionando |
 | Paginación del panel | Funcionando |
+| Respaldo diario de la base y las fotos | Funcionando |
+
+**En pruebas con el equipo** en [aqualiveapp.com](https://aqualiveapp.com) desde el 2 de septiembre
+de 2026, con `APP_ENV=staging` y los datos del `DemoSeeder`. Ya hay trabajo capturado a mano ahí,
+así que esa base **se conserva**: ver «Antes de producción» al final.
 
 ---
 
@@ -509,6 +514,35 @@ sus datos y puede:
 El **nombre de usuario y el rol no se cambian desde ahí**: son identidad, y los administra un
 administrador.
 
+### Ver la contraseña mientras se escribe
+
+Todo campo de contraseña de la aplicación lleva al lado un botón **Ver / Ocultar**. Escribir a
+ciegas una clave de 8 caracteres en el teclado de un teléfono, con el sol encima y las manos
+mojadas, es la forma más rápida de quedarse fuera por una letra.
+
+No está puesto pantalla por pantalla: `public/js/general.js` se carga en el pie de todas y le
+pone el botón a cada `input[type="password"]`. Se aplica solo a las cuatro que hoy piden una
+—ingreso, perfil, alta de usuario y contraseña provisional— y a cualquiera que se agregue después.
+
+---
+
+## Cuando algo falla, la aplicación vuelve al panel
+
+No hay pantallas de error. Un **419** (la sesión o el token vencieron), un **404**, un **405** o
+un **500** redirigen al panel con un aviso, en vez de dejar al usuario frente a una página en
+blanco de la que solo se sale escribiendo la dirección a mano.
+
+Si además ya no hay sesión, el panel lo manda al login por su cuenta: no hace falta distinguir
+los dos casos, la cadena se resuelve sola.
+
+El caso que lo destapó fue **cerrar sesión con el token vencido**: el botón «Salir» devolvía un
+419 y una pantalla en blanco, justo al usuario que estaba intentando irse bien.
+
+Está en `bootstrap/app.php`, en `withExceptions`. **Los 401 y 403 se dejan pasar tal cual**: esos
+no son fallos, son la aplicación negando el acceso a propósito, y convertirlos en redirección
+escondería un permiso mal puesto. Las peticiones que esperan JSON tampoco se tocan, o el
+JavaScript recibiría una redirección donde espera un código.
+
 ---
 
 ## Los archivos de `public/` llevan versión
@@ -548,6 +582,9 @@ naranja permanente con el nombre suplantado y el botón **Volver a mi cuenta**.
   regresa a su panel, **no escala privilegios**.
 - Si la cuenta original quedó inactiva o dejó de ser master mientras tanto, se cierra la sesión
   por completo en vez de devolver a una cuenta que ya no debería tener esos permisos.
+- **Mientras dura la suplantación no se muestra el botón «Salir»** de la barra. Estaba al lado de
+  «Volver a mi cuenta» y los dos parecían lo mismo: uno devuelve al master, el otro cierra la
+  sesión de verdad. Se dejó solo el que corresponde.
 
 ### La base de pruebas
 
@@ -572,7 +609,8 @@ Y además: unos 40 días de jornadas repartidas entre los tres, con mediciones, 
 de metro, listado de trabajo y materiales; **días repartidos entre dos colaboradores**, para ver
 el «Registraron: colab1, colab2» y el nombre en cada piscina; **correcciones** cada pocos días,
 para la fila amarilla del panel; y **nueve tickets en los cuatro estados**, con su historial de
-movimientos y fotos de verdad.
+movimientos y fotos de verdad. **Dos de esos nueve son de clientes que no son hoteles** —una
+residencia y un restaurante—, para que se vea que el ticket ya no está atado a la lista.
 
 Las fotos son PNG generados por el propio seeder, escritos byte a byte porque este servidor no
 tiene GD. Si fueran archivos falsos, la ruta que las sirve devolvería 404 y no se podría probar la
@@ -795,11 +833,40 @@ conversación empieza por quién los firma, no por dónde va el color.
 
 ## Reparaciones
 
-Es la sección que reemplaza los avisos sueltos por WhatsApp: lo que se dañó, en qué hotel, y
+Es la sección que reemplaza los avisos sueltos por WhatsApp: lo que se dañó, de quién es, y
 en qué punto va el cobro. Entran `master`, `jefe` y `reparacion`; para cualquier otro rol la
 sección devuelve **403**, y el enlace del menú ni siquiera se dibuja.
 
 Va **primero y resaltado** en el menú superior porque es lo que más se consulta durante el día.
+
+### El cliente es texto libre, no un hotel de la lista
+
+Al principio un ticket colgaba de `hotel_id`, como todo lo demás. Estaba mal: **una reparación se
+le puede hacer a quien no usa el sistema** —una residencia, un restaurante— y esa gente no tiene
+por qué existir como hotel, con sus piscinas y sus rondas, solo para poder cobrarle un trabajo.
+
+Desde el 4 de septiembre de 2026 el ticket guarda `cliente` (obligatorio) y `direccion` (opcional),
+los dos escritos a mano. Se dejó de crear una ficha de hotel para algo que es un dato de una sola
+reparación.
+
+La migración que lo cambió **copió a cada ticket el nombre y la dirección del hotel que tenía**
+antes de soltar la llave foránea, así que los que ya existían no perdieron de quién eran. Por eso
+los tickets viejos llevan nombre de hotel como cliente: no es un error, es de dónde vienen.
+
+El historial dejó de filtrar por un desplegable de hoteles y pasa a filtrar **escribiendo el
+nombre del cliente**, que es lo único que tiene sentido cuando el nombre es texto.
+
+### La dirección se ve y se puede llevar al mapa
+
+El tablero muestra el cliente y debajo su dirección: quien va a reparar necesita saber a dónde,
+y abrir ticket por ticket para averiguarlo no sirve cuando se está armando la ruta del día.
+
+En el ticket la dirección va en su propia línea, con **Copiar** y **Ver en el mapa**. Son dos
+porque el portapapeles no está garantizado: `navigator.clipboard` exige sitio seguro *y* permiso
+del navegador, y si alguno falta el botón no copia nada. El enlace a Google Maps llega al mismo
+sitio sin depender de eso, y en el teléfono de un solo toque. El botón de copiar **nace oculto y
+lo enciende el JavaScript**: sin JavaScript no debe verse un botón que no hace nada, y la
+dirección se puede seleccionar con el dedo igual.
 
 ### Los cuatro estados
 
@@ -906,8 +973,9 @@ le borraría a alguien lo que estuviera escribiendo en el formulario de un ticke
 
 ### El historial de cobrados
 
-Pantalla aparte, con filtro por hotel y por rango de fechas. Filtra por `updated_at`, que en un
-ticket cobrado es la fecha en que se cobró. Muestra hasta 50 y dice cuántos hay en total.
+Pantalla aparte, con filtro por **nombre de cliente** y por rango de fechas. El del cliente es una
+búsqueda por partes: escribiendo `palm` salen todos los de Palm Beach. Filtra por `updated_at`, que
+en un ticket cobrado es la fecha en que se cobró. Muestra hasta 50 y dice cuántos hay en total.
 
 ---
 
@@ -958,6 +1026,32 @@ de frente no se leen.
 
 Eso incluye **la barra superior**: los enlaces del menú, el nombre de usuario y el botón de salir
 estaban en 31 px. Se midieron emulando un Pixel 9 (412 px), no a ojo.
+
+### El menú se parte, no se sale
+
+Con las cinco entradas del `master` la fila del menú no cabe en un teléfono y **se salía de la
+pantalla**: la última quedaba cortada contra el borde. Ahora baja de línea.
+
+Junto a eso apareció el que de verdad rompía la pantalla: en `/hoteles`, la tabla apilada en móvil
+no dejaba **bajar de línea el nombre largo de un hotel**, así que estiraba el documento entero a
+418 px en una pantalla de 360. Eso es lo que dejaba la barra azul del encabezado corta contra el
+borde derecho — parecía un problema del encabezado y era de la tabla, tres secciones más abajo.
+
+Se barrieron todas las pantallas a 280, 320, 360, 390, 412 y 430 px comprobando
+`scrollWidth > clientWidth`. **280 px** entró en la lista porque es lo que mide una Galaxy Fold
+cerrada, y ahí la rejilla de la medición baja sola a una columna.
+
+### La etiqueta viaja pegada a su campo
+
+En la pantalla de medición los campos van en dos columnas y las etiquetas encima. Cuando una
+etiqueta se partía en dos líneas, su vecina de al lado quedaba con alto de sobra y **el campo se
+hundía al fondo de la celda**: la etiqueta se quedaba arriba, pegada a la fila anterior, y se leía
+como si fuera de ella.
+
+La causa era un `margin-top: auto` puesto en el **campo**. Ahora está en la **etiqueta**: el
+sobrante de alto se va por encima y la pareja etiqueta-campo viaja junta. Medido en todos los
+anchos, la distancia de una etiqueta a su campo es de 6 px y a la fila siguiente de 20 a 24. La
+más corta es siempre la que agrupa, que es de lo que se trata.
 
 ### La lista de trabajo
 
@@ -1161,6 +1255,17 @@ que resolver **fuera** del despliegue:
 - **Los datos del hotel**: dirección, teléfono y persona de contacto. Salen en el membrete de la
   hoja impresa que recibe el cliente y hoy están vacíos. Se llenan desde la pantalla del hotel.
 
-Las cuentas de prueba y las jornadas de demo **no hay que borrarlas del servidor**: nunca llegan.
-`DemoSeeder` se niega a correr con `APP_ENV=production`, y `php artisan db:seed` no lo llama.
-Viven solo en la base local.
+**El sitio de pruebas sí tiene los datos de demo.** `aqualiveapp.com` corre con `APP_ENV=staging`
+justamente para eso: el equipo está probando ahí con las nueve cuentas y las jornadas del
+`DemoSeeder`, y desde el 4 de septiembre de 2026 esos datos **ya no son desechables** —hay
+jornadas capturadas a mano y roles cambiados que nadie quiere perder.
+
+De ahí salen dos reglas para ese servidor:
+
+- **`migrate` a secas, nunca `migrate:fresh`**, y ningún seeder. Un cambio que necesite
+  transformar una tabla existente se hace con una migración nueva que convierta los datos.
+- **Respaldo diario** de la base y de las fotos, con `scripts/respaldar.sh`. El procedimiento y la
+  restauración están en [docs/DESPLIEGUE.md](docs/DESPLIEGUE.md).
+
+Cuando llegue la producción de verdad, ahí sí `APP_ENV=production`: `DemoSeeder` se niega a correr
+con ese valor y `php artisan db:seed` no lo llama, así que las cuentas de prueba no pueden colarse.

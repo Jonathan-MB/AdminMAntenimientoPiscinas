@@ -103,3 +103,61 @@ Las tres veces que una prueba dio «mal» en este barrido, **el error estaba en 
 
 Y una más, de otro día: **`curl -L` sigue la redirección al login**, así que un acceso rechazado
 devuelve 200 y parece que funcionó. Para comprobar permisos, sin `-L`.
+
+---
+
+## Segunda ronda — 4 de septiembre de 2026
+
+Lo de esta ronda se probó contra **el servidor real** (`aqualiveapp.com`) además de en local,
+porque ya había gente trabajando con esos datos.
+
+### 9. El cliente del ticket, de hotel a texto libre
+
+- La migración corrió sobre una base **con datos**, reproduciendo el estado del servidor: los
+  tickets existentes conservaron nombre y dirección, copiados del hotel que tenían. Ninguno quedó
+  sin cliente.
+- Después, la **instalación desde cero** también da la tabla correcta: los dos caminos funcionan.
+- Ciclo completo en producción: crear con un cliente ajeno a los hoteles → verlo → moverlo hasta
+  cobrado → encontrarlo en el historial filtrando por su nombre. El ticket de prueba se borró.
+- Usuarios, roles y contraseñas **intactos** tras migrar: 10 cuentas, 11 asignaciones de rol, cero
+  cambios de contraseña registrados. Las cinco cuentas probadas siguen entrando con `pruebas2026`.
+
+### 10. Errores que ya no dejan pantalla en blanco
+
+Con sesión iniciada y token vencido, `POST /salir` devuelve **302 al panel** en vez del 419. Un 404
+hace lo mismo. Sin sesión, la cadena termina sola en el login — comprobado siguiendo las
+redirecciones hasta el formulario de ingreso.
+
+### 11. Anchos de pantalla
+
+Barrido de `scrollWidth > clientWidth` en panel, registro, jornada, medición, diario, hoteles,
+hotel, usuarios, perfil, reparaciones, ticket, historial y correcciones, a **280, 320, 360, 390,
+412 y 430 px**. Ninguno desborda.
+
+Ahí apareció un fallo que nadie había reportado: **`/hoteles` se estiraba a 418 px en una pantalla
+de 360**, por el nombre largo de un hotel en la tabla apilada. Era la causa real del encabezado
+«que no encajaba».
+
+En la medición se midió la distancia de cada etiqueta a su campo (6 px) contra la distancia a la
+fila siguiente (20-24 px), en todos los anchos: la más corta es siempre la que agrupa.
+
+### 12. El respaldo
+
+- El volcado abre, trae las 21 tablas y cierra bien; el tar lleva las 7 fotos, las mismas que hay
+  en disco.
+- **Rotación**: con archivos falsos de 20 y de 3 días, borró el viejo y conservó el reciente.
+- **Restauración probada de verdad**, en una base local aparte: devolvió los 10 usuarios, 41
+  jornadas, 314 mediciones y 9 tickets, con los roles como estaban.
+
+---
+
+## Lo que no se pudo probar aquí
+
+**El botón de copiar la dirección.** El portapapeles exige activación del usuario
+(`navigator.userActivation.hasBeenActive`) y el navegador automatizado nunca la tiene: da
+`permiso: denied` pase lo que pase. Se comprobó que el fallo es del entorno y no del código —la
+API falla igual llamándola directamente—, pero **el camino feliz hay que tocarlo en un teléfono
+real**. Si el botón cambia a «Copiada» en verde, funcionó.
+
+Por eso mismo al lado va el enlace a Google Maps, que no depende de permisos. De ese sí se
+verificó que la dirección queda bien codificada en la URL y que Google responde 200.
