@@ -8,6 +8,16 @@
    Azul agua          #91d4f2   C46 M0 Y0 K0     (icono)
    Azul agua claro    #c9e9f8   C25 M0 Y0 K0     (icono)
    Indigo profundo    #332b67   C92 M97 Y25 K10  (gotas)
+
+   Colores de estado, elegidos por contraste y no por gusto. Todos
+   llevan texto blanco encima y pasan el 4,5 que pide un texto normal:
+
+   Rojo      #b3261e  6,54   por hacer / error
+   Ambar     #9a6200  5,10   por facturar / aviso   (era #c07a00, 3,49)
+   Azul      #00519e  7,86   por cobrar / marca
+   Verde     #1b7a4b  5,34   cobrado / exito
+   Pizarra   #455a64  7,24   visita realizada
+   Naranja   #c2410c  5,18   garantia realizada
    ========================================================== */
 
 
@@ -112,8 +122,8 @@ body {
 }
 
 .mensaje-alerta {
-    border-left-color: #c07a00;
-    color: #c07a00;
+    border-left-color: #9a6200;
+    color: #9a6200;
 }
 
 .mensaje-error {
@@ -667,7 +677,7 @@ body {
     justify-content: center;
     flex-wrap: wrap;
     gap: 8px 16px;
-    background-color: #c07a00;
+    background-color: #9a6200;
     color: #ffffff;
     padding: 9px 20px;
     font-size: 13px;
@@ -680,7 +690,7 @@ body {
 
 .boton-volver-cuenta {
     background-color: #ffffff;
-    color: #c07a00;
+    color: #9a6200;
     border: 0;
     border-radius: 3px;
     padding: 5px 14px;

@@ -235,7 +235,7 @@
 .tarea-falta {
     background-color: #fdf1dc;
     border-color: #edcf9a;
-    border-left-color: #c07a00;
+    border-left-color: #9a6200;
 }
 
 .tarea-hecha {
@@ -285,7 +285,7 @@
 }
 
 .marcador-faltan strong {
-    color: #c07a00;
+    color: #9a6200;
 }
 
 /*  Cuando no falta ninguna, el aviso deja de ser aviso  */
@@ -304,7 +304,7 @@
     display: block;
     width: 0;
     height: 100%;
-    background-color: #c07a00;
+    background-color: #9a6200;
     border-radius: 20px;
     transition: 0.4s;
 }

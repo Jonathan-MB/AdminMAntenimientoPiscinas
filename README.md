@@ -895,7 +895,7 @@ dirección se puede seleccionar con el dedo igual.
 | `por_cobrar` | Reparado y por cobrar | Azul | Abierto |
 | `cobrado` | Cobrado | Verde | Cierra |
 | `visita_realizada` | Visita realizada | Pizarra | Cierra |
-| `garantia_realizada` | Garantía realizada | Morado | Cierra |
+| `garantia_realizada` | Garantía realizada | Naranja | Cierra |
 
 El tablero muestra **solo los tres abiertos**, una columna por estado. Los otros tres dan por
 terminada la reparación: el ticket sale del tablero y pasa al historial. El tablero es la lista
@@ -909,6 +909,22 @@ ahí, cada uno lleva su color y su etiqueta.
 El pizarra de la visita no es decorativo: el primer color que se probó fue un verde azulado, y
 medido en Lab quedaba a un ΔE de 33 del verde de `cobrado` —distinguible, pero justo—. El pizarra
 está a 43 y además dice lo que es: cerrado, sin dinero de por medio.
+
+Los tres que cierran están **a ΔE 43 o más** entre sí, que es la única separación que importa:
+son los únicos que conviven, y conviven solo en el historial. Se llegó a descartar un naranja por
+parecerse al ámbar de «por facturar», hasta caer en que **el ámbar nunca aparece ahí**: es un
+estado abierto. El único sitio donde coinciden es la lista de «quién lo movió» dentro de un
+ticket, y solo si pasó por facturar antes de cerrarse por garantía, que es un camino raro.
+
+### El ámbar de aviso, que no se leía
+
+`#c07a00` daba **3,49 de contraste** con texto blanco, por debajo del 4,5 que necesita un texto
+normal. No era solo la pastilla de «por facturar»: es el ámbar de aviso de toda la aplicación
+—mensajes de alerta, la jornada, el panel, usuarios, la contraseña provisional— y fallaba en sus
+**dos papeles**, como fondo con texto blanco y como texto sobre blanco.
+
+Pasó a `#9a6200`, que da **5,10**. Sigue leyéndose como ámbar, solo que más profundo. Con eso las
+seis pastillas de estado pasan el mínimo: 5,1 · 5,2 · 5,3 · 6,5 · 7,2 · 7,9.
 
 Una visita o una garantía **no pasan por «por facturar»**: se atienden y se cierran. El
 desplegable «Mover a» permite ir a cualquier estado, igual que antes, porque la operación real no

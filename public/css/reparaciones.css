@@ -80,7 +80,7 @@
 }
 
 .columna-por_hacer    { border-top-color: #b3261e; }
-.columna-por_facturar { border-top-color: #c07a00; }
+.columna-por_facturar { border-top-color: #9a6200; }
 .columna-por_cobrar   { border-top-color: #00519e; }
 
 .cabecera-columna {
@@ -147,11 +147,11 @@
 
 /*  La banda de la izquierda repite el color del estado  */
 .columna-por_hacer    .tarjeta-ticket { border-left-color: #b3261e; }
-.columna-por_facturar .tarjeta-ticket { border-left-color: #c07a00; }
+.columna-por_facturar .tarjeta-ticket { border-left-color: #9a6200; }
 .columna-por_cobrar   .tarjeta-ticket { border-left-color: #00519e; }
 
 .columna-por_hacer    .tarjeta-ticket:hover { border-color: #b3261e; }
-.columna-por_facturar .tarjeta-ticket:hover { border-color: #c07a00; }
+.columna-por_facturar .tarjeta-ticket:hover { border-color: #9a6200; }
 .columna-por_cobrar   .tarjeta-ticket:hover { border-color: #00519e; }
 
 .titulo-ticket {
@@ -214,14 +214,14 @@
 }
 
 .pastilla-por_hacer    { background-color: #b3261e; }
-.pastilla-por_facturar { background-color: #c07a00; }
+.pastilla-por_facturar { background-color: #9a6200; }
 .pastilla-por_cobrar   { background-color: #00519e; }
 
 /*  Los tres que cierran la reparacion. Se distinguen entre si porque en el
     historial conviven, y no es lo mismo cobrar que atender una garantia.  */
 .pastilla-cobrado            { background-color: #1b7a4b; }
 .pastilla-visita_realizada   { background-color: #455a64; }
-.pastilla-garantia_realizada { background-color: #6b3fa0; }
+.pastilla-garantia_realizada { background-color: #c2410c; }
 
 /*  Columna del estado en el historial  */
 .fila-estado {

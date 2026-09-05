@@ -205,8 +205,10 @@ Pasó de 10 a 11 columnas, y eso es lo que más fácil se rompe:
   y **entra al historial** (4 → 6). Un estado inventado sigue dando 422.
 - El contador de la barra sigue contando **solo los abiertos**: 5, repartidos 1/2/2.
 - En el historial cada fila lleva su pastilla, y las tres se distinguen: medido en Lab, el pizarra
-  de la visita está a ΔE 43 del verde y a 58 del morado. El contraste del texto blanco pasa AA en
-  las tres (5.3, 7.2 y 7.4).
+  de la visita está a ΔE 43 del verde y a 84 del naranja de garantía.
+- **Contraste medido sobre lo que pinta el navegador**, no sobre el CSS: las seis pastillas pasan
+  el 4,5 de texto normal (5,1 · 5,2 · 5,3 · 6,5 · 7,2 · 7,9). La de «por facturar» estaba en
+  **3,49** y no pasaba.
 - Permisos sin cambios.
 
 ### 18. La fecha del historial, que estaba mal
