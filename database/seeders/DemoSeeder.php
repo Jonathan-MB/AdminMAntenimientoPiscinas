@@ -28,7 +28,7 @@ class DemoSeeder extends Seeder
 {
     //  Una base con datos en todos lados, para probar las pantallas y sobre
     //  todo la impresion. Tres hoteles distintos entre si, varios dias de
-    //  historial, correcciones, y tickets en los cuatro estados.
+    //  historial, correcciones, y tickets en los seis estados.
     //  NO se llama desde DatabaseSeeder: se corre a mano.
     public function run(): void
     {
@@ -54,7 +54,7 @@ class DemoSeeder extends Seeder
         $this->tickets($personas);
 
         $this->command->info('Hoteles: ' . count($hoteles) . '. Jornadas: ' . $jornadas . '.');
-        $this->command->info('Tickets: ' . Ticket::count() . ' (en los cuatro estados).');
+        $this->command->info('Tickets: ' . Ticket::count() . ' (en los seis estados).');
         $this->command->warn('Contraseña de todas las cuentas de prueba: ' . $clave);
     }
 
@@ -331,7 +331,7 @@ class DemoSeeder extends Seeder
 
 
 
-    //  Tickets en los cuatro estados, con clientes de texto libre (no todos
+    //  Tickets en los seis estados, con clientes de texto libre (no todos
     //  son hoteles), con su historial de movimientos y alguna foto.
     private function tickets(array $personas): void
     {
@@ -350,10 +350,9 @@ class DemoSeeder extends Seeder
             ['Reja del cuarto de máquinas',     'Se soldó la reja y se pintó.',                  Ticket::POR_COBRAR,   'Restaurante Zeerover',          'Oranjestad',                            0],
             ['Cambio de tablero eléctrico',     'Tablero nuevo, instalado y probado.',           Ticket::COBRADO,      'Aruba Hotel Enterprises N.V.', 'L.G. Smith Boulevard 82, Oranjestad',   0],
             ['Bomba dosificadora sin cebar',    'Se limpió y se cebó, quedó operando.',          Ticket::COBRADO,      'Palm Beach Resort & Spa',       'J.E. Irausquin Boulevard 230, Palm Beach', 1],
+            ['Revisión del clorador',           'Se revisó en sitio, no habia falla.',           Ticket::VISITA_REALIZADA,   'Eagle Bay Suites',         'Sasakiweg 15, Eagle Beach',             0],
+            ['Bomba cambiada hace dos meses',   'Volvió a fallar, entró por garantía.',          Ticket::GARANTIA_REALIZADA, 'Palm Beach Resort & Spa',  'J.E. Irausquin Boulevard 230, Palm Beach', 0],
         ];
-
-        $orden = Ticket::estadosAbiertos();
-        $orden[] = Ticket::COBRADO;
 
         foreach ($definicion as $i => $datos) {
             list($titulo, $observacion, $estadoFinal, $cliente, $direccion, $conFotos) = $datos;
@@ -374,6 +373,15 @@ class DemoSeeder extends Seeder
             $ticket->created_at = now()->subDays(12 - $i);
             $ticket->save();
 
+            //  Una visita o una garantia no pasan por "por facturar": se
+            //  atienden y se cierran, asi que su camino es corto.
+            if (in_array($estadoFinal, [Ticket::VISITA_REALIZADA, Ticket::GARANTIA_REALIZADA], true)) {
+                $orden = [Ticket::POR_HACER, $estadoFinal];
+            } else {
+                $orden = Ticket::estadosAbiertos();
+                $orden[] = Ticket::COBRADO;
+            }
+
             //  El historial: la creacion y cada paso hasta el estado final
             $anterior = null;
             $cuando   = now()->subDays(12 - $i);
@@ -383,7 +391,7 @@ class DemoSeeder extends Seeder
                     'estado_anterior' => $anterior,
                     'estado_nuevo'    => $estado,
                     'ticket_id'       => $ticket->id,
-                    'usuario_id'      => $estado === Ticket::COBRADO ? $jefe->id : $reparador->id,
+                    'usuario_id'      => in_array($estado, Ticket::estadosCerrados(), true) ? $jefe->id : $reparador->id,
                     'created_at'      => $cuando,
                 ]);
 

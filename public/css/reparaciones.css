@@ -216,7 +216,27 @@
 .pastilla-por_hacer    { background-color: #b3261e; }
 .pastilla-por_facturar { background-color: #c07a00; }
 .pastilla-por_cobrar   { background-color: #00519e; }
-.pastilla-cobrado      { background-color: #1b7a4b; }
+
+/*  Los tres que cierran la reparacion. Se distinguen entre si porque en el
+    historial conviven, y no es lo mismo cobrar que atender una garantia.  */
+.pastilla-cobrado            { background-color: #1b7a4b; }
+.pastilla-visita_realizada   { background-color: #455a64; }
+.pastilla-garantia_realizada { background-color: #6b3fa0; }
+
+/*  Columna del estado en el historial  */
+.fila-estado {
+    flex-shrink: 0;
+}
+
+/*  En el telefono la pastilla baja de linea: compartiendo la fila le
+    robaba ancho al titulo y lo dejaba cortado con puntos suspensivos  */
+@media (max-width: 768px) {
+
+    .fila-estado {
+        flex-basis: 100%;
+    }
+
+}
 
 
 /* ----------Detalle del ticket-------------- */

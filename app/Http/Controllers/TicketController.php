@@ -159,31 +159,47 @@ class TicketController extends Controller
 
 
 
-    //  Los cobrados, con filtro por cliente y por fecha
+    //  Los terminados —cobrados, visitas y garantias—, con filtro por cliente
+    //  y por fecha
     public function historial(Request $request)
     {
         $cliente = $request->query('cliente');
         $desde   = $request->query('desde');
         $hasta   = $request->query('hasta');
 
+        //  Cuando se cerro de verdad, que sale del movimiento y no de
+        //  updated_at: editar la observacion de un ticket ya cerrado toca
+        //  updated_at y le cambiaria la fecha al historial.
+        $cierres = DB::table('movimientos_ticket')
+            ->selectRaw('ticket_id, MAX(created_at) as cerrado_en')
+            ->whereIn('estado_nuevo', Ticket::estadosCerrados())
+            ->groupBy('ticket_id');
+
+        //  leftJoin y COALESCE: un ticket sin movimiento de cierre no puede
+        //  desaparecer del historial, se cae a updated_at y se ve igual.
         $consulta = Ticket::with('usuario')
-            ->where('estado', Ticket::COBRADO);
+            ->whereIn('tickets.estado', Ticket::estadosCerrados())
+            ->leftJoinSub($cierres, 'cierres', function ($union) {
+                $union->on('cierres.ticket_id', '=', 'tickets.id');
+            })
+            ->select('tickets.*')
+            ->selectRaw('COALESCE(cierres.cerrado_en, tickets.updated_at) as cerrado_en');
 
         if ($cliente) {
             $consulta->where('cliente', 'like', '%' . $cliente . '%');
         }
 
         if ($desde) {
-            $consulta->whereDate('updated_at', '>=', $desde);
+            $consulta->whereRaw('DATE(COALESCE(cierres.cerrado_en, tickets.updated_at)) >= ?', [$desde]);
         }
 
         if ($hasta) {
-            $consulta->whereDate('updated_at', '<=', $hasta);
+            $consulta->whereRaw('DATE(COALESCE(cierres.cerrado_en, tickets.updated_at)) <= ?', [$hasta]);
         }
 
         $total = (clone $consulta)->count();
 
-        $tickets = $consulta->orderByDesc('updated_at')->limit(50)->get();
+        $tickets = $consulta->orderByDesc('cerrado_en')->limit(50)->get();
 
         return view('historial-reparaciones', compact('tickets', 'total', 'cliente', 'desde', 'hasta'));
     }

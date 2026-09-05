@@ -196,6 +196,38 @@ Pasó de 10 a 11 columnas, y eso es lo que más fácil se rompe:
 
 ---
 
+## Cuarta ronda — 5 de septiembre de 2026
+
+### 17. Los dos estados que cierran sin cobrar
+
+- El tablero sigue con **tres columnas**; el desplegable «Mover a» ofrece los **seis** estados.
+- Mover a `visita_realizada` y a `garantia_realizada`: 200, el ticket **sale del tablero** (7 → 5)
+  y **entra al historial** (4 → 6). Un estado inventado sigue dando 422.
+- El contador de la barra sigue contando **solo los abiertos**: 5, repartidos 1/2/2.
+- En el historial cada fila lleva su pastilla, y las tres se distinguen: medido en Lab, el pizarra
+  de la visita está a ΔE 43 del verde y a 58 del morado. El contraste del texto blanco pasa AA en
+  las tres (5.3, 7.2 y 7.4).
+- Permisos sin cambios.
+
+### 18. La fecha del historial, que estaba mal
+
+Prueba decisiva: un ticket cobrado el **20/08**, editar su observación **hoy**.
+
+| | Antes de editar | Después |
+|---|---|---|
+| `updated_at` en la base | 20/08 | **05/09** |
+| Fecha en el historial | 20/08 | **20/08** |
+| Posición | 6 de 6 | **6 de 6** |
+
+Con el código anterior habría saltado al primer puesto con fecha de hoy. El filtro por fechas usa
+la misma fecha de cierre: agosto devuelve 1 y septiembre 5, que suman las 6.
+
+> El primer intento de esta prueba **no demostraba nada**: se editó un ticket que se acababa de
+> cerrar, así que `updated_at` y la fecha de cierre caían en el mismo minuto y las dos consultas
+> daban igual. Para que una prueba distinga dos cosas, las dos cosas tienen que ser distintas.
+
+---
+
 ## Lo que no se pudo probar aquí
 
 **El botón de copiar la dirección.** El portapapeles exige activación del usuario

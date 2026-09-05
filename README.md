@@ -32,6 +32,7 @@ los hoteles ven esta pantalla.
 | Respaldo diario de la base y las fotos | Funcionando |
 | Nivel de sal y sal aplicada | Funcionando |
 | Observación del ticket editable, con su rastro | Funcionando |
+| Cierre por visita y por garantía, además del cobro | Funcionando |
 
 **En pruebas con el equipo** en [aqualiveapp.com](https://aqualiveapp.com) desde el 2 de septiembre
 de 2026, con `APP_ENV=staging` y los datos del `DemoSeeder`. Ya hay trabajo capturado a mano ahí,
@@ -885,18 +886,33 @@ sitio sin depender de eso, y en el teléfono de un solo toque. El botón de copi
 lo enciende el JavaScript**: sin JavaScript no debe verse un botón que no hace nada, y la
 dirección se puede seleccionar con el dedo igual.
 
-### Los cuatro estados
+### Los seis estados: tres que siguen abiertos y tres que cierran
 
-| Estado | En pantalla | Color |
-|---|---|---|
-| `por_hacer` | Por hacer | Rojo |
-| `por_facturar` | Por facturar | Ámbar |
-| `por_cobrar` | Reparado y por cobrar | Azul |
-| `cobrado` | Cobrado | Verde |
+| Estado | En pantalla | Color | |
+|---|---|---|---|
+| `por_hacer` | Por hacer | Rojo | Abierto |
+| `por_facturar` | Por facturar | Ámbar | Abierto |
+| `por_cobrar` | Reparado y por cobrar | Azul | Abierto |
+| `cobrado` | Cobrado | Verde | Cierra |
+| `visita_realizada` | Visita realizada | Pizarra | Cierra |
+| `garantia_realizada` | Garantía realizada | Morado | Cierra |
 
-El tablero muestra **solo los tres abiertos**, una columna por estado. Cuando un ticket llega a
-`cobrado` sale del tablero y pasa al historial: el tablero es la lista de pendientes, no el
-archivo.
+El tablero muestra **solo los tres abiertos**, una columna por estado. Los otros tres dan por
+terminada la reparación: el ticket sale del tablero y pasa al historial. El tablero es la lista
+de pendientes, no el archivo.
+
+**Visita y garantía se agregaron el 5 de septiembre de 2026.** Cierran igual que `cobrado`, pero
+**sin cobro**: una visita que resultó no ser falla y una reparación que volvió por garantía no se
+facturan, y meterlas como «cobrado» ensuciaría el historial de cobros. Como los tres conviven
+ahí, cada uno lleva su color y su etiqueta.
+
+El pizarra de la visita no es decorativo: el primer color que se probó fue un verde azulado, y
+medido en Lab quedaba a un ΔE de 33 del verde de `cobrado` —distinguible, pero justo—. El pizarra
+está a 43 y además dice lo que es: cerrado, sin dinero de por medio.
+
+Una visita o una garantía **no pasan por «por facturar»**: se atienden y se cierran. El
+desplegable «Mover a» permite ir a cualquier estado, igual que antes, porque la operación real no
+es lineal.
 
 Las columnas van sobre un gris azulado y las tarjetas en blanco. Al principio las dos eran
 blancas y el tablero se leía como un bloque: no se veía dónde acababa un ticket y empezaba el
@@ -1012,8 +1028,15 @@ le borraría a alguien lo que estuviera escribiendo en el formulario de un ticke
 ### El historial de cobrados
 
 Pantalla aparte, con filtro por **nombre de cliente** y por rango de fechas. El del cliente es una
-búsqueda por partes: escribiendo `palm` salen todos los de Palm Beach. Filtra por `updated_at`, que
-en un ticket cobrado es la fecha en que se cobró. Muestra hasta 50 y dice cuántos hay en total.
+búsqueda por partes: escribiendo `palm` salen todos los de Palm Beach. Muestra hasta 50 y dice
+cuántos hay en total. Cada fila lleva la pastilla de **cómo terminó**, que es lo que distingue un
+cobro de una visita o una garantía.
+
+**La fecha sale del movimiento que cerró el ticket, no de `updated_at`.** Al principio era
+`updated_at`, y funcionaba hasta que la observación se volvió editable: editar la nota de un
+ticket cerrado hace un mes le cambiaba la fecha del historial y lo subía al primer puesto, como si
+se hubiera cobrado hoy. La consulta hace `leftJoin` con el último movimiento hacia un estado que
+cierra; si por lo que sea no hubiera movimiento, cae a `updated_at` y la fila no desaparece.
 
 ---
 
