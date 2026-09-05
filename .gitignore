@@ -22,3 +22,7 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+#  El paquete que se le entrega al cliente: se arma con
+#  scripts/armar-libro-de-marca.php cuando hace falta
+/AQUALIVE - Libro de marca.zip

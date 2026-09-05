@@ -1,0 +1,92 @@
+AQUALIVE · POOL TECHNOLOGY
+Libro de marca
+==========================================================
+
+Todo lo necesario para usar la marca sin tener que preguntar:
+el manual, los logos en todas sus versiones y la paleta.
+
+
+QUE HAY AQUI
+----------------------------------------------------------
+
+manual-de-marca-aqualive.html
+    Abrelo con doble clic, en cualquier navegador. Explica los
+    colores, las tipografias, cuanto usar de cada color y que
+    combinaciones se leen bien. Las imagenes van dentro del
+    archivo, asi que funciona aunque lo mandes solo por correo.
+
+logos/
+    Todas las versiones del logo. Cual usar, mas abajo.
+
+paleta/paleta-aqualive.txt
+    Los colores en HEX, RGB y CMYK, para pegar en cualquier
+    programa de diseno o darselos a la imprenta.
+
+
+CUAL LOGO USO
+----------------------------------------------------------
+
+logo.png                 El completo, a color. El de siempre.
+logo-800.png             El mismo, mas liviano, para pantalla.
+logo-400.png             Para firmas de correo y cosas chicas.
+
+logo-blanco.png          Para fondos oscuros o fotos. Sobre un
+logo-blanco-800.png      fondo claro no se ve: es blanco.
+
+isotipo.png              Solo la "A". Cuando el nombre ya esta
+isotipo-512.png          escrito al lado y repetirlo sobra.
+
+isotipo-cuadrado-512.png Para foto de perfil en redes,
+isotipo-cuadrado-180.png WhatsApp Business, o el icono de una
+isotipo-cuadrado-64.png  aplicacion. Van en cuadrado exacto.
+isotipo-cuadrado-48.png
+isotipo-cuadrado-32.png
+isotipo-cuadrado-16.png
+
+favicon.ico              El iconito de la pestana del navegador.
+
+descriptor-pool-technology.svg
+    Solo la linea "POOL TECHNOLOGY", en vectorial. Sirve para
+    quien tenga que rehacer el logo: se puede agrandar cuanto
+    se quiera sin que se pixele.
+
+
+LO QUE HAY QUE SABER
+----------------------------------------------------------
+
+1. Todos los PNG tienen FONDO TRANSPARENTE. Se pueden poner
+   sobre cualquier color sin que quede el recuadro blanco.
+
+2. El logo NO SE ESTIRA. Para cambiarle el tamano hay que
+   agarrar una esquina con la tecla Shift, o quedara aplastado.
+
+3. Dejale AIRE alrededor. Como minimo, el alto de la letra "A"
+   del isotipo a cada lado. Pegado al borde se ve apretado.
+
+4. NO le cambies los colores, no le pongas sombra, no lo
+   inclines y no lo pongas sobre un fondo que no lo deje leer.
+
+5. Sobre foto o fondo oscuro va la version BLANCA. La de color
+   sobre oscuro se pierde.
+
+6. El descriptor dice POOL TECHNOLOGY, con dos O. Si en algun
+   archivo viejo aparece "POLL", ese archivo esta malo y no se
+   debe usar.
+
+
+PARA IMPRENTA
+----------------------------------------------------------
+
+Los PNG de este paquete son para pantalla y para impresion
+chica (tarjetas, hojas membreteadas, volantes).
+
+Para algo GRANDE -rotular una camioneta, un pendon, una valla-
+pideselo al diseniador que hizo el logo: hace falta el archivo
+original de Illustrator, que no esta en este paquete.
+
+Si te lo entrega, revisa que el descriptor diga POOL y no POLL
+antes de mandarlo a imprimir.
+
+
+==========================================================
+AQUALIVE · Pool Technology · Aruba

@@ -14,10 +14,10 @@ Todo eso se genera en el servidor.
 
 ## 1. Antes de tocar el servidor
 
-**Corrige el `.ai` del logo.** Los PNG ya dicen «POOL TECHNOLOGY», pero el archivo maestro sigue
-con la errata. El descriptor corregido en curvas está en
-`Libro de marca/logos/descriptor-pool-technology.svg`. Si esto sale a un hotel antes de
-corregirlo, la errata vuelve la próxima vez que alguien exporte del `.ai`.
+**Lo del logo ya no bloquea nada.** Los PNG de la aplicación y del libro de marca dicen «POOL
+TECHNOLOGY». El `.ai` del diseñador sigue con la errata, pero no está en el repositorio y nada de
+aquí sale de él; solo importa el día que haya que imprimir en grande. El detalle está en el README,
+en «La errata del descriptor».
 
 **Ten a mano los datos del hotel**: dirección, teléfono y persona de contacto. Salen en el
 membrete de la hoja impresa y hoy están vacíos.

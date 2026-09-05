@@ -373,6 +373,22 @@ a ojo.
 
 El manual completo está en `Libro de marca/manual-de-marca-aqualive.html` (se abre con doble clic).
 
+### El paquete que se le entrega al cliente
+
+`scripts/armar-libro-de-marca.php` arma un ZIP con el manual **en PDF** y los logos sueltos:
+
+```bash
+php -d extension=zip scripts/armar-libro-de-marca.php
+```
+
+Del manual quita dos cosas que solo le sirven a quien programa —la sección «Código» y la tabla de
+archivos con sus rutas de `public/`— y fuerza el tema claro, porque el manual se pone oscuro si el
+sistema lo pide y un PDF oscuro se imprime pésimo. El PDF lo genera Chrome o Edge en headless.
+
+Es un script y no un ZIP guardado a mano para que haya **una sola fuente**: el manual del
+repositorio. El ZIP que sale está en `.gitignore`.
+
+
 ### La errata del descriptor: corregida en los PNG, pendiente en el `.ai`
 
 El archivo `LOGO FINAL VECTORIAL vertical.ai` dice **«POLL TECHNOLOGY»**, no «POOL».
@@ -405,9 +421,20 @@ descriptor, los PNG nuevos son **idénticos** a los viejos.
 se habían hecho los originales (comprobado: coincidían con una reducción por cajas dentro de
 0,4 sobre 255).
 
-**Falta el `.ai`.** La parte editable de Illustrator sigue diciendo POLL, así que quien lo abra
-verá la errata. Para eso está `Libro de marca/logos/descriptor-pool-technology.svg`: el
-descriptor corregido en curvas de verdad, listo para reemplazar esa línea en el maestro.
+**El `.ai` sigue con la errata, y no es nuestro.** Es el archivo del diseñador que hizo el logo;
+no está en el repositorio. Quien lo abra verá POLL, así que si algún día hay que exportar de ahí
+—una valla, una camioneta, camisetas—, primero hay que corregirlo con
+`Libro de marca/logos/descriptor-pool-technology.svg`, que es el descriptor en curvas listo para
+reemplazar esa línea.
+
+**Nada del proyecto depende de él.** Los PNG del libro de marca y los de la aplicación están
+corregidos y son los que se usan.
+
+Se intentó reconstruir un vectorial completo desde el `.ai` el 5 de septiembre de 2026 y **se
+descartó**: la «A» de dentro no es vectorial, es un mapa de bits de 2673 × 2717 px, y la
+herramienta disponible lo rasteriza mal —le pierde el contorno azul oscuro y deja una rejilla de
+costuras—. El resultado habría sido peor que los PNG que ya existen. El nombre del archivo dice
+«VECTORIAL», pero solo el logotipo y el descriptor lo son.
 
 ---
 
